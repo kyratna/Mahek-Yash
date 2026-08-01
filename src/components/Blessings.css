@@ -106,7 +106,7 @@
 .blessings-cloud__spin {
   position: absolute;
   inset: 0;
-  animation: cloud-rotate 90s linear infinite;
+  animation: cloud-rotate 130s linear infinite;
 }
 
 @keyframes cloud-rotate {
@@ -120,10 +120,19 @@
   transform: translate(-50%, -50%);
 }
 
+/* A fixed footprint (width + height set inline on .cloud-item from
+   Blessings.jsx) is what lets buildCloudLayout() guarantee non-overlapping
+   positions — an auto-height note whose size depended on message length
+   would break that guarantee, so it's cascaded down to the note itself. */
+.cloud-item__counter-spin,
+.cloud-item__float {
+  height: 100%;
+}
+
 /* Cancels the parent's rotation so each note's own orientation stays
    upright — only its orbital position moves in a circle. */
 .cloud-item__counter-spin {
-  animation: cloud-counter-rotate 90s linear infinite;
+  animation: cloud-counter-rotate 130s linear infinite;
 }
 
 @keyframes cloud-counter-rotate {
@@ -132,6 +141,7 @@
   }
 }
 
+/* A light, gentle bob — not a big float — layered on top of the orbit. */
 .cloud-item__float {
   animation-name: note-float;
   animation-timing-function: ease-in-out;
@@ -144,14 +154,80 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
 }
 
+/* A non-spinning hub at the exact center of the cloud: the visitor's own
+   just-submitted note (static, glowing) plus the button into the full
+   Blessings Wall page. Sits above the orbiting ring (see .cloud-item) — the
+   ring's radii leave a matching empty zone clear, sized from this hub's own
+   measured footprint (see buildCloudLayout() in Blessings.jsx). */
+.blessings-cloud__hub {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* The part that's actually measured — hugs its content (rather than
+   stretching to fill .blessings-cloud__hub) so the JS-side radius math
+   reflects the hub's real size, not the whole cloud. */
+.blessings-cloud__hub-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.blessings-cloud__hub-button {
+  white-space: nowrap;
+}
+
+.blessings-cloud__hub-note .note {
+  max-width: 190px;
+}
+
+/* Kept compact and bounded (clamped message, small padding) so the hub's
+   footprint — used to keep the ring clear of it, see buildCloudLayout() in
+   Blessings.jsx — stays small and predictable rather than growing with
+   message length. */
+.blessings-cloud__hub-note .note--mine {
+  transform: none;
+  padding: var(--space-2);
+  box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.3), 0 0 24px rgba(176, 137, 104, 0.4),
+    0 10px 20px rgba(46, 43, 40, 0.18);
+}
+
+.blessings-cloud__hub-note .note--mine:hover {
+  transform: none;
+}
+
+.blessings-cloud__hub-note .note--mine .note__message {
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Notes shrink (rather than the cloud growing) as more blessings arrive —
-   see getNoteWidth() in Blessings.jsx, which sets --note-scale. */
+   see buildCloudLayout() in Blessings.jsx, which sets --note-scale. */
 .cloud-item .note__message {
   font-size: calc(1.1rem * var(--note-scale, 1));
+  /* Clamped to a fixed 2 lines so every note has the same predictable
+     height regardless of message length — buildCloudLayout()'s no-overlap
+     math assumes a fixed note footprint. Full text is still one tap away
+     via the lightbox. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cloud-item .note__author,
@@ -160,8 +236,11 @@
 }
 
 .cloud-item .note {
-  padding: calc(var(--space-3) * var(--note-scale, 1)) calc(var(--space-2) * var(--note-scale, 1))
-    calc(var(--space-2) * var(--note-scale, 1));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--space-2) * var(--note-scale, 1));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -175,64 +254,6 @@
 .blessings-view-all {
   text-align: center;
   margin-top: var(--space-4);
-}
-
-.blessings-all-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(20, 18, 16, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: var(--space-2);
-}
-
-.blessings-all-panel {
-  background: var(--color-bg);
-  width: 100%;
-  max-width: 36rem;
-  max-height: 85vh;
-  border-radius: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.blessings-all-panel__header {
-  position: relative;
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--color-border);
-  text-align: center;
-}
-
-.blessings-all-panel__header h3 {
-  margin: 0;
-}
-
-.blessings-all-panel__close {
-  color: var(--color-text);
-  top: 50%;
-  transform: translateY(-50%);
-  right: var(--space-2);
-}
-
-.blessings-all-panel__list {
-  overflow-y: auto;
-  padding: var(--space-2) var(--space-3);
-}
-
-.blessings-all-panel__item {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.blessings-all-panel__item:last-child {
-  border-bottom: 0;
-}
-
-.blessings-all-panel__item .note__message {
-  font-size: 1.05rem;
 }
 
 .note-lightbox {

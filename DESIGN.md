@@ -127,10 +127,11 @@ position.
 - After the wedding date passes, replaces the whole countdown with a single "We're married!" line
 
 ### Meet the Couple
-- Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card, just name → grandparentage line ("Granddaughter/Grandson of ...") → parentage line ("Daughter/Son of ...")
+- Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card
+- Each card shows: name (h3), then a **grandparentage block** and a **parentage block**, each rendered as 4 lines (`Lineage` component in `MeetCouple.jsx`) — a label ("Granddaughter/Grandson of", "Daughter/Son of"), the first person's name, a small muted "&", then the second person's name. Data for this lives at `content.coupleProfiles.bride/groom.grandparentage/parentage`, each an object `{ label, person1, person2 }` rather than a single string
 - Cards have a visible boundary with rounded corners (`border`, `border-radius: 1.25rem`, white surface background) rather than sitting directly on the page background
 - **Cards stay side-by-side at every width, including mobile** — they do not stack into one column like other two-column sections. Below 700px, font sizes and padding shrink instead of reflowing to a single column
-- Vector illustration (`content.coupleVectorArt`, currently `public/images/bridengroom/brideNgroom_No_Bg_Vector.png` — a transparent-background PNG, no picture-frame/holder box around it) is **absolutely centered on the shared boundary between the two cards** (`position: absolute; left/top: 50%`, relative to `.couple-profiles__cards`), straddling the bride card's right edge and the groom card's left edge, vertically centered against the cards' height. Scales from ~144px wide on desktop down to ~48px on the smallest phones
+- Vector illustration (`content.coupleVectorArt`, currently `public/images/bridengroom/brideNgroom_No_Bg_Vector.png` — a transparent-background PNG, no picture-frame/holder box around it) is **absolutely centered on the shared boundary between the two cards** (`position: absolute; left/top: 50%`, relative to `.couple-profiles__cards`), straddling the bride card's right edge and the groom card's left edge, vertically centered against the cards' height. Sized generously (~256px wide on desktop, ~160px on mobile) — large enough that it does overlap some of the lineage text on narrow screens, which reads as intentional layering rather than a bug
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

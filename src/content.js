@@ -34,13 +34,29 @@ const content = {
   coupleProfiles: {
     bride: {
       name: "Mahek Gupta",
-      grandparentage: "Granddaughter of GRANDPARENTS' NAMES", // TODO: replace
-      parentage: "Daughter of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
+      grandparentage: {
+        label: "Granddaughter of",
+        person1: "Shri Late __ Gupta",
+        person2: "Smt Late __ Gupta",
+      },
+      parentage: {
+        label: "Daughter of",
+        person1: "Shri Rajeev Gupta",
+        person2: "Smt Deepa Gupta",
+      },
     },
     groom: {
       name: "Yash Gupta",
-      grandparentage: "Grandson of GRANDPARENTS' NAMES", // TODO: replace
-      parentage: "Son of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
+      grandparentage: {
+        label: "Grandson of",
+        person1: "Shri Late Shri Niwas Gupta",
+        person2: "Smt Late Rama Gupta",
+      },
+      parentage: {
+        label: "Son of",
+        person1: "Shri Sandeep Kumar Gupta",
+        person2: "Smt Renu Gupta",
+      },
     },
   },
 

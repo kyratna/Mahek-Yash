@@ -34,19 +34,20 @@ A short line shown above your names (currently "We're getting married!"):
 
 ## 4. Meet the Bride & Groom
 
-Each profile now shows two lines: grandparentage, then parentage.
+Each profile shows two blocks — grandparentage, then parentage — each laid
+out as: a label line, the first person's name, "&", then the second
+person's name, each on its own line.
 
-**Bride**
-- Full name: `[ Mahek Gupta ]`
-- Grandparentage line (e.g. "Granddaughter of Mohan Lal & Kamla Devi"): `[ ]`
-- Parentage line (e.g. "Daughter of Rajeev Gupta & Deepa Gupta"): `[ ]`
+**Bride** — Mahek Gupta
+- Grandparentage: "Granddaughter of" / "Shri Late __ Gupta" / & / "Smt Late __ Gupta"
+- Parentage: "Daughter of" / "Shri Rajeev Gupta" / & / "Smt Deepa Gupta"
 
-**Groom**
-- Full name: `[ Yash Gupta ]`
-- Grandparentage line (e.g. "Grandson of Suresh Kumar & Lata Devi"): `[ ]`
-- Parentage line (e.g. "Son of Sandeep Kumar & Renu Gupta"): `[ ]`
+**Groom** — Yash Gupta
+- Grandparentage: "Grandson of" / "Shri Late Shri Niwas Gupta" / & / "Smt Late Rama Gupta"
+- Parentage: "Son of" / "Shri Sandeep Kumar Gupta" / & / "Smt Renu Gupta"
 
-*(These two cards don't show a photo — just the text above.)*
+*(These two cards don't show a photo — just the text above. The bride's
+grandfather's first name is still blank — `__` — fill it in when ready.)*
 
 ## 5. Event Details
 

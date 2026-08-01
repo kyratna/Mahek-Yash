@@ -30,12 +30,14 @@ revealed by a scratch card in the Hero — guests scratch it to reveal
 
 ### 2. Meet the Couple
 
-Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`,
-a `grandparentage` line (e.g. "Granddaughter of ..."), and a `parentage`
-line (e.g. "Daughter of ..."). The cards themselves don't show a photo.
-There's also a small illustration, set via `content.coupleVectorArt` —
-centered on the boundary between the two cards, so it should be a
-transparent-background PNG (no frame/box of its own).
+Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`, a
+`grandparentage` block, and a `parentage` block. Each block is an object
+with a `label` (e.g. "Granddaughter of"), `person1`, and `person2` — shown
+as 4 lines: the label, `person1`, "&", `person2`. The cards themselves
+don't show a photo. There's also a small illustration, set via
+`content.coupleVectorArt` — centered on the boundary between the two
+cards, so it should be a transparent-background PNG (no frame/box of its
+own).
 
 ### 3. Photos
 

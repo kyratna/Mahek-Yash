@@ -14,6 +14,7 @@
   display: block;
   width: 100%;
   border: 0;
+  border-radius: 0.85rem;
   font-family: var(--font-body);
   text-align: left;
   cursor: pointer;
@@ -98,12 +99,37 @@
   aspect-ratio: 1 / 1;
   min-height: 420px;
   margin: 0 auto;
+  overflow: hidden;
+}
+
+/* The whole arrangement slowly orbits clockwise as one unit. */
+.blessings-cloud__spin {
+  position: absolute;
+  inset: 0;
+  animation: cloud-rotate 90s linear infinite;
+}
+
+@keyframes cloud-rotate {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .cloud-item {
   position: absolute;
-  width: 170px;
   transform: translate(-50%, -50%);
+}
+
+/* Cancels the parent's rotation so each note's own orientation stays
+   upright — only its orbital position moves in a circle. */
+.cloud-item__counter-spin {
+  animation: cloud-counter-rotate 90s linear infinite;
+}
+
+@keyframes cloud-counter-rotate {
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 .cloud-item__float {
@@ -122,10 +148,91 @@
   }
 }
 
+/* Notes shrink (rather than the cloud growing) as more blessings arrive —
+   see getNoteWidth() in Blessings.jsx, which sets --note-scale. */
+.cloud-item .note__message {
+  font-size: calc(1.1rem * var(--note-scale, 1));
+}
+
+.cloud-item .note__author,
+.cloud-item .note__date {
+  font-size: calc(0.85rem * var(--note-scale, 1));
+}
+
+.cloud-item .note {
+  padding: calc(var(--space-3) * var(--note-scale, 1)) calc(var(--space-2) * var(--note-scale, 1))
+    calc(var(--space-2) * var(--note-scale, 1));
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .blessings-cloud__spin,
+  .cloud-item__counter-spin,
   .cloud-item__float {
     animation: none;
   }
+}
+
+.blessings-view-all {
+  text-align: center;
+  margin-top: var(--space-4);
+}
+
+.blessings-all-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 16, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-2);
+}
+
+.blessings-all-panel {
+  background: var(--color-bg);
+  width: 100%;
+  max-width: 36rem;
+  max-height: 85vh;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.blessings-all-panel__header {
+  position: relative;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.blessings-all-panel__header h3 {
+  margin: 0;
+}
+
+.blessings-all-panel__close {
+  color: var(--color-text);
+  top: 50%;
+  transform: translateY(-50%);
+  right: var(--space-2);
+}
+
+.blessings-all-panel__list {
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+}
+
+.blessings-all-panel__item {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.blessings-all-panel__item:last-child {
+  border-bottom: 0;
+}
+
+.blessings-all-panel__item .note__message {
+  font-size: 1.05rem;
 }
 
 .note-lightbox {

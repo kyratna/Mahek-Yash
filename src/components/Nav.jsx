@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { smoothScrollTo } from "../lib/smoothScroll";
+import content from "../content";
 import "./Nav.css";
 
 const LINKS = [
@@ -14,17 +15,45 @@ const LINKS = [
 export default function Nav() {
   const navRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleLinkClick = (event, href) => {
-    event.preventDefault();
-    const offset = (navRef.current?.offsetHeight || 0) + 8;
-    smoothScrollTo(href.slice(1), { offset });
+  const { partner1, partner2 } = content.couple;
+  const initials = `${partner1?.[0] || ""} & ${partner2?.[0] || ""}`;
+
+  useEffect(() => {
+    function updateVisibility() {
+      const hero = document.getElementById("hero");
+      const navHeight = navRef.current?.offsetHeight || 0;
+      const threshold = hero ? hero.offsetHeight - navHeight : 0;
+      setIsVisible(window.scrollY > threshold);
+    }
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, []);
+
+  const scrollTo = (id, offset) => {
+    smoothScrollTo(id, { offset });
     setIsOpen(false);
   };
 
+  const handleLinkClick = (event, href) => {
+    event.preventDefault();
+    scrollTo(href.slice(1), (navRef.current?.offsetHeight || 0) + 8);
+  };
+
+  const handleLogoClick = () => scrollTo("hero", 0);
+
   return (
-    <nav className="nav" ref={navRef}>
+    <nav className={`nav ${isVisible ? "nav--visible" : ""}`} ref={navRef}>
       <div className="nav__bar">
+        <button type="button" className="nav__logo" onClick={handleLogoClick} aria-label="Back to top">
+          {initials}
+        </button>
         <button
           type="button"
           className="nav__toggle"

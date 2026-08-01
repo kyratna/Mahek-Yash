@@ -95,18 +95,19 @@ target off a stale scroll position.
 ## 6. Section-by-Section Detail
 
 ### Nav
-- **Fixed** to the top of the viewport (`position: fixed`, not sticky) so it floats transparently over the Hero photo from the very first frame, rather than reserving its own space above it
+- **Fixed** to the top of the viewport (`position: fixed`), but starts **hidden** (`opacity: 0`) while the Hero is in view — it fades softly in (`opacity` transition, ~0.4s) once you've scrolled roughly one Hero-height down, so the Hero photo is uninterrupted at first glance. Toggled via a scroll listener comparing `scrollY` against the Hero's height, not CSS alone
+- An initials monogram "logo" sits in the bar (e.g. "M & Y", derived from `content.couple`) — clicking/tapping it scrolls straight back to the Hero
 - Semi-transparent ivory background (`rgba(250,247,242,0.9)`) with backdrop blur, so content scrolling underneath is softly visible
 - Hairline border on bottom edge
 - Links: The Couple, Details, Gallery, Blessings, RSVP, FAQ
-- **Desktop (>700px)**: links shown centered in a single row
-- **Mobile (≤700px)**: links collapse behind a hamburger button (top-right); tapping it opens a full-width dropdown list below the bar; the icon animates into an × while open; tapping a link closes the menu automatically
+- **Desktop (>700px)**: logo on the left, links in a row on the right (`justify-content: space-between`)
+- **Mobile (≤700px)**: logo centered, hamburger button on the right; tapping the hamburger opens a full-width dropdown list below the bar; the icon animates into an × while open; tapping a link closes the menu automatically
 - Hover: text turns accent color
-- Each link has a 44px min-height tap target (mobile accessibility)
-- Clicking any nav link doesn't jump instantly — it triggers a custom eased scroll (`src/lib/smoothScroll.js`, ease-out-cubic, ~700ms): fast at first, decelerating into the target section, offset by the nav's own height so the section isn't hidden underneath it
+- Each link/the logo has a 44px min-height tap target (mobile accessibility)
+- Clicking any nav link (or the logo) doesn't jump instantly — it triggers a custom eased scroll (`src/lib/smoothScroll.js`, ease-out-cubic, ~700ms): fast at first, decelerating into the target section, offset by the nav's own height so the section isn't hidden underneath it
 
 ### Hero
-- Full viewport height (`min-height: 100svh`), content centered both axes; the fixed Nav floats transparently over it (see above) instead of pushing it down
+- Full viewport height (`min-height: 100svh`), content centered both axes; the Nav is invisible here (see above) so the photo reads uninterrupted
 - Background: full-bleed photo (`hero.backgroundImage` in content.js), `background-size: cover`
 - A soft ivory gradient overlay sits on top of the photo (`20%` opacity at top → `55%` at bottom) so the photo is visible but text stays legible
 - Text also has a soft ivory text-shadow/glow for extra contrast insurance against busy photos
@@ -117,9 +118,10 @@ target off a stale scroll position.
 ### Scratch Reveal
 - A realistic scratch-off card (`src/components/ScratchReveal.jsx`) covers **both** the wedding date and the countdown together — scratching it away reveals them as one unit, not the countdown separately
 - Sized generously ("big"): the card's content area has roomy padding (`--space-3`/`--space-4`) and a `min-width` so it reads as a proper card, not a tight label
-- Realistic scratch-off texture: a metallic-foil gradient base, fine diagonal hatching, and randomized speckle grain drawn onto the canvas — not a flat single color
-- The revealed date is intentionally **smaller** than before (`clamp(1.1rem, 2.5vw, 1.4rem)`) since it now sits above the countdown rather than standing alone
-- Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds), wraps on narrow screens; big serif numerals (`clamp(1.75rem, 5vw, 2.75rem)`), small uppercase muted label underneath each; updates live every second
+- **Red paper-like texture**: a deep-red gradient base (`#8f231f` → `#b5322f` → `#7a1a17`), fine diagonal fiber lines, and randomized speckle grain drawn onto the canvas — reads as textured paper, not a flat foil color
+- **Falling debris**: while scratching, small colored fragments (matching the paper's red tones) spawn at the scratch point and animate falling downward with a slight rotation and fade-out (~0.9s, CSS `@keyframes`), like actual scratch-off flakes coming loose. Spawned probabilistically per scratch move so it doesn't flood the DOM; skipped under `prefers-reduced-motion`
+- The revealed date is now the **larger** element (`clamp(1.75rem, 4.5vw, 2.75rem)`, serif) with the countdown shown smaller beneath it (`clamp(1.1rem, 3vw, 1.5rem)` per digit) — the reverse of an earlier iteration
+- Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds), wraps on narrow screens; small uppercase muted label underneath each; updates live every second
 - After the wedding date passes, replaces the whole countdown with a single "We're married!" line
 
 ### Meet the Couple
@@ -136,30 +138,33 @@ target off a stale scroll position.
 - Each card: event name (h3) → date (small, uppercase, muted) → time (accent color, larger) only — **no venue name or address on the cards themselves**; the shared map below covers location for all events
 - **Mobile (≤700px)**: the line moves to the left edge, every card sits full-width to its right (no more alternating), markers align to the line — a standard single-column timeline
 - Vertical spacing between items is intentionally tight (`--space-2` gap, `--space-2`/`--space-3` card padding) since cards are now short (3 lines) — this was widened back down after removing venue/address left too much dead space at the old spacing
-- Below the timeline: an embedded Google Map (key-free, built from `content.mapAddress`), bordered, 320px tall (220px on mobile)
+- Below the timeline: an embedded Google Map (key-free, built from `content.mapAddress`, currently "Winsome Resorts and Spa, Jim Corbett"), bordered, 320px tall (220px on mobile)
+- A **"Get Directions"** button sits below the map — links to `google.com/maps/dir/?api=1&destination=<mapAddress>`, opens in a new tab, drops the visitor straight into turn-by-turn navigation
 
 ### Gallery
-- White/surface section
-- Responsive grid, each tile min 140px, auto-fills as many columns as fit
-- Square (1:1) photo tiles, `object-fit: cover`, subtle zoom-in on hover (`scale(1.05)`)
-- Clicking a photo opens a fullscreen lightbox: dark overlay (`rgba(20,18,16,0.92)`), photo scaled to fit (max 90vw / 85vh), with close (×) and prev/next (‹ ›) controls, all ≥44px tap targets
+- White/surface section, rebuilt as a **slideshow**, not a plain grid
+- A large main frame (max-width 40rem, 4:3 aspect ratio) shows the currently-featured photo; clicking it opens the existing fullscreen lightbox (dark overlay, close × and prev/next ‹ › controls, all ≥44px tap targets)
+- A horizontally-scrollable strip of small thumbnails (64×64px) sits below the main frame — clicking one instantly features that photo in the main frame; the active thumbnail gets an accent-colored border and full opacity, others sit at reduced opacity
+- **Auto-advances** left to right on its own (every 4s) when left untouched; selecting a photo (thumbnail click, or prev/next inside the lightbox) resets that timer so it restarts counting from whatever you just picked, and it pauses entirely while the lightbox is open
 
 ### Blessings
-- White/surface section. Guest messages shown as individual sticky notes (4 rotating pastel colors, slight rotation per note, soft drop shadow), each showing the message, "— name, side" attribution, and a small muted date
+- White/surface section. Guest messages shown as individual sticky notes with **rounded corners** (`border-radius: 0.85rem` — no longer sharp-cornered), 4 rotating pastel colors, slight rotation per note, soft drop shadow, each showing the message, "— name, side" attribution, and a small muted date
 - Data comes from a shared `useBlessings` hook (`src/hooks/useBlessings.js`): fetches from the Apps Script backend on mount, then polls every **10s** in the background so guests see new blessings from others without refreshing
 - The most recent blessing submitted *by the current visitor this session* ("mine") is shown enlarged (~1.08× scale, no rotation, stronger shadow) and centered above the rest of the wall in its own row — tracked client-side only, not a permanent property of the data, so it resets on a fresh page load
 - When a guest submits a blessing (see below), it appears on the wall immediately (optimistic local update) rather than waiting for the next poll; once the background poll confirms it's saved, the optimistic copy is seamlessly swapped for the real server copy (matched by name+message) without visual flicker
-- **Layout — floating circular cloud (>700px)**: the non-"mine" notes are arranged in a golden-angle spiral (`getCloudPosition` in `Blessings.jsx`) within a square container, so they spread organically around a center point rather than sitting in a grid; each note also gently bobs up and down on its own staggered, randomized-ish timer (`@keyframes note-float`, disabled under `prefers-reduced-motion`). Scales naturally as more blessings arrive since the spiral radius grows with the count
-- **Layout — mobile fallback (≤700px)**: falls back to the original responsive grid (`repeat(auto-fill, minmax(220px, 1fr))`) instead of the cloud — absolute-positioned circular packing doesn't work at narrow widths, so this switches automatically via a `matchMedia` check (`useIsWide` hook), not a CSS-only media query, since the notes' positions are computed in JS
+- **Layout — floating circular cloud (>700px)**: the non-"mine" notes are arranged in a golden-angle spiral (`getCloudPosition` in `Blessings.jsx`) within a **fixed-size** square container (`.blessings-cloud`, capped at 700px, doesn't grow). Rather than the circle expanding as more blessings arrive, **note size shrinks instead** (`getNoteWidth()`: full 170px width up to 6 notes, then shrinks down to a 90px floor as the count climbs) — font size and padding scale down proportionally with it via a `--note-scale` CSS variable
+- **Slow clockwise orbit**: the whole arrangement continuously rotates as one unit (`.blessings-cloud__spin`, `rotate(360deg)` over 90s, `linear infinite`). Each note has a counter-rotating wrapper (`.cloud-item__counter-spin`, the same duration in reverse) so its own text stays upright — only its orbital position sweeps around the circle. Layered on top of each note's existing independent up/down bobbing (`.cloud-item__float`)
+- **Layout — mobile fallback (≤700px)**: falls back to the original responsive grid (`repeat(auto-fill, minmax(220px, 1fr))`) instead of the cloud — absolute-positioned circular packing (and the orbit) doesn't work at narrow widths, so this switches automatically via a `matchMedia` check (`useIsWide` hook), not a CSS-only media query, since the notes' positions are computed in JS
 - Clicking any note opens it enlarged in a centered lightbox (dark overlay, no rotation, larger text), reusing that exact note's own color (not always the first palette color) so it doesn't visually swap when opened; closes via the × button or clicking outside the note
-- No cap on the number of notes — layout naturally grows as more blessings come in
 - Empty state: "No blessings yet — be the first to leave one!" with a button linking to the Blessings & RSVP section
+- **"View All Blessings" button**: appears below the wall once there are more than 15 blessings total. Opens a full-screen overlay listing *every* blessing (not just the ones visible in the cloud) in a scrollable panel, newest first — reuses the `entries` array as already ordered by the backend/hook, no extra sorting needed. Closes via × or clicking outside the panel
 
 ### Blessings and RSVP
 - White/surface section. A custom-built form (not a Google Form embed) with 2 tabs — "Send Blessings" and "RSVP" — sharing one bordered container, submitting to the same Apps Script backend as the Blessings wall
 - Both tabs include a Bride Side / Groom Side radio selection
+- RSVP fields: name, side, attending (Joyfully accept / Regretfully decline), number of guests, and **"Parking required?" (Yes/No)** — replaced an earlier free-text dietary-restrictions field
 - On successful blessing submission: the page auto-scrolls (smooth, centered) up to the guest's new note on the Blessings wall via `scrollIntoView`, so they immediately see their own message featured
-- On successful RSVP submission: inline confirmation message, no scroll (nothing to visually feature)
+- On successful RSVP submission: inline confirmation message, plus a **"Share via WhatsApp"** button — pre-fills a `wa.me` message with the submitted name/side/attending/guests/parking so the guest can forward their RSVP directly. Opens `content.integrations.whatsappNumber`'s chat if set, otherwise opens WhatsApp's contact picker
 - If the Apps Script backend isn't configured (`content.integrations.appsScriptUrl` empty), both forms fail gracefully with an inline "not connected yet" message rather than erroring
 
 ### FAQ
@@ -178,7 +183,7 @@ target off a stale scroll position.
 - Mobile-first breakpoints, primarily at `480px`, `600px`, and `700px` — since most guests are expected to open this on a phone, mobile is treated as the primary layout, not an afterthought
 - Nav collapses to a hamburger menu ≤700px (see Nav section above)
 - Event Details collapses from an alternating left/right timeline to a single-column left-aligned timeline ≤700px (see Event Details section above)
-- Grids (Gallery tiles) use `auto-fit`/`auto-fill` so they reflow naturally without hand-tuned breakpoints per screen size
+- Gallery's thumbnail strip scrolls horizontally rather than reflowing, so it works the same way at any width
 - **Meet the Couple is the one exception to "stack on mobile"** — it deliberately keeps bride/groom side-by-side at every width, shrinking sizes instead of stacking (see Meet the Couple section above)
 - Blessings switches from the circular floating cloud to a plain grid ≤700px (see Blessings section above)
 - The floating bottom-right controls (section arrows + music button) shift slightly closer to the corner (`--space-1` instead of `--space-2`) on screens ≤480px

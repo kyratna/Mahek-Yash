@@ -60,16 +60,26 @@ real photos of your own.
 Edit `content.events` — each entry just has a `name`, `date`, and `time`
 (venue/address aren't shown on the event cards by design, only on the map
 below them). Edit `content.mapAddress` for the map itself, a key-free Google
-Maps embed — no API key needed. If you want a precisely pinned location
-instead of an address search, go to Google Maps → Share → Embed a map, copy
-the `src` URL, and use it directly in `src/components/MapEmbed.jsx`.
+Maps embed — no API key needed — and the "Get Directions" button below it
+(links straight to Google Maps turn-by-turn navigation for that address). If
+you want a precisely pinned location instead of an address search, go to
+Google Maps → Share → Embed a map, copy the `src` URL, and use it directly
+in `src/components/MapEmbed.jsx`.
 
 ### 5. FAQ
 
 Edit the `content.faq` array — add, remove, or edit any question/answer
 pairs.
 
-### 6. Background music
+### 6. RSVP WhatsApp button
+
+After a guest submits the RSVP form, they see a "Share via WhatsApp" button
+pre-filled with their RSVP details. Optionally set
+`content.integrations.whatsappNumber` (with country code, e.g.
+`"919876543210"`) to pre-address that button at your own number — leave it
+blank and the button opens WhatsApp's contact picker instead.
+
+### 7. Background music
 
 There's a mute/unmute button built into the site (bottom-right corner, next
 to the section up/down arrows) that controls a looping background track —
@@ -107,11 +117,18 @@ message instead of submitting.
 
 **1. Create the Sheet**
 
-Create a new Google Sheet with two tabs, each with a header row exactly as
-below (case-sensitive, this is what the script expects):
+Create a new Google Sheet with **four tabs** — one per side per form — each
+with a header row exactly as below (case-sensitive, this is what the script
+expects):
 
-- Tab **`Blessings`**: `Name | Side | Message | Timestamp`
-- Tab **`RSVP`**: `Name | Side | Attending | Guests | Dietary | Timestamp`
+- Tab **`BLESSINGS_BRIDE`**: `Name | Side | Message | Timestamp`
+- Tab **`BLESSINGS_GROOM`**: `Name | Side | Message | Timestamp`
+- Tab **`RSVP_BRIDE`**: `Name | Side | Attending | Guests | Parking Required | Timestamp`
+- Tab **`RSVP_GROOM`**: `Name | Side | Attending | Guests | Parking Required | Timestamp`
+
+Each submission is routed to the matching tab based on which side the guest
+selects in the form — the Blessings wall reads and merges both
+`BLESSINGS_*` tabs back together (newest first) when displaying the wall.
 
 **2. Add the script**
 

@@ -15,6 +15,20 @@ function submitToSheet(appsScriptUrl, payload) {
   });
 }
 
+function buildWhatsAppUrl(data, whatsappNumber) {
+  const { partner1, partner2 } = content.couple;
+  const lines = [
+    `RSVP for ${partner1} & ${partner2}'s wedding:`,
+    `Name: ${data.name}`,
+    `Side: ${data.side}`,
+    `Attending: ${data.attending === "Yes" ? "Joyfully accept" : "Regretfully decline"}`,
+    `Guests: ${data.guests}`,
+    `Parking Required: ${data.parkingRequired}`,
+  ];
+  const number = whatsappNumber ? whatsappNumber.replace(/\D/g, "") : "";
+  return `https://wa.me/${number}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 function BlessingForm({ appsScriptUrl, onBlessingSent }) {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [form, setForm] = useState({ name: "", side: SIDES[0], message: "" });
@@ -103,15 +117,16 @@ function BlessingForm({ appsScriptUrl, onBlessingSent }) {
   );
 }
 
-function RsvpForm({ appsScriptUrl }) {
+function RsvpForm({ appsScriptUrl, whatsappNumber }) {
   const [status, setStatus] = useState("idle");
   const [form, setForm] = useState({
     name: "",
     side: SIDES[0],
     attending: "Yes",
     guests: 1,
-    dietary: "",
+    parkingRequired: "No",
   });
+  const [submittedData, setSubmittedData] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -124,14 +139,27 @@ function RsvpForm({ appsScriptUrl }) {
       const res = await submitToSheet(appsScriptUrl, { type: "rsvp", ...form });
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
-      setForm({ name: "", side: SIDES[0], attending: "Yes", guests: 1, dietary: "" });
+      setSubmittedData(form);
+      setForm({ name: "", side: SIDES[0], attending: "Yes", guests: 1, parkingRequired: "No" });
     } catch {
       setStatus("error");
     }
   };
 
   if (status === "success") {
-    return <p className="form-status form-status--success">Thank you — your RSVP is in! 🎉</p>;
+    return (
+      <div className="form-status form-status--success">
+        <p>Thank you — your RSVP is in! 🎉</p>
+        <a
+          className="button button--primary"
+          href={buildWhatsAppUrl(submittedData, whatsappNumber)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Share via WhatsApp
+        </a>
+      </div>
+    );
   }
 
   return (
@@ -181,12 +209,14 @@ function RsvpForm({ appsScriptUrl }) {
         />
       </label>
       <label>
-        Dietary restrictions (optional)
-        <input
-          type="text"
-          value={form.dietary}
-          onChange={(e) => setForm({ ...form, dietary: e.target.value })}
-        />
+        Parking required?
+        <select
+          value={form.parkingRequired}
+          onChange={(e) => setForm({ ...form, parkingRequired: e.target.value })}
+        >
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
       </label>
       {status === "error" && (
         <p className="form-status form-status--error">
@@ -247,7 +277,10 @@ export default function BlessingsRSVP({ onBlessingSent }) {
                 onBlessingSent={onBlessingSent}
               />
             ) : (
-              <RsvpForm appsScriptUrl={integrations.appsScriptUrl} />
+              <RsvpForm
+                appsScriptUrl={integrations.appsScriptUrl}
+                whatsappNumber={integrations.whatsappNumber}
+              />
             )}
           </div>
         </div>

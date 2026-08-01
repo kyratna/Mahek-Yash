@@ -57,8 +57,9 @@ const content = {
     { name: "Phere", date: "December 6, 2026", time: "5:00 PM" },
   ],
 
-  // Used to build the key-free Google Maps embed (see MapEmbed.jsx)
-  mapAddress: "123 Placeholder St, City, ST 00000", // TODO: replace
+  // Used to build the key-free Google Maps embed and the "Get Directions"
+  // button (see MapEmbed.jsx)
+  mapAddress: "Winsome Resorts and Spa, Jim Corbett",
 
   gallery: [
     { src: asset("/images/gallery/placeholder-01.jpg"), alt: "Placeholder photo 1" },
@@ -117,7 +118,11 @@ const content = {
   // form submissions will show a friendly error until it's configured.
   integrations: {
     appsScriptUrl:
-      "https://script.google.com/macros/s/AKfycbxMeN35o09XSR5e6nXQOuqcjrkhE5JcgXkXNHR0F9W1VR0kSN5hHsh6gLfCvFKZCG7E/exec",
+      "https://script.google.com/macros/s/AKfycbwH7BubUo1lMuXoeFTrswq_GJXooBdIxrGl3yS95ujHPPD3WB16lNLXituqeDC1Q-0D/exec",
+    // Optional: a phone number (with country code, e.g. "919876543210") to
+    // pre-address the RSVP "Share via WhatsApp" button at. Leave blank and
+    // the button opens WhatsApp's contact picker instead.
+    whatsappNumber: "",
   },
 };
 

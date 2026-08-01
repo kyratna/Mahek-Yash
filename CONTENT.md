@@ -111,9 +111,12 @@ Edit, delete, or add to these as needed:
 ## 10. Blessings & RSVP Backend (optional, technical)
 
 Only fill this in once you've deployed the Google Apps Script backend
-described in `README.md` → "Blessings & RSVP backend setup":
+described in `README.md` → "Blessings & RSVP backend setup" (now expects
+**four** sheet tabs — `BLESSINGS_BRIDE`, `BLESSINGS_GROOM`, `RSVP_BRIDE`,
+`RSVP_GROOM` — see README for the exact header rows):
 
-- Apps Script Web App URL: `[ https://script.google.com/macros/s/AKfycbxMeN35o09XSR5e6nXQOuqcjrkhE5JcgXkXNHR0F9W1VR0kSN5hHsh6gLfCvFKZCG7E/exec ]`
+- Apps Script Web App URL: `[ https://script.google.com/macros/s/AKfycbwH7BubUo1lMuXoeFTrswq_GJXooBdIxrGl3yS95ujHPPD3WB16lNLXituqeDC1Q-0D/exec ]`
+- WhatsApp number for the RSVP "Share via WhatsApp" button (optional, include country code, e.g. `919876543210`; leave blank to let guests pick a contact instead): `[ ]`
 
 ---
 

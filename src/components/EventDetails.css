@@ -1,0 +1,27 @@
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.event-card {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+}
+
+.event-card__time {
+  font-size: 1.4rem;
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
+.event-card__venue {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.event-card__address {
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}

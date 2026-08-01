@@ -1,0 +1,34 @@
+.countdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.5rem;
+}
+
+.countdown__value {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  color: var(--color-text);
+}
+
+.countdown__label {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.countdown--past {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  margin-top: var(--space-3);
+}

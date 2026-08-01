@@ -118,7 +118,7 @@ const content = {
   // form submissions will show a friendly error until it's configured.
   integrations: {
     appsScriptUrl:
-      "https://script.google.com/macros/s/AKfycbwH7BubUo1lMuXoeFTrswq_GJXooBdIxrGl3yS95ujHPPD3WB16lNLXituqeDC1Q-0D/exec",
+      "https://script.google.com/macros/s/AKfycbwLKJNqckuWiLrTj71ygs7BN20bANPoLyVenQIb9r7gEAkBzveBnfcVXODrCTAHExYF9w/exec",
     // Optional: a phone number (with country code, e.g. "919876543210") to
     // pre-address the RSVP "Share via WhatsApp" button at. Leave blank and
     // the button opens WhatsApp's contact picker instead.

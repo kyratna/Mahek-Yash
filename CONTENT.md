@@ -115,7 +115,7 @@ described in `README.md` → "Blessings & RSVP backend setup" (now expects
 **four** sheet tabs — `BLESSINGS_BRIDE`, `BLESSINGS_GROOM`, `RSVP_BRIDE`,
 `RSVP_GROOM` — see README for the exact header rows):
 
-- Apps Script Web App URL: `[ https://script.google.com/macros/s/AKfycbwH7BubUo1lMuXoeFTrswq_GJXooBdIxrGl3yS95ujHPPD3WB16lNLXituqeDC1Q-0D/exec ]`
+- Apps Script Web App URL: `[ https://script.google.com/macros/s/AKfycbwLKJNqckuWiLrTj71ygs7BN20bANPoLyVenQIb9r7gEAkBzveBnfcVXODrCTAHExYF9w/exec ]`
 - WhatsApp number for the RSVP "Share via WhatsApp" button (optional, include country code, e.g. `919876543210`; leave blank to let guests pick a contact instead): `[ ]`
 
 ---

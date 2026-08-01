@@ -4,10 +4,27 @@
   gap: var(--space-3);
 }
 
+.blessings-wall__mine {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
 .note {
+  display: block;
+  width: 100%;
+  border: 0;
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
   padding: var(--space-3) var(--space-2) var(--space-2);
   box-shadow: 0 6px 14px rgba(46, 43, 40, 0.12);
   transform: rotate(-1.5deg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.note:hover {
+  box-shadow: 0 10px 20px rgba(46, 43, 40, 0.18);
 }
 
 .note:nth-child(even) {
@@ -18,6 +35,21 @@
   transform: rotate(-0.75deg);
 }
 
+.note--mine {
+  max-width: 24rem;
+  padding: var(--space-4) var(--space-3) var(--space-3);
+  transform: rotate(0deg) scale(1.08);
+  box-shadow: 0 10px 24px rgba(46, 43, 40, 0.2);
+}
+
+.note--mine:hover {
+  transform: rotate(0deg) scale(1.08);
+}
+
+.note--mine .note__message {
+  font-size: 1.35rem;
+}
+
 .note__message {
   font-size: 1.1rem;
   margin-bottom: var(--space-2);
@@ -26,8 +58,16 @@
 .note__author {
   color: var(--color-text-muted);
   font-size: 0.95rem;
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
   text-align: right;
+}
+
+.note__date {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-align: right;
+  margin-bottom: 0;
+  opacity: 0.8;
 }
 
 .note--blush {
@@ -49,4 +89,40 @@
 .blessings-empty {
   text-align: center;
   color: var(--color-text-muted);
+}
+
+.note-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 16, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-2);
+}
+
+.note.note-lightbox__note {
+  max-width: 30rem;
+  width: 100%;
+  cursor: default;
+  transform: none;
+  padding: var(--space-4) var(--space-3) var(--space-3);
+}
+
+.note-lightbox__note .note__message {
+  font-size: 1.5rem;
+}
+
+.note-lightbox__close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
 }

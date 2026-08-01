@@ -15,7 +15,7 @@ function submitToSheet(appsScriptUrl, payload) {
   });
 }
 
-function BlessingForm({ appsScriptUrl }) {
+function BlessingForm({ appsScriptUrl, onBlessingSent }) {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [form, setForm] = useState({ name: "", side: SIDES[0], message: "" });
 
@@ -30,14 +30,25 @@ function BlessingForm({ appsScriptUrl }) {
       const res = await submitToSheet(appsScriptUrl, { type: "blessing", ...form });
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
+      onBlessingSent({ name: form.name, side: form.side, message: form.message });
       setForm({ name: "", side: SIDES[0], message: "" });
+      // Give React a moment to render the new note before scrolling to it.
+      setTimeout(() => {
+        document
+          .getElementById("my-blessing")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
     } catch {
       setStatus("error");
     }
   };
 
   if (status === "success") {
-    return <p className="form-status form-status--success">Thank you for your blessing! 💛</p>;
+    return (
+      <p className="form-status form-status--success">
+        Thank you for your blessing! 💛 Scroll up to see it on the wall.
+      </p>
+    );
   }
 
   return (
@@ -194,7 +205,7 @@ function RsvpForm({ appsScriptUrl }) {
   );
 }
 
-export default function BlessingsRSVP() {
+export default function BlessingsRSVP({ onBlessingSent }) {
   const { blessingsRsvp, integrations } = content;
   const [activeTab, setActiveTab] = useState("blessings");
 
@@ -231,7 +242,10 @@ export default function BlessingsRSVP() {
 
           <div className="rsvp-tabs__panel">
             {activeTab === "blessings" ? (
-              <BlessingForm appsScriptUrl={integrations.appsScriptUrl} />
+              <BlessingForm
+                appsScriptUrl={integrations.appsScriptUrl}
+                onBlessingSent={onBlessingSent}
+              />
             ) : (
               <RsvpForm appsScriptUrl={integrations.appsScriptUrl} />
             )}

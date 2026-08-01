@@ -122,17 +122,20 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 - Clicking a photo opens a fullscreen lightbox: dark overlay (`rgba(20,18,16,0.92)`), photo scaled to fit (max 90vw / 85vh), with close (×) and prev/next (‹ ›) controls, all ≥44px tap targets
 
 ### Blessings
-- show the blessings here in the individual sticky notes style
-- show name and the message
-- when there is no blessing, show button to 'send blessings' and navigate it to the 'Blessings and RSVP' section
+- White/surface section. Guest messages shown as individual sticky notes (4 rotating pastel colors, slight rotation per note, soft drop shadow), each showing the message, "— name, side" attribution, and a small muted date
+- Data comes from a shared `useBlessings` hook (`src/hooks/useBlessings.js`): fetches from the Apps Script backend on mount, then polls every 30s in the background so guests see new blessings from others without refreshing
+- The most recent blessing submitted *by the current visitor this session* ("mine") is shown enlarged (~1.08× scale, no rotation, stronger shadow) and centered above the rest of the wall in its own row — tracked client-side only, not a permanent property of the data, so it resets on a fresh page load
+- When a guest submits a blessing (see below), it appears on the wall immediately (optimistic local update) rather than waiting for the next poll; once the background poll confirms it's saved, the optimistic copy is seamlessly swapped for the real server copy (matched by name+message) without visual flicker
+- Clicking any note opens it enlarged in a centered lightbox (dark overlay, no rotation, larger text); closes via the × button or clicking outside the note
+- No cap on the number of notes — the grid (`repeat(auto-fill, minmax(220px, 1fr))`) naturally grows as more blessings come in
+- Empty state: "No blessings yet — be the first to leave one!" with a button linking to the Blessings & RSVP section
 
 ### Blessings and RSVP
-- make the form here itself which has 2 tabs - 'Send Blessings' & RSVP
-- There must be option to select 'Bride Side' or ' Groom Side'
-- All the blessings recieved needs to appear in the blessings column.
-- i want t
-- White/surface section
-- Heading + subtext, then a bordered box containing the embedded Google Form (`iframe`, full width, 900px min-height so most forms don't need internal scrolling — 1100px on mobile since Forms render taller on narrow screens)
+- White/surface section. A custom-built form (not a Google Form embed) with 2 tabs — "Send Blessings" and "RSVP" — sharing one bordered container, submitting to the same Apps Script backend as the Blessings wall
+- Both tabs include a Bride Side / Groom Side radio selection
+- On successful blessing submission: the page auto-scrolls (smooth, centered) up to the guest's new note on the Blessings wall via `scrollIntoView`, so they immediately see their own message featured
+- On successful RSVP submission: inline confirmation message, no scroll (nothing to visually feature)
+- If the Apps Script backend isn't configured (`content.integrations.appsScriptUrl` empty), both forms fail gracefully with an inline "not connected yet" message rather than erroring
 
 ### FAQ
 - Ivory section, content narrowed to 40rem and centered (narrower than the 1000px page max-width, since Q&A reads better in a tighter column)

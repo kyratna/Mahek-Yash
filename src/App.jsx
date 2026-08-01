@@ -7,8 +7,11 @@ import Blessings from "./components/Blessings";
 import BlessingsRSVP from "./components/BlessingsRSVP";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
+import { useBlessings } from "./hooks/useBlessings";
 
 function App() {
+  const { entries, status, myBlessingKey, addLocalBlessing } = useBlessings();
+
   return (
     <>
       <Nav />
@@ -16,8 +19,8 @@ function App() {
       <MeetCouple />
       <EventDetails />
       <Gallery />
-      <Blessings />
-      <BlessingsRSVP />
+      <Blessings entries={entries} status={status} myBlessingKey={myBlessingKey} />
+      <BlessingsRSVP onBlessingSent={addLocalBlessing} />
       <FAQ />
       <Footer />
     </>

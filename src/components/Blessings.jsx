@@ -1,29 +1,48 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import content from "../content";
 import "./Blessings.css";
 
 const NOTE_COLORS = ["note--blush", "note--sage", "note--butter", "note--sky"];
 
-export default function Blessings() {
-  const { blessings, integrations } = content;
-  const [entries, setEntries] = useState([]);
-  const [status, setStatus] = useState("idle"); // idle | loading | loaded | error
+function signature(entry) {
+  return `${entry.name}||${entry.message}`;
+}
 
-  useEffect(() => {
-    if (!integrations.appsScriptUrl) return;
+function formatDate(timestamp) {
+  if (!timestamp) return "";
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
-    setStatus("loading");
-    fetch(integrations.appsScriptUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        setEntries(Array.isArray(data.blessings) ? data.blessings : []);
-        setStatus("loaded");
-      })
-      .catch(() => setStatus("error"));
-  }, [integrations.appsScriptUrl]);
+function NoteCard({ entry, colorClass, isMine, onClick }) {
+  return (
+    <button
+      type="button"
+      id={isMine ? "my-blessing" : undefined}
+      className={`note ${colorClass} ${isMine ? "note--mine" : ""}`}
+      onClick={() => onClick(entry)}
+    >
+      <p className="note__message">{entry.message}</p>
+      <p className="note__author">
+        — {entry.name}
+        {entry.side ? `, ${entry.side}` : ""}
+      </p>
+      <p className="note__date">{formatDate(entry.timestamp)}</p>
+    </button>
+  );
+}
+
+export default function Blessings({ entries, status, myBlessingKey }) {
+  const { blessings } = content;
+  const [activeEntry, setActiveEntry] = useState(null);
+
+  const mine = entries.find((entry) => signature(entry) === myBlessingKey);
+  const others = entries.filter((entry) => signature(entry) !== myBlessingKey);
 
   return (
     <section id="blessings" className="section section--surface">
@@ -35,20 +54,28 @@ export default function Blessings() {
         </div>
 
         {entries.length > 0 ? (
-          <div className="blessings-wall">
-            {entries.map((entry, index) => (
-              <div
-                className={`note ${NOTE_COLORS[index % NOTE_COLORS.length]}`}
-                key={`${entry.name}-${index}`}
-              >
-                <p className="note__message">{entry.message}</p>
-                <p className="note__author">
-                  — {entry.name}
-                  {entry.side ? `, ${entry.side}` : ""}
-                </p>
+          <>
+            {mine && (
+              <div className="blessings-wall__mine">
+                <NoteCard
+                  entry={mine}
+                  colorClass={NOTE_COLORS[0]}
+                  isMine
+                  onClick={setActiveEntry}
+                />
               </div>
-            ))}
-          </div>
+            )}
+            <div className="blessings-wall">
+              {others.map((entry, index) => (
+                <NoteCard
+                  key={`${signature(entry)}-${index}`}
+                  entry={entry}
+                  colorClass={NOTE_COLORS[index % NOTE_COLORS.length]}
+                  onClick={setActiveEntry}
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <div className="blessings-empty">
             <p>
@@ -62,6 +89,30 @@ export default function Blessings() {
           </div>
         )}
       </div>
+
+      {activeEntry && (
+        <div className="note-lightbox" onClick={() => setActiveEntry(null)}>
+          <button
+            type="button"
+            className="note-lightbox__close"
+            onClick={() => setActiveEntry(null)}
+            aria-label="Close"
+          >
+            &times;
+          </button>
+          <div
+            className={`note note-lightbox__note ${NOTE_COLORS[0]}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="note__message">{activeEntry.message}</p>
+            <p className="note__author">
+              — {activeEntry.name}
+              {activeEntry.side ? `, ${activeEntry.side}` : ""}
+            </p>
+            <p className="note__date">{formatDate(activeEntry.timestamp)}</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

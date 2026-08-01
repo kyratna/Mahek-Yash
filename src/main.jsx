@@ -3,10 +3,12 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import BlessingsWallPage from "./components/BlessingsWallPage.jsx";
+import { useBlessings } from "./hooks/useBlessings";
 import { BLESSINGS_WALL_HASH } from "./lib/routes";
 
 function Root() {
   const [hash, setHash] = useState(() => window.location.hash);
+  const blessings = useBlessings();
 
   useEffect(() => {
     const onHashChange = () => setHash(window.location.hash);
@@ -14,7 +16,15 @@ function Root() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  return hash === BLESSINGS_WALL_HASH ? <BlessingsWallPage /> : <App />;
+  // Shared once here (rather than each page fetching its own copy) so
+  // navigating from the main site to the Blessings Wall reuses data that's
+  // already loaded instead of triggering a fresh, visibly slow Apps Script
+  // round-trip.
+  return hash === BLESSINGS_WALL_HASH ? (
+    <BlessingsWallPage {...blessings} />
+  ) : (
+    <App {...blessings} />
+  );
 }
 
 createRoot(document.getElementById("root")).render(

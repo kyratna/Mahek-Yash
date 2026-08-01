@@ -8,11 +8,8 @@ import BlessingsRSVP from "./components/BlessingsRSVP";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import FloatingControls from "./components/FloatingControls";
-import { useBlessings } from "./hooks/useBlessings";
 
-function App() {
-  const { entries, status, myBlessingKey, addLocalBlessing } = useBlessings();
-
+function App({ entries, status, myBlessingKey, addLocalBlessing }) {
   return (
     <>
       <Nav />

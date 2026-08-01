@@ -45,7 +45,7 @@ const content = {
     },
   },
 
-  coupleVectorArt: asset("/images/bridengroom/bridengroom_vector.png"),
+  coupleVectorArt: asset("/images/bridengroom/bridegroom_vector.png"),
 
   // Venue/address aren't shown on the event cards (see DESIGN.md) — the
   // shared mapAddress below covers the map for all events.

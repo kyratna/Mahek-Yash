@@ -1,5 +1,6 @@
 import { useState } from "react";
 import content from "../content";
+import { BLESSINGS_WALL_HASH } from "../lib/routes";
 import "./BlessingsRSVP.css";
 
 const SIDES = ["Bride Side", "Groom Side"];
@@ -46,12 +47,11 @@ function BlessingForm({ appsScriptUrl, onBlessingSent }) {
       setStatus("success");
       onBlessingSent({ name: form.name, side: form.side, message: form.message });
       setForm({ name: "", side: SIDES[0], message: "" });
-      // Give React a moment to render the new note before scrolling to it.
+      // Hold on the success message briefly so it's actually readable, then
+      // take the guest straight to the wall to see their blessing land.
       setTimeout(() => {
-        document
-          .getElementById("my-blessing")
-          ?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 100);
+        window.location.hash = BLESSINGS_WALL_HASH;
+      }, 2000);
     } catch {
       setStatus("error");
     }
@@ -60,7 +60,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent }) {
   if (status === "success") {
     return (
       <p className="form-status form-status--success">
-        Thank you for your blessing! 💛 Scroll up to see it on the wall.
+        Thank you for your blessing! 💛 Taking you to the wall…
       </p>
     );
   }

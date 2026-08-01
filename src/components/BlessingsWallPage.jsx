@@ -1,28 +1,14 @@
-import { useEffect } from "react";
-import { useBlessings } from "../hooks/useBlessings";
+import { useEffect, useState } from "react";
 import content from "../content";
+import { NoteCard, NOTE_COLORS, signature, formatDate } from "./Blessings";
 import { HOME_HASH } from "../lib/routes";
 import "./Blessings.css";
 import "./BlessingsWallPage.css";
 
-function signature(entry) {
-  return `${entry.name}||${entry.message}`;
-}
-
-function formatDate(timestamp) {
-  if (!timestamp) return "";
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-export default function BlessingsWallPage() {
-  const { entries, status } = useBlessings();
+export default function BlessingsWallPage({ entries, status }) {
   const { partner1, partner2 } = content.couple;
+  const [active, setActive] = useState(null);
+  const openNote = (entry, colorClass) => setActive({ entry, colorClass });
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -37,6 +23,8 @@ export default function BlessingsWallPage() {
     window.location.hash = HOME_HASH;
   };
 
+  const isLoading = status === "loading" && entries.length === 0;
+
   return (
     <div className="blessings-wall-page">
       <header className="blessings-wall-page__header">
@@ -50,18 +38,21 @@ export default function BlessingsWallPage() {
         <p>Every blessing, newest first.</p>
       </header>
 
-      <main className="blessings-wall-page__list">
-        {entries.length > 0 ? (
-          entries.map((entry, index) => (
-            <article className="blessings-wall-page__item" key={`${signature(entry)}-${index}`}>
-              <p className="note__message">{entry.message}</p>
-              <p className="note__author">
-                — {entry.name}
-                {entry.side ? `, ${entry.side}` : ""}
-              </p>
-              <p className="note__date">{formatDate(entry.timestamp)}</p>
-            </article>
-          ))
+      <main className="blessings-wall-page__body">
+        {isLoading ? (
+          <p className="blessings-wall-page__empty">Loading blessings…</p>
+        ) : entries.length > 0 ? (
+          <div className="blessings-tiles">
+            {entries.map((entry, index) => (
+              <NoteCard
+                key={signature(entry)}
+                entry={entry}
+                colorClass={NOTE_COLORS[index % NOTE_COLORS.length]}
+                onOpen={openNote}
+                tile
+              />
+            ))}
+          </div>
         ) : (
           <p className="blessings-wall-page__empty">
             {status === "error"
@@ -70,6 +61,30 @@ export default function BlessingsWallPage() {
           </p>
         )}
       </main>
+
+      {active && (
+        <div className="note-lightbox" onClick={() => setActive(null)}>
+          <button
+            type="button"
+            className="note-lightbox__close"
+            onClick={() => setActive(null)}
+            aria-label="Close"
+          >
+            &times;
+          </button>
+          <div
+            className={`note note-lightbox__note ${active.colorClass}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="note__message">{active.entry.message}</p>
+            <p className="note__author">
+              — {active.entry.name}
+              {active.entry.side ? `, ${active.entry.side}` : ""}
+            </p>
+            <p className="note__date">{formatDate(active.entry.timestamp)}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

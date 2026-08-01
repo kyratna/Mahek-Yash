@@ -4,19 +4,8 @@
   align-items: center;
 }
 
-/* Sits centered above the cards, overlapping their top border (negative
-   margin) so it visibly straddles the cards rather than sitting as a
-   separate block above them. */
-.couple-profiles__vector {
-  max-width: 9rem;
-  width: 100%;
-  height: auto;
-  margin-bottom: -3rem;
-  position: relative;
-  z-index: 1;
-}
-
 .couple-profiles__cards {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
@@ -25,19 +14,26 @@
   width: 100%;
 }
 
+/* Centered on the shared boundary between the two cards — straddling the
+   bride card's right edge and the groom card's left edge — rather than
+   sitting in its own row. */
+.couple-profiles__vector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 9rem;
+  width: 40%;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .couple-profile {
   border: 1px solid var(--color-border);
   border-radius: 1.25rem;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-4) var(--space-2);
   background: var(--color-surface);
-}
-
-.couple-profile img {
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  margin: 0 auto var(--space-2);
-  max-width: 20rem;
-  border-radius: 0.75rem;
 }
 
 .couple-profile h3 {
@@ -62,7 +58,7 @@
   }
 
   .couple-profile {
-    padding: var(--space-2) var(--space-1);
+    padding: var(--space-3) var(--space-1) var(--space-2);
     border-radius: 0.85rem;
   }
 
@@ -75,14 +71,8 @@
     font-size: 0.78rem;
   }
 
-  .couple-profile img {
-    max-width: 100%;
-    border-radius: 0.5rem;
-  }
-
   .couple-profiles__vector {
     max-width: 4rem;
-    margin-bottom: -1.5rem;
   }
 }
 

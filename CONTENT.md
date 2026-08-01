@@ -46,8 +46,7 @@ Each profile now shows two lines: grandparentage, then parentage.
 - Grandparentage line (e.g. "Grandson of Suresh Kumar & Lata Devi"): `[ ]`
 - Parentage line (e.g. "Son of Sandeep Kumar & Renu Gupta"): `[ ]`
 
-*(Photos for these two profile cards are handled separately — see Section 8
-below.)*
+*(These two cards don't show a photo — just the text above.)*
 
 ## 5. Event Details
 
@@ -87,10 +86,8 @@ Photos aren't typed into this file — instead, just send me (or drop into
 which is which:
 
 - [ ] Hero background photo (1 photo, wide/landscape shape)
-- [ ] Bride's profile photo (1 photo, portrait shape)
-- [ ] Groom's profile photo (1 photo, portrait shape)
 - [ ] Gallery photos (as many as you'd like — currently set up for 6)
-- [x] Couple vector illustration (between the two profile cards) — added
+- [x] Couple vector illustration (centered on the boundary between the two profile cards) — added
 - [x] Background music track — added (`public/audio/background-music.mp3`)
 
 ## 9. FAQ

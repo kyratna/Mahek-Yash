@@ -31,10 +31,11 @@ revealed by a scratch card in the Hero — guests scratch it to reveal
 ### 2. Meet the Couple
 
 Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`,
-a `grandparentage` line (e.g. "Granddaughter of ..."), a `parentage` line
-(e.g. "Daughter of ..."), and a `photo`. There's also a small illustration
-centered above the two cards, set via `content.coupleVectorArt` — use a
-transparent-background PNG so it doesn't show its own frame/box.
+a `grandparentage` line (e.g. "Granddaughter of ..."), and a `parentage`
+line (e.g. "Daughter of ..."). The cards themselves don't show a photo.
+There's also a small illustration, set via `content.coupleVectorArt` —
+centered on the boundary between the two cards, so it should be a
+transparent-background PNG (no frame/box of its own).
 
 ### 3. Photos
 
@@ -42,7 +43,6 @@ Photos live in `public/images/` and are referenced by path in `content.js`:
 
 ```
 public/images/hero/       → hero.backgroundImage
-public/images/story/      → coupleProfiles.bride.photo / groom.photo
 public/images/gallery/    → gallery
 ```
 

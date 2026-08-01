@@ -28,20 +28,19 @@ const content = {
     backgroundImage: asset("/images/hero/placeholder-hero.jpg"),
   },
 
-  // Shown in the "Meet the Couple" section — one profile card per side.
-  // A vector illustration sits centered above the two cards (see coupleVectorArt).
+  // Shown in the "Meet the Couple" section — one profile card per side, no
+  // photo. A vector illustration sits centered on the boundary between the
+  // two cards (see coupleVectorArt).
   coupleProfiles: {
     bride: {
       name: "Mahek Gupta",
       grandparentage: "Granddaughter of GRANDPARENTS' NAMES", // TODO: replace
       parentage: "Daughter of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
-      photo: asset("/images/story/placeholder-story-1.jpg"),
     },
     groom: {
       name: "Yash Gupta",
       grandparentage: "Grandson of GRANDPARENTS' NAMES", // TODO: replace
       parentage: "Son of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
-      photo: asset("/images/story/placeholder-story-2.jpg"),
     },
   },
 

@@ -127,12 +127,10 @@ position.
 - After the wedding date passes, replaces the whole countdown with a single "We're married!" line
 
 ### Meet the Couple
-- Vector illustration centered **above** the two cards (not between them) — `content.coupleVectorArt` (currently `public/images/bridengroom/bridegroom_vector.png`), a transparent-background PNG so it sits directly on the page with no picture-frame/holder box around it. Overlaps the top edge of the cards slightly (small negative margin) so it reads as resting on top of them, like a crest. Scales from ~144px wide on desktop down to ~48px on the smallest phones
-- Below it, bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`)
+- Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card, just name → grandparentage line ("Granddaughter/Grandson of ...") → parentage line ("Daughter/Son of ...")
 - Cards have a visible boundary with rounded corners (`border`, `border-radius: 1.25rem`, white surface background) rather than sitting directly on the page background
-- **Cards stay side-by-side at every width, including mobile** — they do not stack into one column like other two-column sections. Below 700px, font sizes, image sizing, and padding shrink instead of reflowing to a single column
-- Each card shows, top to bottom: photo → name → grandparentage line ("Granddaughter/Grandson of ...") → parentage line ("Daughter/Son of ..." ) — two separate lines, not combined
-- Photos: portrait aspect ratio (3:4), `object-fit: cover`, rounded corners
+- **Cards stay side-by-side at every width, including mobile** — they do not stack into one column like other two-column sections. Below 700px, font sizes and padding shrink instead of reflowing to a single column
+- Vector illustration (`content.coupleVectorArt`, currently `public/images/bridengroom/brideNgroom_No_Bg_Vector.png` — a transparent-background PNG, no picture-frame/holder box around it) is **absolutely centered on the shared boundary between the two cards** (`position: absolute; left/top: 50%`, relative to `.couple-profiles__cards`), straddling the bride card's right edge and the groom card's left edge, vertically centered against the cards' height. Scales from ~144px wide on desktop down to ~48px on the smallest phones
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

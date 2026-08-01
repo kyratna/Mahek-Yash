@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import content from "../content";
-import "./MusicPlayer.css";
 
 function SoundOnIcon() {
   return (
@@ -59,7 +58,7 @@ export default function MusicPlayer() {
       <audio ref={audioRef} src={music.src} loop />
       <button
         type="button"
-        className="music-toggle"
+        className="icon-button"
         onClick={toggleMute}
         aria-label={isMuted ? "Unmute background music" : "Mute background music"}
       >

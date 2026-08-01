@@ -127,6 +127,37 @@ img {
   opacity: 0.9;
 }
 
+.icon-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(46, 43, 40, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-accent);
+  padding: 0;
+}
+
+.icon-button:hover {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.icon-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.icon-button svg {
+  width: 20px;
+  height: 20px;
+}
+
 @media (max-width: 600px) {
   .section {
     padding: var(--space-4) var(--space-2);

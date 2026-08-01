@@ -26,8 +26,6 @@ export default function EventDetails() {
                 <h3>{event.name}</h3>
                 <p className="event-card__date">{event.date}</p>
                 <p className="event-card__time">{event.time}</p>
-                <p className="event-card__venue">{event.venueName}</p>
-                <p className="event-card__address">{event.address}</p>
               </div>
             </div>
           ))}

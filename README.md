@@ -31,7 +31,9 @@ revealed by a scratch card in the Hero — guests scratch it to reveal
 ### 2. Meet the Couple
 
 Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`,
-`parentage` line (e.g. "Daughter of ..."), and `photo`.
+a `grandparentage` line (e.g. "Granddaughter of ..."), a `parentage` line
+(e.g. "Daughter of ..."), and a `photo`. There's also a small illustration
+between the two cards, set via `content.coupleVectorArt`.
 
 ### 3. Photos
 
@@ -53,13 +55,14 @@ The placeholder images shipped in this repo are free-to-use stock photos
 royalty-free library) just so the layout renders correctly before you add
 real photos of your own.
 
-### 4. Venue & map
+### 4. Events & map
 
-Edit `content.events` and `content.mapAddress`. The map on the Details
-section is a key-free Google Maps embed built from `mapAddress` — no API key
-needed. If you want a precisely pinned location instead of an address
-search, go to Google Maps → Share → Embed a map, copy the `src` URL, and use
-it directly in `src/components/MapEmbed.jsx`.
+Edit `content.events` — each entry just has a `name`, `date`, and `time`
+(venue/address aren't shown on the event cards by design, only on the map
+below them). Edit `content.mapAddress` for the map itself, a key-free Google
+Maps embed — no API key needed. If you want a precisely pinned location
+instead of an address search, go to Google Maps → Share → Embed a map, copy
+the `src` URL, and use it directly in `src/components/MapEmbed.jsx`.
 
 ### 5. FAQ
 
@@ -68,10 +71,11 @@ pairs.
 
 ### 6. Background music
 
-There's a mute/unmute button built into the site (bottom-right corner) that
-controls a looping background track — but no music ships with this repo, on
-purpose. Unlike the stock photos, music carries real copyright risk, so you
-need to supply your own properly licensed or royalty-free track. Some
+There's a mute/unmute button built into the site (bottom-right corner, next
+to the section up/down arrows) that controls a looping background track —
+currently set to `public/audio/background-music.mp3`. To swap it for a
+different track: unlike the stock photos, music carries real copyright risk,
+so make sure whatever you use is properly licensed or royalty-free. Some
 sources for genuinely free-to-use instrumental music:
 
 - [Pixabay Music](https://pixabay.com/music/) — free license, no
@@ -132,7 +136,7 @@ it gives you (ends in `/exec`).
 Paste that URL into `content.integrations.appsScriptUrl` in `src/content.js`,
 then rebuild/redeploy the site. Blessings submitted through the form appear
 on the wall instantly for the sender, and the page also polls in the
-background every 30s so other visitors' blessings show up without a manual
+background every 10s so other visitors' blessings show up without a manual
 refresh. RSVPs land as new rows in the `RSVP` tab of your Sheet.
 
 **Note:** every time you edit the script in the Apps Script editor, you need

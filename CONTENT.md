@@ -34,12 +34,16 @@ A short line shown above your names (currently "We're getting married!"):
 
 ## 4. Meet the Bride & Groom
 
+Each profile now shows two lines: grandparentage, then parentage.
+
 **Bride**
 - Full name: `[ Mahek Gupta ]`
+- Grandparentage line (e.g. "Granddaughter of Mohan Lal & Kamla Devi"): `[ ]`
 - Parentage line (e.g. "Daughter of Rajeev Gupta & Deepa Gupta"): `[ ]`
 
 **Groom**
 - Full name: `[ Yash Gupta ]`
+- Grandparentage line (e.g. "Grandson of Suresh Kumar & Lata Devi"): `[ ]`
 - Parentage line (e.g. "Son of Sandeep Kumar & Renu Gupta"): `[ ]`
 
 *(Photos for these two profile cards are handled separately — see Section 8
@@ -86,6 +90,8 @@ which is which:
 - [ ] Bride's profile photo (1 photo, portrait shape)
 - [ ] Groom's profile photo (1 photo, portrait shape)
 - [ ] Gallery photos (as many as you'd like — currently set up for 6)
+- [x] Couple vector illustration (between the two profile cards) — added
+- [x] Background music track — added (`public/audio/background-music.mp3`)
 
 ## 9. FAQ
 

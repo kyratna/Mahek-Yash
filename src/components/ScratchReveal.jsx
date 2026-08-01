@@ -23,13 +23,36 @@ export default function ScratchReveal({ children, label = "Scratch to reveal" })
     // pixels) here would double-scale everything.
     function paintOverlay(logicalWidth, logicalHeight) {
       ctx.globalCompositeOperation = "source-over";
+
+      // Base metallic-foil gradient.
       const gradient = ctx.createLinearGradient(0, 0, logicalWidth, logicalHeight);
-      gradient.addColorStop(0, "#d9cdbb");
-      gradient.addColorStop(1, "#c9b8a0");
+      gradient.addColorStop(0, "#cdbca2");
+      gradient.addColorStop(0.5, "#e6d9c0");
+      gradient.addColorStop(1, "#cdbca2");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+
+      // Fine diagonal hatching, like a brushed-foil texture.
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.lineWidth = 1;
+      for (let x = -logicalHeight; x < logicalWidth; x += 6) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + logicalHeight, logicalHeight);
+        ctx.stroke();
+      }
+
+      // Random speckles for an authentic scratch-off card grain.
+      const speckleCount = Math.floor((logicalWidth * logicalHeight) / 45);
+      for (let i = 0; i < speckleCount; i++) {
+        const x = Math.random() * logicalWidth;
+        const y = Math.random() * logicalHeight;
+        ctx.fillStyle = Math.random() > 0.5 ? "rgba(255,255,255,0.25)" : "rgba(50,40,25,0.1)";
+        ctx.fillRect(x, y, 1.3, 1.3);
+      }
+
       ctx.fillStyle = "#5f564a";
-      ctx.font = `600 ${Math.max(14, logicalHeight * 0.22)}px var(--font-body, serif)`;
+      ctx.font = `600 ${Math.max(13, Math.min(18, logicalWidth * 0.055))}px var(--font-body, serif)`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(label, logicalWidth / 2, logicalHeight / 2);

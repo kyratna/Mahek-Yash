@@ -29,55 +29,32 @@ const content = {
   },
 
   // Shown in the "Meet the Couple" section — one profile card per side.
+  // A vector illustration sits between the two cards (see coupleVectorArt).
   coupleProfiles: {
     bride: {
       name: "Mahek Gupta",
+      grandparentage: "Granddaughter of GRANDPARENTS' NAMES", // TODO: replace
       parentage: "Daughter of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
       photo: asset("/images/story/placeholder-story-1.jpg"),
     },
     groom: {
       name: "Yash Gupta",
+      grandparentage: "Grandson of GRANDPARENTS' NAMES", // TODO: replace
       parentage: "Son of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
       photo: asset("/images/story/placeholder-story-2.jpg"),
     },
   },
 
+  coupleVectorArt: asset("/images/bridengroom/bridengroom_vector.png"),
+
+  // Venue/address aren't shown on the event cards (see DESIGN.md) — the
+  // shared mapAddress below covers the map for all events.
   events: [
-    {
-      name: "Haldi",
-      date: "December 5, 2026",
-      time: "1:00 PM",
-      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
-      address: "123 Placeholder St, City, ST 00000", // TODO: replace
-    },
-    {
-      name: "Engagement",
-      date: "December 5, 2026",
-      time: "6:00 PM", // TODO: confirm — placeholder time
-      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
-      address: "123 Placeholder St, City, ST 00000", // TODO: replace
-    },
-    {
-      name: "Baarat",
-      date: "December 6, 2026",
-      time: "11:30 AM", // TODO: confirm — placeholder time
-      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
-      address: "123 Placeholder St, City, ST 00000", // TODO: replace
-    },
-    {
-      name: "Jaimaal",
-      date: "December 6, 2026",
-      time: "12:30 PM",
-      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
-      address: "123 Placeholder St, City, ST 00000", // TODO: replace
-    },
-    {
-      name: "Phere",
-      date: "December 6, 2026",
-      time: "5:00 PM",
-      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
-      address: "123 Placeholder St, City, ST 00000", // TODO: replace
-    },
+    { name: "Haldi", date: "December 5, 2026", time: "1:00 PM" },
+    { name: "Engagement", date: "December 5, 2026", time: "6:00 PM" }, // TODO: confirm — placeholder time
+    { name: "Baarat", date: "December 6, 2026", time: "11:30 AM" }, // TODO: confirm — placeholder time
+    { name: "Jaimaal", date: "December 6, 2026", time: "12:30 PM" },
+    { name: "Phere", date: "December 6, 2026", time: "5:00 PM" },
   ],
 
   // Used to build the key-free Google Maps embed (see MapEmbed.jsx)
@@ -130,7 +107,7 @@ const content = {
   // public/audio/background-music.mp3 and set src below — see README.md
   // "Background music" for details and where to legally source a track.
   music: {
-    src: "", // TODO: e.g. asset("/audio/background-music.mp3")
+    src: asset("/audio/background-music.mp3"),
   },
 
   // The Blessings wall and the Blessings & RSVP form both talk to a Google

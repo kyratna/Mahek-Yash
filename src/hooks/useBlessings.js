@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import content from "../content";
 
 // How often to re-check for new blessings from other guests. Apps Script
-// web apps have a generous free daily quota, so a 30s poll is safe for
+// web apps have a generous free daily quota, so a 10s poll is safe for
 // normal guest traffic without needing a real push/websocket backend.
-const POLL_INTERVAL_MS = 30000;
+const POLL_INTERVAL_MS = 10000;
 
 function signature(entry) {
   return `${entry.name}||${entry.message}`;

@@ -5,7 +5,7 @@ export default function Footer() {
   const { couple, wedding } = content;
 
   return (
-    <footer className="footer">
+    <footer id="footer" className="footer">
       <p className="footer__names">
         {couple.partner1} &amp; {couple.partner2}
       </p>

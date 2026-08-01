@@ -3,6 +3,7 @@ import "./MeetCouple.css";
 
 export default function MeetCouple() {
   const { bride, groom } = content.coupleProfiles;
+  const { coupleVectorArt } = content;
 
   return (
     <section id="couple" className="section">
@@ -15,11 +16,18 @@ export default function MeetCouple() {
           <article className="couple-profile">
             <img src={bride.photo} alt={bride.name} />
             <h3>{bride.name}</h3>
+            <p className="couple-profile__grandparentage">{bride.grandparentage}</p>
             <p className="couple-profile__parentage">{bride.parentage}</p>
           </article>
+
+          {coupleVectorArt && (
+            <img className="couple-profiles__vector" src={coupleVectorArt} alt="" aria-hidden="true" />
+          )}
+
           <article className="couple-profile">
             <img src={groom.photo} alt={groom.name} />
             <h3>{groom.name}</h3>
+            <p className="couple-profile__grandparentage">{groom.grandparentage}</p>
             <p className="couple-profile__parentage">{groom.parentage}</p>
           </article>
         </div>

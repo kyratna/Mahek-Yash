@@ -1,0 +1,17 @@
+.floating-controls {
+  position: fixed;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+@media (max-width: 480px) {
+  .floating-controls {
+    right: var(--space-1);
+    bottom: var(--space-1);
+  }
+}

@@ -4,6 +4,11 @@
 // FAQ, photos, RSVP link). See README.md for step-by-step help.
 // ─────────────────────────────────────────────────────────────
 
+// Prefixes image paths with Vite's base URL (see `base` in vite.config.js)
+// so photos resolve correctly whether the site is hosted at a domain root
+// or a subpath (e.g. GitHub Pages' username.github.io/repo-name/).
+const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+
 const content = {
   couple: {
     partner1: "PARTNER ONE", // TODO: replace
@@ -19,7 +24,7 @@ const content = {
 
   hero: {
     tagline: "We're getting married!", // TODO: replace
-    backgroundImage: "/images/hero/placeholder-hero.svg",
+    backgroundImage: asset("/images/hero/placeholder-hero.jpg"),
   },
 
   events: [
@@ -47,18 +52,18 @@ const content = {
       "PLACEHOLDER: Add a second paragraph about your journey together, the proposal, or anything else you'd like to share.",
     ],
     photos: [
-      { src: "/images/story/placeholder-story-1.svg", alt: "Placeholder story photo 1" },
-      { src: "/images/story/placeholder-story-2.svg", alt: "Placeholder story photo 2" },
+      { src: asset("/images/story/placeholder-story-1.jpg"), alt: "Placeholder story photo 1" },
+      { src: asset("/images/story/placeholder-story-2.jpg"), alt: "Placeholder story photo 2" },
     ],
   },
 
   gallery: [
-    { src: "/images/gallery/placeholder-01.svg", alt: "Placeholder photo 1" },
-    { src: "/images/gallery/placeholder-02.svg", alt: "Placeholder photo 2" },
-    { src: "/images/gallery/placeholder-03.svg", alt: "Placeholder photo 3" },
-    { src: "/images/gallery/placeholder-04.svg", alt: "Placeholder photo 4" },
-    { src: "/images/gallery/placeholder-05.svg", alt: "Placeholder photo 5" },
-    { src: "/images/gallery/placeholder-06.svg", alt: "Placeholder photo 6" },
+    { src: asset("/images/gallery/placeholder-01.jpg"), alt: "Placeholder photo 1" },
+    { src: asset("/images/gallery/placeholder-02.jpg"), alt: "Placeholder photo 2" },
+    { src: asset("/images/gallery/placeholder-03.jpg"), alt: "Placeholder photo 3" },
+    { src: asset("/images/gallery/placeholder-04.jpg"), alt: "Placeholder photo 4" },
+    { src: asset("/images/gallery/placeholder-05.jpg"), alt: "Placeholder photo 5" },
+    { src: asset("/images/gallery/placeholder-06.jpg"), alt: "Placeholder photo 6" },
   ],
 
   faq: [

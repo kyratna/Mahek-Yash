@@ -40,8 +40,10 @@ and update the `src` paths in `content.js` to point at your new filenames
 (any image format works — jpg, png, etc.). You can add, remove, or reorder as
 many gallery photos as you like by editing the `gallery` array.
 
-The placeholder images shipped in this repo are simple colored SVG
-rectangles, just so the layout renders correctly before you add real photos.
+The placeholder images shipped in this repo are free-to-use stock photos
+(via [Lorem Picsum](https://picsum.photos), sourced from Unsplash's
+royalty-free library) just so the layout renders correctly before you add
+real photos of your own.
 
 ### 3. Venue & map
 

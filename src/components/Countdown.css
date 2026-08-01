@@ -32,3 +32,24 @@
   font-size: 1.75rem;
   margin-top: var(--space-3);
 }
+
+@media (max-width: 600px) {
+  .countdown {
+    flex-wrap: nowrap;
+    gap: var(--space-1);
+  }
+
+  .countdown__unit {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .countdown__value {
+    font-size: clamp(0.95rem, 5.5vw, 1.3rem);
+  }
+
+  .countdown__label {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+}

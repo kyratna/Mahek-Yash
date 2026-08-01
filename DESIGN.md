@@ -58,7 +58,7 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 ## 4. Layout Foundations
 
 - **Content max-width**: `1000px`, centered (`--max-width`)
-- **Section padding**: `--space-5` (96px) top/bottom, `--space-2` (16px) sides on desktop; drops to `--space-4` (64px) top/bottom on screens ≤600px
+- **Section padding**: asymmetric — `--space-3` (32px) top, `--space-5` (96px) bottom, `--space-2` (16px) sides on desktop (top is intentionally tighter than bottom, so there isn't a large gap between a section's top divider and its heading); drops to `--space-2` (16px) top / `--space-4` (64px) bottom on screens ≤600px
 - **Section alternation**: every other section (Event Details, Gallery, Blessings) uses `.section--surface` — white background with a hairline top/bottom border — to break up the ivory page background. Hero, Meet the Couple, Blessings & RSVP, FAQ sit on the plain ivory background.
 - **Section heading**: centered, eyebrow label above an `h2`, `--space-4` margin below (`--space-3` on mobile)
 
@@ -77,18 +77,20 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 Each section is a "frame" you can jump to directly — every section above has a
 stable `id`, used both by the Nav links and by the section frame-nav (below).
 
-### Section frame-nav (up/down arrows)
+### Section frame-nav (home / up / down arrows)
 
-A pair of stacked up/down arrow buttons (`src/components/SectionNav.jsx`),
-part of the same bottom-right floating control cluster as the music button
-(see `FloatingControls.jsx`). Clicking either one jumps to the previous/next
-section's top edge using the same eased scroll as the Nav links. The current
-section is tracked from scroll position (a section "becomes current" once its
-top has scrolled to roughly the upper third of the viewport); the up arrow
-disables at the first section (Hero), the down arrow disables at the last
-(Footer). A short animation lock (~750ms, matching the scroll duration)
-ignores further clicks mid-scroll so rapid clicking can't miscompute the
-target off a stale scroll position.
+The bottom-right floating control cluster (`FloatingControls.jsx`), top to
+bottom: a **Home button** (`HomeButton.jsx`) — scrolls straight back to the
+Hero, same house-icon treatment as the other controls; a pair of stacked
+up/down arrow buttons (`src/components/SectionNav.jsx`); then the music
+mute button. Clicking up/down jumps to the previous/next section's top edge
+using the same eased scroll as the Nav links. The current section is tracked
+from scroll position (a section "becomes current" once its top has scrolled
+to roughly the upper third of the viewport); the up arrow disables at the
+first section (Hero), the down arrow disables at the last (Footer). A short
+animation lock (~750ms, matching the scroll duration) ignores further clicks
+mid-scroll so rapid clicking can't miscompute the target off a stale scroll
+position.
 
 ---
 
@@ -121,16 +123,16 @@ target off a stale scroll position.
 - **Red paper-like texture**: a deep-red gradient base (`#8f231f` → `#b5322f` → `#7a1a17`), fine diagonal fiber lines, and randomized speckle grain drawn onto the canvas — reads as textured paper, not a flat foil color
 - **Falling debris**: while scratching, small colored fragments (matching the paper's red tones) spawn at the scratch point and animate falling downward with a slight rotation and fade-out (~0.9s, CSS `@keyframes`), like actual scratch-off flakes coming loose. Spawned probabilistically per scratch move so it doesn't flood the DOM; skipped under `prefers-reduced-motion`
 - The revealed date is now the **larger** element (`clamp(1.75rem, 4.5vw, 2.75rem)`, serif) with the countdown shown smaller beneath it (`clamp(1.1rem, 3vw, 1.5rem)` per digit) — the reverse of an earlier iteration
-- Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds), wraps on narrow screens; small uppercase muted label underneath each; updates live every second
+- Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds); small uppercase muted label underneath each; updates live every second. **Stays a single row at every width** — below 600px the blocks shrink to share the available width (`flex: 1 1 0`, `flex-wrap: nowrap`) instead of wrapping to two rows
 - After the wedding date passes, replaces the whole countdown with a single "We're married!" line
 
 ### Meet the Couple
-- Three-column layout: bride card | small vector illustration | groom card (`grid-template-columns: 1fr auto 1fr`)
+- Vector illustration centered **above** the two cards (not between them) — `content.coupleVectorArt` (currently `public/images/bridengroom/bridegroom_vector.png`), a transparent-background PNG so it sits directly on the page with no picture-frame/holder box around it. Overlaps the top edge of the cards slightly (small negative margin) so it reads as resting on top of them, like a crest. Scales from ~144px wide on desktop down to ~48px on the smallest phones
+- Below it, bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`)
 - Cards have a visible boundary with rounded corners (`border`, `border-radius: 1.25rem`, white surface background) rather than sitting directly on the page background
-- **Stays a multi-column layout at every width, including mobile** — it does not stack into one column like other two-column sections. Below 700px, font sizes, image sizing, padding, and the vector art shrink instead of reflowing to a single column, so bride/groom remain side-by-side even on small phones
+- **Cards stay side-by-side at every width, including mobile** — they do not stack into one column like other two-column sections. Below 700px, font sizes, image sizing, and padding shrink instead of reflowing to a single column
 - Each card shows, top to bottom: photo → name → grandparentage line ("Granddaughter/Grandson of ...") → parentage line ("Daughter/Son of ..." ) — two separate lines, not combined
 - Photos: portrait aspect ratio (3:4), `object-fit: cover`, rounded corners
-- Center vector art: `content.coupleVectorArt` (currently `public/images/bridengroom/bridengroom_vector.png`), scales from ~144px wide on desktop down to ~48px on the smallest phones
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)
@@ -144,16 +146,16 @@ target off a stale scroll position.
 ### Gallery
 - White/surface section, rebuilt as a **slideshow**, not a plain grid
 - A large main frame (max-width 40rem, 4:3 aspect ratio) shows the currently-featured photo; clicking it opens the existing fullscreen lightbox (dark overlay, close × and prev/next ‹ › controls, all ≥44px tap targets)
-- A horizontally-scrollable strip of small thumbnails (64×64px) sits below the main frame — clicking one instantly features that photo in the main frame; the active thumbnail gets an accent-colored border and full opacity, others sit at reduced opacity
+- A horizontally-scrollable strip of small thumbnails (64×64px) sits **centered** below the main frame — clicking one instantly features that photo in the main frame; the active thumbnail gets an accent-colored border and full opacity, others sit at reduced opacity. If there are enough photos to overflow the strip's width, it scrolls rather than staying centered
 - **Auto-advances** left to right on its own (every 4s) when left untouched; selecting a photo (thumbnail click, or prev/next inside the lightbox) resets that timer so it restarts counting from whatever you just picked, and it pauses entirely while the lightbox is open
 
 ### Blessings
-- White/surface section. Guest messages shown as individual sticky notes with **rounded corners** (`border-radius: 0.85rem`), 4 rotating pastel colors, soft drop shadow, each showing the message, "— name, side" attribution, and a small muted date
+- White/surface section. Guest messages shown as individual sticky notes with **rounded corners** (`border-radius: 0.85rem`), 4 rotating pastel colors, soft drop shadow, each showing the message, then "— name" and, on its own line below, "(side)" in parentheses, then a small muted date
 - Data comes from a shared `useBlessings` hook (`src/hooks/useBlessings.js`), called **once** at the top of the app (`main.jsx`) and passed down as props — both this section and the Blessings Wall page (below) read the same fetched data rather than each fetching their own copy, so navigating between them never re-triggers the slow Apps Script round-trip. Fetches on mount, then polls every **10s** in the background so guests see new blessings from others without refreshing
 - **Layout — tiled wall, not a circular cloud**: a plain CSS grid (`.blessings-tiles`), so non-overlap is guaranteed by the browser's own grid layout rather than any position math. `grid-template-columns: repeat(auto-fill, minmax(...))` naturally lands around **2-3 tiles per row on phones, 4-5 per row at the ≥700px breakpoint** — no per-breakpoint column count is hard-coded. Tiles sit with a few of them offset a handful of pixels up/down (`nth-child` pattern) for a loosely "interlocking," floating look — nothing animates or actually moves
 - **Font size scales with message length** (`getMessageScale()` in `Blessings.jsx`): short messages render larger, long ones smaller, so each note reads well without needing a fixed truncation point; a 4-line clamp is just a backstop for unusually long messages
-- **At most 10 tiles show at once on mobile, 20 on wide screens** (`MOBILE_CAP` / `WIDE_CAP`) — the most recent blessings, since `entries` is already newest-first. This keeps the wall itself compact; the full list always lives on the dedicated Blessings Wall page
-- **Center hub**: a tile inserted at the midpoint of the tile order (not absolutely positioned — just where it naturally falls in the grid), holding two things stacked: the visitor's own just-submitted blessing this session ("mine" — tracked client-side only, resets on reload), shown with a soft gold ring rather than the usual rotation/shadow; and directly below it, a **"View All Blessings" button with a slow, permanent glow pulse**, linking to the Blessings Wall page. The button is always present at the hub position, including when there's no "mine" yet or no blessings at all
+- **At most 15 tiles show at once** (`TILE_CAP`) — the most recent blessings, since `entries` is already newest-first. This keeps the wall itself compact; the full list always lives on the dedicated Blessings Wall page
+- **Center hub**: a tile inserted at the midpoint of the tile order (not absolutely positioned — just where it naturally falls in the grid) and spanning the **full width of the grid row** (`grid-column: 1 / -1`), so it's always dead-center horizontally regardless of which column its position would otherwise land on. Holds two things stacked: the visitor's own just-submitted blessing this session ("mine" — tracked client-side only, resets on reload), shown with a soft gold ring rather than the usual rotation/shadow; and directly below it, a **"View All Blessings" button with a slow, permanent glow pulse**, linking to the Blessings Wall page. The button is always present at the hub position, including when there's no "mine" yet or no blessings at all
 - Clicking any note opens it enlarged in a centered lightbox (dark overlay, larger text), reusing that exact note's own color; closes via the × button or clicking outside the note
 - Empty state: "No blessings yet — be the first to leave one!" above the (button-only) hub tile, with a button linking to the Blessings & RSVP section
 - **Blessings Wall page** (`src/components/BlessingsWallPage.jsx`, route `#/blessings-wall`): a dedicated page — not a modal — reached via the "View All Blessings" button, titled "Blessings Wall" (both the `<h1>` and the browser tab title). Same tiled-grid treatment (2-3/row mobile, 4-5/row wide) but with **every** blessing, no cap, newest first. Shows a "Loading blessings…" line during the initial fetch (only relevant if this page is opened directly, e.g. a shared link — reached from elsewhere on the site it renders instantly, since the data's already loaded, see above). A "← Back to the invitation" link returns home. Routed with a minimal hash check in `main.jsx` (no router library — the site has exactly one extra route) rather than a real path, since GitHub Pages can't serve a fallback for arbitrary paths on refresh

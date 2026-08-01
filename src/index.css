@@ -71,7 +71,7 @@ img {
 }
 
 .section {
-  padding: var(--space-5) var(--space-2);
+  padding: var(--space-3) var(--space-2) var(--space-5);
 }
 
 .section--surface {
@@ -160,7 +160,7 @@ img {
 
 @media (max-width: 600px) {
   .section {
-    padding: var(--space-4) var(--space-2);
+    padding: var(--space-2) var(--space-2) var(--space-4);
   }
 
   .section__heading {

@@ -1,13 +1,10 @@
 import { useState } from "react";
 import content from "../content";
-import { useIsWide } from "../hooks/useIsWide";
 import { BLESSINGS_WALL_HASH } from "../lib/routes";
 import "./Blessings.css";
 
 export const NOTE_COLORS = ["note--blush", "note--sage", "note--butter", "note--sky"];
-const CAP_BREAKPOINT = 700; // matches the tile grid's mobile/wide column ranges
-const MOBILE_CAP = 10; // max blessing tiles shown at once on mobile (2-3 per row)
-const WIDE_CAP = 20; // max blessing tiles shown at once on wide screens (4-5 per row)
+const TILE_CAP = 15; // max blessing tiles shown at once in this section, most recent first
 
 export function signature(entry) {
   return `${entry.name}||${entry.message}`;
@@ -45,10 +42,8 @@ export function NoteCard({ entry, colorClass, isMine, onOpen, tile = false }) {
       onClick={() => onOpen(entry, colorClass)}
     >
       <p className="note__message">{entry.message}</p>
-      <p className="note__author">
-        — {entry.name}
-        {entry.side ? `, ${entry.side}` : ""}
-      </p>
+      <p className="note__author">— {entry.name}</p>
+      {entry.side && <p className="note__side">({entry.side})</p>}
       <p className="note__date">{formatDate(entry.timestamp)}</p>
     </button>
   );
@@ -57,13 +52,11 @@ export function NoteCard({ entry, colorClass, isMine, onOpen, tile = false }) {
 export default function Blessings({ entries, status, myBlessingKey }) {
   const { blessings } = content;
   const [active, setActive] = useState(null); // { entry, colorClass }
-  const isWide = useIsWide(CAP_BREAKPOINT);
 
   const mine = entries.find((entry) => signature(entry) === myBlessingKey);
   const others = entries.filter((entry) => signature(entry) !== myBlessingKey);
 
-  const cap = isWide ? WIDE_CAP : MOBILE_CAP;
-  const othersCap = Math.max(mine ? cap - 1 : cap, 0);
+  const othersCap = Math.max(mine ? TILE_CAP - 1 : TILE_CAP, 0);
   const visibleOthers = others.slice(0, othersCap);
 
   const openNote = (entry, colorClass) => setActive({ entry, colorClass });
@@ -143,10 +136,8 @@ export default function Blessings({ entries, status, myBlessingKey }) {
             onClick={(e) => e.stopPropagation()}
           >
             <p className="note__message">{active.entry.message}</p>
-            <p className="note__author">
-              — {active.entry.name}
-              {active.entry.side ? `, ${active.entry.side}` : ""}
-            </p>
+            <p className="note__author">— {active.entry.name}</p>
+            {active.entry.side && <p className="note__side">({active.entry.side})</p>}
             <p className="note__date">{formatDate(active.entry.timestamp)}</p>
           </div>
         </div>

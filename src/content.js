@@ -29,7 +29,7 @@ const content = {
   },
 
   // Shown in the "Meet the Couple" section — one profile card per side.
-  // A vector illustration sits between the two cards (see coupleVectorArt).
+  // A vector illustration sits centered above the two cards (see coupleVectorArt).
   coupleProfiles: {
     bride: {
       name: "Mahek Gupta",
@@ -45,7 +45,7 @@ const content = {
     },
   },
 
-  coupleVectorArt: asset("/images/bridengroom/bridegroom_vector.png"),
+  coupleVectorArt: asset("/images/bridengroom/brideNgroom_No_Bg_Vector.png"),
 
   // Venue/address aren't shown on the event cards (see DESIGN.md) — the
   // shared mapAddress below covers the map for all events.

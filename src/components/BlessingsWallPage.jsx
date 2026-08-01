@@ -77,10 +77,8 @@ export default function BlessingsWallPage({ entries, status }) {
             onClick={(e) => e.stopPropagation()}
           >
             <p className="note__message">{active.entry.message}</p>
-            <p className="note__author">
-              — {active.entry.name}
-              {active.entry.side ? `, ${active.entry.side}` : ""}
-            </p>
+            <p className="note__author">— {active.entry.name}</p>
+            {active.entry.side && <p className="note__side">({active.entry.side})</p>}
             <p className="note__date">{formatDate(active.entry.timestamp)}</p>
           </div>
         </div>

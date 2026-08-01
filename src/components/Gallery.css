@@ -21,6 +21,7 @@
 
 .gallery-thumbs {
   display: flex;
+  justify-content: center;
   gap: var(--space-1);
   overflow-x: auto;
   max-width: 40rem;

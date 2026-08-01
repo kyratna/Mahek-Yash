@@ -33,7 +33,8 @@ revealed by a scratch card in the Hero — guests scratch it to reveal
 Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`,
 a `grandparentage` line (e.g. "Granddaughter of ..."), a `parentage` line
 (e.g. "Daughter of ..."), and a `photo`. There's also a small illustration
-between the two cards, set via `content.coupleVectorArt`.
+centered above the two cards, set via `content.coupleVectorArt` — use a
+transparent-background PNG so it doesn't show its own frame/box.
 
 ### 3. Photos
 

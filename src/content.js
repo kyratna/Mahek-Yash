@@ -124,6 +124,15 @@ const content = {
     },
   ],
 
+  // Background music, played site-wide with a mute button in the bottom
+  // corner. Leave `src` blank (default) and the player is hidden entirely.
+  // To enable it, add your own royalty-free/licensed audio file at
+  // public/audio/background-music.mp3 and set src below — see README.md
+  // "Background music" for details and where to legally source a track.
+  music: {
+    src: "", // TODO: e.g. asset("/audio/background-music.mp3")
+  },
+
   // The Blessings wall and the Blessings & RSVP form both talk to a Google
   // Sheet through a Google Apps Script Web App you deploy yourself — see
   // README.md "Blessings & RSVP backend setup" for step-by-step instructions.

@@ -1,13 +1,66 @@
-.event-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-3);
-  text-align: center;
+.timeline {
+  position: relative;
+  padding: var(--space-2) 0 var(--space-1);
+}
+
+.timeline__line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+  transform: translateX(-50%);
+}
+
+.timeline__item {
+  position: relative;
+  width: 50%;
+  box-sizing: border-box;
+  padding-bottom: var(--space-4);
+}
+
+.timeline__item--left {
+  left: 0;
+  padding-right: var(--space-4);
+  text-align: right;
+}
+
+.timeline__item--right {
+  left: 50%;
+  padding-left: var(--space-4);
+  text-align: left;
+}
+
+.timeline__marker {
+  position: absolute;
+  top: 0.4rem;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+.timeline__item--left .timeline__marker {
+  right: -8px;
+}
+
+.timeline__item--right .timeline__marker {
+  left: -8px;
 }
 
 .event-card {
+  display: inline-block;
+  max-width: 22rem;
+  width: 100%;
   padding: var(--space-3);
   border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .event-card__date {
@@ -32,4 +85,34 @@
 .event-card__address {
   color: var(--color-text-muted);
   margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .timeline {
+    padding-left: var(--space-1);
+  }
+
+  .timeline__line {
+    left: 20px;
+    transform: none;
+  }
+
+  .timeline__item,
+  .timeline__item--left,
+  .timeline__item--right {
+    width: 100%;
+    left: 0;
+    text-align: left;
+    padding: 0 0 var(--space-3) calc(20px + var(--space-2));
+  }
+
+  .timeline__item--left .timeline__marker,
+  .timeline__item--right .timeline__marker {
+    left: 12px;
+    right: auto;
+  }
+
+  .event-card {
+    max-width: 100%;
+  }
 }

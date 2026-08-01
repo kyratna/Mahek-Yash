@@ -82,9 +82,12 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 - Sticky to top of viewport (`position: sticky; top: 0`), stays visible while scrolling
 - Semi-transparent ivory background (`rgba(250,247,242,0.9)`) with backdrop blur, so content scrolling underneath is softly visible
 - Hairline border on bottom edge
-- Links: Our Story, Details, Gallery, FAQ, RSVP — centered, uppercase, wrap onto multiple lines on narrow screens
+- Links: The Couple, Details, Gallery, Blessings, RSVP, FAQ
+- **Desktop (>700px)**: links shown centered in a single row
+- **Mobile (≤700px)**: links collapse behind a hamburger button (top-right); tapping it opens a full-width dropdown list below the bar; the icon animates into an × while open; tapping a link closes the menu automatically
 - Hover: text turns accent color
 - Each link has a 44px min-height tap target (mobile accessibility)
+- Clicking any nav link doesn't jump instantly — it triggers a custom eased scroll (`src/lib/smoothScroll.js`, ease-out-cubic, ~700ms): fast at first, decelerating into the target section, offset to clear the sticky nav's own height
 
 ### Hero
 - Full viewport height (`min-height: 100svh`), content centered both axes
@@ -111,9 +114,10 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)
-- Ceremony/Reception (or however many events exist) shown as bordered cards in an auto-flowing grid (each card min 220px wide, wraps to fewer columns on narrow screens)
-- Each card: event name (h3) → time (accent color, larger) → venue name (bold) → address (muted)
-- Below the cards: an embedded Google Map (key-free, built from the venue address), bordered, 320px tall (220px on mobile)
+- Events shown as a vertical **timeline**: a thin center line runs top to bottom, each event connects to it via a small circular marker, and event cards alternate left/right of the line (1st event left, 2nd right, 3rd left, ...)
+- Each card: event name (h3) → date (small, uppercase, muted) → time (accent color, larger) → venue name (bold) → address (muted)
+- **Mobile (≤700px)**: the line moves to the left edge, every card sits full-width to its right (no more alternating), markers align to the line — a standard single-column timeline
+- Below the timeline: an embedded Google Map (key-free, built from the venue address), bordered, 320px tall (220px on mobile)
 
 ### Gallery
 - White/surface section
@@ -150,10 +154,11 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 
 ## 7. Responsive Behavior
 
-- Mobile-first breakpoints, primarily at `480px`, `600px`, and `700px`
-- No hamburger menu — nav just wraps its links onto multiple lines on narrow screens
-- Grids (Event Details cards, Gallery tiles) use `auto-fit`/`auto-fill` so they reflow naturally without hand-tuned breakpoints per screen size
-- Our Story's two-column layout collapses to a single stacked column below 700px
+- Mobile-first breakpoints, primarily at `480px`, `600px`, and `700px` — since most guests are expected to open this on a phone, mobile is treated as the primary layout, not an afterthought
+- Nav collapses to a hamburger menu ≤700px (see Nav section above)
+- Event Details collapses from an alternating left/right timeline to a single-column left-aligned timeline ≤700px (see Event Details section above)
+- Grids (Gallery tiles) use `auto-fit`/`auto-fill` so they reflow naturally without hand-tuned breakpoints per screen size
+- Meet the Couple's two-column layout collapses to a single stacked column below 700px
 - All interactive elements maintain a 44px minimum touch target
 
 ## 8. Images
@@ -163,6 +168,13 @@ sourced from Unsplash's royalty-free library) — soft sky, desert dunes,
 misty forest, calla lily, ocean waves, a lighthouse, a map, the Eiffel
 Tower. No copyrighted/trademarked imagery. See `README.md` for how to swap
 in real photos.
+
+## 9. Background Music
+
+- Site-wide looping background audio (`src/components/MusicPlayer.jsx`), controlled by a circular mute/unmute button fixed to the bottom-right corner of the viewport on every page (not scoped to one section), 48px, ivory surface with a hairline border and soft shadow, accent-colored speaker icon
+- Attempts to autoplay on load; if the browser blocks autoplay-with-sound (standard behavior until the visitor interacts with the page), it starts on the visitor's first click/tap anywhere on the site
+- Button icon swaps between a sound-on and sound-off (crossed-out) speaker glyph based on mute state
+- Hidden entirely — no button rendered at all — until a real audio file is configured (`content.music.src`), same "absent until configured" pattern as the Blessings backend. See `README.md` → "Background music" for where to source a properly licensed/royalty-free track (music carries real copyright risk, unlike the stock photos above, so nothing is bundled by default)
 
 ---
 

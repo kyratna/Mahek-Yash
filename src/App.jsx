@@ -7,6 +7,7 @@ import Blessings from "./components/Blessings";
 import BlessingsRSVP from "./components/BlessingsRSVP";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
+import MusicPlayer from "./components/MusicPlayer";
 import { useBlessings } from "./hooks/useBlessings";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <BlessingsRSVP onBlessingSent={addLocalBlessing} />
       <FAQ />
       <Footer />
+      <MusicPlayer />
     </>
   );
 }

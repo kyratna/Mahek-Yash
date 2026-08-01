@@ -12,14 +12,23 @@ export default function EventDetails() {
           <span className="eyebrow">Join Us</span>
           <h2>Event Details</h2>
         </div>
-        <div className="event-list">
-          {events.map((event) => (
-            <div className="event-card" key={event.name}>
-              <h3>{event.name}</h3>
-              <p className="event-card__date">{event.date}</p>
-              <p className="event-card__time">{event.time}</p>
-              <p className="event-card__venue">{event.venueName}</p>
-              <p className="event-card__address">{event.address}</p>
+        <div className="timeline">
+          <div className="timeline__line" />
+          {events.map((event, index) => (
+            <div
+              className={`timeline__item ${
+                index % 2 === 0 ? "timeline__item--left" : "timeline__item--right"
+              }`}
+              key={event.name}
+            >
+              <span className="timeline__marker" />
+              <div className="event-card">
+                <h3>{event.name}</h3>
+                <p className="event-card__date">{event.date}</p>
+                <p className="event-card__time">{event.time}</p>
+                <p className="event-card__venue">{event.venueName}</p>
+                <p className="event-card__address">{event.address}</p>
+              </div>
             </div>
           ))}
         </div>

@@ -107,7 +107,7 @@ Edit, delete, or add to these as needed:
 Only fill this in once you've deployed the Google Apps Script backend
 described in `README.md` → "Blessings & RSVP backend setup":
 
-- Apps Script Web App URL: `[ ]`
+- Apps Script Web App URL: `[ https://script.google.com/macros/s/AKfycbxMeN35o09XSR5e6nXQOuqcjrkhE5JcgXkXNHR0F9W1VR0kSN5hHsh6gLfCvFKZCG7E/exec ]`
 
 ---
 

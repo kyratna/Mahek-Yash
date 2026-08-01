@@ -66,6 +66,32 @@ it directly in `src/components/MapEmbed.jsx`.
 Edit the `content.faq` array — add, remove, or edit any question/answer
 pairs.
 
+### 6. Background music
+
+There's a mute/unmute button built into the site (bottom-right corner) that
+controls a looping background track — but no music ships with this repo, on
+purpose. Unlike the stock photos, music carries real copyright risk, so you
+need to supply your own properly licensed or royalty-free track. Some
+sources for genuinely free-to-use instrumental music:
+
+- [Pixabay Music](https://pixabay.com/music/) — free license, no
+  attribution required
+- [Free Music Archive](https://freemusicarchive.org/) — filter by CC0 /
+  public domain
+- A track you already own the rights to (e.g. purchased or licensed)
+
+Once you have a file:
+
+1. Drop it in `public/audio/` (e.g. `public/audio/background-music.mp3`)
+2. Set `content.music.src` in `src/content.js` to
+   `asset("/audio/background-music.mp3")`
+
+Leave `content.music.src` blank (the default) and the mute button doesn't
+render at all. Browsers block autoplay-with-sound until the visitor
+interacts with the page, so playback actually starts on their first
+click/tap anywhere on the site — this is standard browser behavior, not a
+bug.
+
 ## Blessings & RSVP backend setup
 
 The Blessings wall (a live wall of guest messages) and the Blessings & RSVP
@@ -104,10 +130,10 @@ it gives you (ends in `/exec`).
 **4. Connect it to the site**
 
 Paste that URL into `content.integrations.appsScriptUrl` in `src/content.js`,
-then rebuild/redeploy the site. Blessings submitted through the form will now
-appear on the Blessings wall (refresh to see new ones — it's not real-time
-push, just a fetch on page load), and RSVPs will land as new rows in the
-`RSVP` tab of your Sheet.
+then rebuild/redeploy the site. Blessings submitted through the form appear
+on the wall instantly for the sender, and the page also polls in the
+background every 30s so other visitors' blessings show up without a manual
+refresh. RSVPs land as new rows in the `RSVP` tab of your Sheet.
 
 **Note:** every time you edit the script in the Apps Script editor, you need
 to create a **new deployment** (or manage/update the existing one) for the
@@ -138,9 +164,13 @@ src/
   index.css           global design tokens (colors, fonts, spacing)
   hooks/
     useCountdown.js   countdown timer logic
+    useBlessings.js   Blessings wall fetch/poll/optimistic-update logic
+  lib/
+    smoothScroll.js   eased nav-link scrolling
   components/         one component per section (Hero, Gallery, FAQ, ...)
 public/
   images/             your photos live here
+  audio/              your background music track goes here (see above)
 google-apps-script/
   Code.gs             backend for the Blessings wall & RSVP form (see above)
 ```

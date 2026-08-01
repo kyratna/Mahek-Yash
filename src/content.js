@@ -11,15 +11,16 @@ const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
 const content = {
   couple: {
-    partner1: "PARTNER ONE", // TODO: replace
-    partner2: "PARTNER TWO", // TODO: replace
+    partner1: "Mahek",
+    partner2: "Yash",
   },
 
   wedding: {
     // ISO 8601 with a timezone offset (not "Z") so the countdown is
     // accurate for every guest regardless of their own timezone.
-    dateTimeISO: "2026-12-31T16:00:00-05:00", // TODO: replace with real date/time
-    displayDate: "December 31, 2026", // human-readable, revealed by the scratch card
+    // Set to the Phere (main ceremony) date/time, IST (+05:30).
+    dateTimeISO: "2026-12-06T17:00:00+05:30",
+    displayDate: "December 6, 2026", // human-readable, revealed by the scratch card
   },
 
   hero: {
@@ -30,12 +31,12 @@ const content = {
   // Shown in the "Meet the Couple" section — one profile card per side.
   coupleProfiles: {
     bride: {
-      name: "BRIDE NAME", // TODO: replace
+      name: "Mahek Gupta",
       parentage: "Daughter of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
       photo: asset("/images/story/placeholder-story-1.jpg"),
     },
     groom: {
-      name: "GROOM NAME", // TODO: replace
+      name: "Yash Gupta",
       parentage: "Son of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
       photo: asset("/images/story/placeholder-story-2.jpg"),
     },
@@ -43,14 +44,37 @@ const content = {
 
   events: [
     {
-      name: "Ceremony",
-      time: "4:00 PM",
+      name: "Haldi",
+      date: "December 5, 2026",
+      time: "1:00 PM",
       venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
       address: "123 Placeholder St, City, ST 00000", // TODO: replace
     },
     {
-      name: "Reception",
-      time: "6:00 PM",
+      name: "Engagement",
+      date: "December 5, 2026",
+      time: "6:00 PM", // TODO: confirm — placeholder time
+      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
+      address: "123 Placeholder St, City, ST 00000", // TODO: replace
+    },
+    {
+      name: "Baarat",
+      date: "December 6, 2026",
+      time: "11:30 AM", // TODO: confirm — placeholder time
+      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
+      address: "123 Placeholder St, City, ST 00000", // TODO: replace
+    },
+    {
+      name: "Jaimaal",
+      date: "December 6, 2026",
+      time: "12:30 PM",
+      venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
+      address: "123 Placeholder St, City, ST 00000", // TODO: replace
+    },
+    {
+      name: "Phere",
+      date: "December 6, 2026",
+      time: "5:00 PM",
       venueName: "PLACEHOLDER VENUE NAME", // TODO: replace
       address: "123 Placeholder St, City, ST 00000", // TODO: replace
     },
@@ -75,7 +99,7 @@ const content = {
 
   blessingsRsvp: {
     heading: "Blessings & RSVP",
-    subtext: "PLACEHOLDER: Please respond by [date].",
+    subtext: "Send blessings and RSVP",
   },
 
   faq: [
@@ -106,7 +130,8 @@ const content = {
   // Leave this blank and the Blessings wall just shows its empty state, and
   // form submissions will show a friendly error until it's configured.
   integrations: {
-    appsScriptUrl: "", // TODO: paste your deployed Apps Script Web App URL here
+    appsScriptUrl:
+      "https://script.google.com/macros/s/AKfycbxMeN35o09XSR5e6nXQOuqcjrkhE5JcgXkXNHR0F9W1VR0kSN5hHsh6gLfCvFKZCG7E/exec",
   },
 };
 

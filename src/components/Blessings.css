@@ -1,0 +1,52 @@
+.blessings-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.note {
+  padding: var(--space-3) var(--space-2) var(--space-2);
+  box-shadow: 0 6px 14px rgba(46, 43, 40, 0.12);
+  transform: rotate(-1.5deg);
+}
+
+.note:nth-child(even) {
+  transform: rotate(1.5deg);
+}
+
+.note:nth-child(3n) {
+  transform: rotate(-0.75deg);
+}
+
+.note__message {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-2);
+}
+
+.note__author {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  text-align: right;
+}
+
+.note--blush {
+  background: #f6e6e0;
+}
+
+.note--sage {
+  background: #e9efe3;
+}
+
+.note--butter {
+  background: #faf3d9;
+}
+
+.note--sky {
+  background: #e6eef2;
+}
+
+.blessings-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+}

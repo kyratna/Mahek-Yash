@@ -38,6 +38,17 @@
   letter-spacing: 0.05em;
 }
 
+.hero__date--big {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.hero > .hero__overlay > .scratch-reveal {
+  margin: var(--space-2) 0;
+}
+
 @media (max-width: 480px) {
   .hero__overlay {
     padding: var(--space-2);

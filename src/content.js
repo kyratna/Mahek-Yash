@@ -19,12 +19,26 @@ const content = {
     // ISO 8601 with a timezone offset (not "Z") so the countdown is
     // accurate for every guest regardless of their own timezone.
     dateTimeISO: "2026-12-31T16:00:00-05:00", // TODO: replace with real date/time
-    displayDate: "December 31, 2026", // human-readable, shown in Hero
+    displayDate: "December 31, 2026", // human-readable, revealed by the scratch card
   },
 
   hero: {
     tagline: "We're getting married!", // TODO: replace
     backgroundImage: asset("/images/hero/placeholder-hero.jpg"),
+  },
+
+  // Shown in the "Meet the Couple" section — one profile card per side.
+  coupleProfiles: {
+    bride: {
+      name: "BRIDE NAME", // TODO: replace
+      parentage: "Daughter of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
+      photo: asset("/images/story/placeholder-story-1.jpg"),
+    },
+    groom: {
+      name: "GROOM NAME", // TODO: replace
+      parentage: "Son of FATHER'S NAME & MOTHER'S NAME", // TODO: replace
+      photo: asset("/images/story/placeholder-story-2.jpg"),
+    },
   },
 
   events: [
@@ -45,18 +59,6 @@ const content = {
   // Used to build the key-free Google Maps embed (see MapEmbed.jsx)
   mapAddress: "123 Placeholder St, City, ST 00000", // TODO: replace
 
-  ourStory: {
-    heading: "Our Story",
-    paragraphs: [
-      "PLACEHOLDER: This is where you'll tell guests how you met. Replace this paragraph with your own story.",
-      "PLACEHOLDER: Add a second paragraph about your journey together, the proposal, or anything else you'd like to share.",
-    ],
-    photos: [
-      { src: asset("/images/story/placeholder-story-1.jpg"), alt: "Placeholder story photo 1" },
-      { src: asset("/images/story/placeholder-story-2.jpg"), alt: "Placeholder story photo 2" },
-    ],
-  },
-
   gallery: [
     { src: asset("/images/gallery/placeholder-01.jpg"), alt: "Placeholder photo 1" },
     { src: asset("/images/gallery/placeholder-02.jpg"), alt: "Placeholder photo 2" },
@@ -65,6 +67,16 @@ const content = {
     { src: asset("/images/gallery/placeholder-05.jpg"), alt: "Placeholder photo 5" },
     { src: asset("/images/gallery/placeholder-06.jpg"), alt: "Placeholder photo 6" },
   ],
+
+  blessings: {
+    heading: "Blessings",
+    subtext: "Sweet wishes from our family & friends",
+  },
+
+  blessingsRsvp: {
+    heading: "Blessings & RSVP",
+    subtext: "PLACEHOLDER: Please respond by [date].",
+  },
 
   faq: [
     {
@@ -88,13 +100,13 @@ const content = {
     },
   ],
 
-  rsvp: {
-    heading: "RSVP",
-    subtext: "PLACEHOLDER: Please respond by [date].",
-    // TODO: replace with your own embeddable Google Form URL.
-    // Google Forms → Send → the "<>" embed tab → copy the iframe src.
-    googleFormEmbedUrl:
-      "https://docs.google.com/forms/d/e/PLACEHOLDER_FORM_ID/viewform?embedded=true",
+  // The Blessings wall and the Blessings & RSVP form both talk to a Google
+  // Sheet through a Google Apps Script Web App you deploy yourself — see
+  // README.md "Blessings & RSVP backend setup" for step-by-step instructions.
+  // Leave this blank and the Blessings wall just shows its empty state, and
+  // form submissions will show a friendly error until it's configured.
+  integrations: {
+    appsScriptUrl: "", // TODO: paste your deployed Apps Script Web App URL here
   },
 };
 

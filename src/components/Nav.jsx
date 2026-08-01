@@ -1,11 +1,12 @@
 import "./Nav.css";
 
 const LINKS = [
-  { href: "#story", label: "Our Story" },
+  { href: "#couple", label: "The Couple" },
   { href: "#details", label: "Details" },
   { href: "#gallery", label: "Gallery" },
+  { href: "#blessings", label: "Blessings" },
+  { href: "#blessings-rsvp", label: "RSVP" },
   { href: "#faq", label: "FAQ" },
-  { href: "#rsvp", label: "RSVP" },
 ];
 
 export default function Nav() {

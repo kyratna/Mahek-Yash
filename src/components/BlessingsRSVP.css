@@ -1,0 +1,102 @@
+.rsvp-tabs {
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.rsvp-tabs__list {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-3);
+}
+
+.rsvp-tabs__tab {
+  flex: 1;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-2);
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.rsvp-tabs__tab.is-active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+.rsvp-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rsvp-form-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.rsvp-form-fields input[type="text"],
+.rsvp-form-fields input[type="number"],
+.rsvp-form-fields select,
+.rsvp-form-fields textarea {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 0.6rem;
+  min-height: 44px;
+}
+
+.rsvp-form-fields textarea {
+  resize: vertical;
+}
+
+.rsvp-form-fields fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rsvp-form-fields legend {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  padding: 0;
+  margin-bottom: 0.25rem;
+}
+
+.radio-label {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  color: var(--color-text) !important;
+  min-height: 44px;
+}
+
+.rsvp-form-fields .button {
+  align-self: flex-start;
+}
+
+.form-status {
+  margin-bottom: 0;
+}
+
+.form-status--success {
+  color: var(--color-accent);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.form-status--error {
+  color: #a3453a;
+  font-size: 0.9rem;
+}

@@ -1,10 +1,11 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import MeetCouple from "./components/MeetCouple";
 import EventDetails from "./components/EventDetails";
-import OurStory from "./components/OurStory";
 import Gallery from "./components/Gallery";
+import Blessings from "./components/Blessings";
+import BlessingsRSVP from "./components/BlessingsRSVP";
 import FAQ from "./components/FAQ";
-import RSVP from "./components/RSVP";
 import Footer from "./components/Footer";
 
 function App() {
@@ -12,11 +13,12 @@ function App() {
     <>
       <Nav />
       <Hero />
-      <OurStory />
+      <MeetCouple />
       <EventDetails />
       <Gallery />
+      <Blessings />
+      <BlessingsRSVP />
       <FAQ />
-      <RSVP />
       <Footer />
     </>
   );

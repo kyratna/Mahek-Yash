@@ -1,0 +1,243 @@
+import { useState } from "react";
+import content from "../content";
+import "./BlessingsRSVP.css";
+
+const SIDES = ["Bride Side", "Groom Side"];
+
+function submitToSheet(appsScriptUrl, payload) {
+  // Posting with Content-Type: text/plain keeps this a CORS "simple request"
+  // so the browser doesn't send a preflight OPTIONS request — Apps Script
+  // web apps don't handle OPTIONS, so a preflight would just fail.
+  return fetch(appsScriptUrl, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+  });
+}
+
+function BlessingForm({ appsScriptUrl }) {
+  const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+  const [form, setForm] = useState({ name: "", side: SIDES[0], message: "" });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!appsScriptUrl) {
+      setStatus("not-configured");
+      return;
+    }
+    setStatus("submitting");
+    try {
+      const res = await submitToSheet(appsScriptUrl, { type: "blessing", ...form });
+      if (!res.ok) throw new Error("Request failed");
+      setStatus("success");
+      setForm({ name: "", side: SIDES[0], message: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "success") {
+    return <p className="form-status form-status--success">Thank you for your blessing! 💛</p>;
+  }
+
+  return (
+    <form className="rsvp-form-fields" onSubmit={handleSubmit}>
+      <label>
+        Your name
+        <input
+          type="text"
+          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+      </label>
+      <fieldset>
+        <legend>Which side are you on?</legend>
+        {SIDES.map((side) => (
+          <label className="radio-label" key={side}>
+            <input
+              type="radio"
+              name="blessing-side"
+              value={side}
+              checked={form.side === side}
+              onChange={() => setForm({ ...form, side })}
+            />
+            {side}
+          </label>
+        ))}
+      </fieldset>
+      <label>
+        Your message
+        <textarea
+          required
+          rows={4}
+          value={form.message}
+          onChange={(e) => setForm({ ...form, message: e.target.value })}
+        />
+      </label>
+      {status === "error" && (
+        <p className="form-status form-status--error">
+          Something went wrong — please try again.
+        </p>
+      )}
+      {status === "not-configured" && (
+        <p className="form-status form-status--error">
+          This form isn't connected yet. (See README.md to set up the backend.)
+        </p>
+      )}
+      <button type="submit" className="button button--primary" disabled={status === "submitting"}>
+        {status === "submitting" ? "Sending…" : "Send Blessing"}
+      </button>
+    </form>
+  );
+}
+
+function RsvpForm({ appsScriptUrl }) {
+  const [status, setStatus] = useState("idle");
+  const [form, setForm] = useState({
+    name: "",
+    side: SIDES[0],
+    attending: "Yes",
+    guests: 1,
+    dietary: "",
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!appsScriptUrl) {
+      setStatus("not-configured");
+      return;
+    }
+    setStatus("submitting");
+    try {
+      const res = await submitToSheet(appsScriptUrl, { type: "rsvp", ...form });
+      if (!res.ok) throw new Error("Request failed");
+      setStatus("success");
+      setForm({ name: "", side: SIDES[0], attending: "Yes", guests: 1, dietary: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "success") {
+    return <p className="form-status form-status--success">Thank you — your RSVP is in! 🎉</p>;
+  }
+
+  return (
+    <form className="rsvp-form-fields" onSubmit={handleSubmit}>
+      <label>
+        Your name
+        <input
+          type="text"
+          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+      </label>
+      <fieldset>
+        <legend>Which side are you on?</legend>
+        {SIDES.map((side) => (
+          <label className="radio-label" key={side}>
+            <input
+              type="radio"
+              name="rsvp-side"
+              value={side}
+              checked={form.side === side}
+              onChange={() => setForm({ ...form, side })}
+            />
+            {side}
+          </label>
+        ))}
+      </fieldset>
+      <label>
+        Will you attend?
+        <select
+          value={form.attending}
+          onChange={(e) => setForm({ ...form, attending: e.target.value })}
+        >
+          <option value="Yes">Joyfully accept</option>
+          <option value="No">Regretfully decline</option>
+        </select>
+      </label>
+      <label>
+        Number of guests (including yourself)
+        <input
+          type="number"
+          min={1}
+          max={10}
+          value={form.guests}
+          onChange={(e) => setForm({ ...form, guests: e.target.value })}
+        />
+      </label>
+      <label>
+        Dietary restrictions (optional)
+        <input
+          type="text"
+          value={form.dietary}
+          onChange={(e) => setForm({ ...form, dietary: e.target.value })}
+        />
+      </label>
+      {status === "error" && (
+        <p className="form-status form-status--error">
+          Something went wrong — please try again.
+        </p>
+      )}
+      {status === "not-configured" && (
+        <p className="form-status form-status--error">
+          This form isn't connected yet. (See README.md to set up the backend.)
+        </p>
+      )}
+      <button type="submit" className="button button--primary" disabled={status === "submitting"}>
+        {status === "submitting" ? "Sending…" : "Send RSVP"}
+      </button>
+    </form>
+  );
+}
+
+export default function BlessingsRSVP() {
+  const { blessingsRsvp, integrations } = content;
+  const [activeTab, setActiveTab] = useState("blessings");
+
+  return (
+    <section id="blessings-rsvp" className="section section--surface">
+      <div className="section__inner">
+        <div className="section__heading">
+          <span className="eyebrow">Join The Celebration</span>
+          <h2>{blessingsRsvp.heading}</h2>
+          <p>{blessingsRsvp.subtext}</p>
+        </div>
+
+        <div className="rsvp-tabs">
+          <div className="rsvp-tabs__list" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "blessings"}
+              className={`rsvp-tabs__tab ${activeTab === "blessings" ? "is-active" : ""}`}
+              onClick={() => setActiveTab("blessings")}
+            >
+              Send Blessings
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "rsvp"}
+              className={`rsvp-tabs__tab ${activeTab === "rsvp" ? "is-active" : ""}`}
+              onClick={() => setActiveTab("rsvp")}
+            >
+              RSVP
+            </button>
+          </div>
+
+          <div className="rsvp-tabs__panel">
+            {activeTab === "blessings" ? (
+              <BlessingForm appsScriptUrl={integrations.appsScriptUrl} />
+            ) : (
+              <RsvpForm appsScriptUrl={integrations.appsScriptUrl} />
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

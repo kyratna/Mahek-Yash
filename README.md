@@ -1,7 +1,8 @@
 # Our Wedding Website
 
-A React + Vite single-page wedding invitation site: hero with countdown, event
-details with a map, our story, photo gallery, FAQ, and an RSVP form.
+A React + Vite single-page wedding invitation site: hero with a scratch-to-reveal
+date and countdown, a "Meet the Couple" section, event details with a map,
+photo gallery, a live Blessings wall, a combined Blessings & RSVP form, and FAQ.
 
 ## Running it locally
 
@@ -14,8 +15,8 @@ Then open the URL it prints (usually http://localhost:5173).
 
 ## Customizing the content
 
-Almost everything on the site — names, date, venue, story, FAQ answers, photo
-paths, RSVP link — lives in one file: **`src/content.js`**. Open it and
+Almost everything on the site — names, date, venue, couple profiles, FAQ
+answers, photo paths — lives in one file: **`src/content.js`**. Open it and
 replace every value marked `// TODO: replace`. No other files need to change
 for basic content edits.
 
@@ -23,29 +24,36 @@ for basic content edits.
 
 Edit `content.couple` and `content.wedding`. Keep `dateTimeISO` in the format
 `YYYY-MM-DDTHH:MM:SS±HH:MM` (an explicit timezone offset, not `Z`) so the
-countdown timer is accurate for guests in other timezones.
+countdown timer is accurate for guests in other timezones. The date is
+revealed by a scratch card in the Hero — guests scratch it to reveal
+`wedding.displayDate`.
 
-### 2. Photos
+### 2. Meet the Couple
+
+Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`,
+`parentage` line (e.g. "Daughter of ..."), and `photo`.
+
+### 3. Photos
 
 Photos live in `public/images/` and are referenced by path in `content.js`:
 
 ```
 public/images/hero/       → hero.backgroundImage
-public/images/story/      → ourStory.photos
+public/images/story/      → coupleProfiles.bride.photo / groom.photo
 public/images/gallery/    → gallery
 ```
 
 To swap in your own photos, drop your image files into the matching folder
-and update the `src` paths in `content.js` to point at your new filenames
-(any image format works — jpg, png, etc.). You can add, remove, or reorder as
-many gallery photos as you like by editing the `gallery` array.
+and update the `src`/`photo` paths in `content.js` to point at your new
+filenames (any image format works — jpg, png, etc.). You can add, remove, or
+reorder as many gallery photos as you like by editing the `gallery` array.
 
 The placeholder images shipped in this repo are free-to-use stock photos
 (via [Lorem Picsum](https://picsum.photos), sourced from Unsplash's
 royalty-free library) just so the layout renders correctly before you add
 real photos of your own.
 
-### 3. Venue & map
+### 4. Venue & map
 
 Edit `content.events` and `content.mapAddress`. The map on the Details
 section is a key-free Google Maps embed built from `mapAddress` — no API key
@@ -53,19 +61,57 @@ needed. If you want a precisely pinned location instead of an address
 search, go to Google Maps → Share → Embed a map, copy the `src` URL, and use
 it directly in `src/components/MapEmbed.jsx`.
 
-### 4. RSVP form
-
-1. Create a Google Form for RSVPs.
-2. In the form editor, click **Send** → the `<>` (embed HTML) tab → copy the
-   `src` URL from the `<iframe>` code.
-3. Paste it into `content.rsvp.googleFormEmbedUrl` in `src/content.js`.
-
-Responses will land in the linked Google Sheet — no backend required.
-
 ### 5. FAQ
 
 Edit the `content.faq` array — add, remove, or edit any question/answer
 pairs.
+
+## Blessings & RSVP backend setup
+
+The Blessings wall (a live wall of guest messages) and the Blessings & RSVP
+form are both custom-built — no Google Form embed. They talk to a Google
+Sheet through a small Google Apps Script "Web App," which is free and uses
+only your own Google account. Until you set this up, the Blessings wall just
+shows its empty state, and the form shows a friendly "not connected yet"
+message instead of submitting.
+
+**1. Create the Sheet**
+
+Create a new Google Sheet with two tabs, each with a header row exactly as
+below (case-sensitive, this is what the script expects):
+
+- Tab **`Blessings`**: `Name | Side | Message | Timestamp`
+- Tab **`RSVP`**: `Name | Side | Attending | Guests | Dietary | Timestamp`
+
+**2. Add the script**
+
+In the Sheet, go to **Extensions → Apps Script**. Delete any starter code,
+then paste in the contents of [`google-apps-script/Code.gs`](google-apps-script/Code.gs)
+from this repo. Save the project.
+
+**3. Deploy as a Web App**
+
+Click **Deploy → New deployment**. For "Select type," choose **Web app**.
+Set:
+- Execute as: **Me**
+- Who has access: **Anyone**
+
+Click **Deploy**, authorize the permissions Google asks for (it'll warn you
+it's an unverified app — that's expected for a personal script; click
+Advanced → Go to \[project name] to proceed), then copy the **Web app URL**
+it gives you (ends in `/exec`).
+
+**4. Connect it to the site**
+
+Paste that URL into `content.integrations.appsScriptUrl` in `src/content.js`,
+then rebuild/redeploy the site. Blessings submitted through the form will now
+appear on the Blessings wall (refresh to see new ones — it's not real-time
+push, just a fetch on page load), and RSVPs will land as new rows in the
+`RSVP` tab of your Sheet.
+
+**Note:** every time you edit the script in the Apps Script editor, you need
+to create a **new deployment** (or manage/update the existing one) for the
+changes to take effect — saving alone isn't enough.
 
 ## Building for production
 
@@ -78,22 +124,23 @@ be deployed to any static host — no server or environment variables needed.
 
 - **Netlify / Vercel**: point the build command at `npm run build` and the
   publish directory at `dist`. Both auto-detect Vite projects.
-- **GitHub Pages**: if you deploy to a project page (e.g.
-  `username.github.io/repo-name`), add `base: '/repo-name/'` to
-  `vite.config.js` before building, then publish the `dist/` folder to the
-  `gh-pages` branch (e.g. with the `gh-pages` npm package or a GitHub Actions
-  workflow).
+- **GitHub Pages**: this repo is already configured for it — `vite.config.js`
+  sets `base: '/Mahek-Yash/'` to match the GitHub Pages project URL, and a
+  GitHub Actions workflow (`.github/workflows/deploy.yml`) rebuilds and
+  redeploys automatically on every push to `main`.
 - **Anywhere else**: upload the contents of `dist/` to any static file host.
 
 ## Project structure
 
 ```
 src/
-  content.js        ← edit this for all copy/data
-  index.css          global design tokens (colors, fonts, spacing)
+  content.js         ← edit this for all copy/data
+  index.css           global design tokens (colors, fonts, spacing)
   hooks/
-    useCountdown.js  countdown timer logic
-  components/        one component per section (Hero, Gallery, FAQ, ...)
+    useCountdown.js   countdown timer logic
+  components/         one component per section (Hero, Gallery, FAQ, ...)
 public/
-  images/            your photos live here
+  images/             your photos live here
+google-apps-script/
+  Code.gs             backend for the Blessings wall & RSVP form (see above)
 ```

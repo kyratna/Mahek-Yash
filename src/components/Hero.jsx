@@ -1,5 +1,6 @@
 import content from "../content";
 import Countdown from "./Countdown";
+import ScratchReveal from "./ScratchReveal";
 import "./Hero.css";
 
 export default function Hero() {
@@ -15,7 +16,9 @@ export default function Hero() {
         <h1 className="hero__names">
           {couple.partner1} &amp; {couple.partner2}
         </h1>
-        <p className="hero__date">{wedding.displayDate}</p>
+        <ScratchReveal label="Scratch to reveal the date">
+          <p className="hero__date hero__date--big">{wedding.displayDate}</p>
+        </ScratchReveal>
         <Countdown targetDate={wedding.dateTimeISO} />
       </div>
     </section>

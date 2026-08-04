@@ -95,6 +95,13 @@
   margin: var(--space-1) 0;
 }
 
+.hero__parents {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin: 0 0 var(--space-2);
+}
+
 .hero__date {
   font-size: 1.25rem;
   color: var(--color-text-muted);

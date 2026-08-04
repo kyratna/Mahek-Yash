@@ -24,7 +24,7 @@ const content = {
   },
 
   hero: {
-    tagline: "We're getting married!", // TODO: replace
+    tagline: "Together with their families",
     backgroundImage: asset("/images/hero/placeholder-hero.jpg"),
   },
 

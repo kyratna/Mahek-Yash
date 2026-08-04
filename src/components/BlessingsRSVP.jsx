@@ -1,6 +1,7 @@
 import { useState } from "react";
 import content from "../content";
 import { BLESSINGS_WALL_HASH } from "../lib/routes";
+import ConfettiBurst from "./ConfettiBurst";
 import "./BlessingsRSVP.css";
 
 const SIDES = ["Bride Side", "Groom Side"];
@@ -30,7 +31,7 @@ function buildWhatsAppUrl(data, whatsappNumber) {
   return `https://wa.me/${number}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
-function BlessingForm({ appsScriptUrl, onBlessingSent }) {
+function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate }) {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [form, setForm] = useState({ name: "", side: SIDES[0], message: "" });
 
@@ -46,6 +47,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent }) {
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
       onBlessingSent({ name: form.name, side: form.side, message: form.message });
+      onCelebrate();
       setForm({ name: "", side: SIDES[0], message: "" });
       // Hold on the success message briefly so it's actually readable, then
       // take the guest straight to the wall to see their blessing land.
@@ -117,7 +119,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent }) {
   );
 }
 
-function RsvpForm({ appsScriptUrl, whatsappNumber }) {
+function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate }) {
   const [status, setStatus] = useState("idle");
   const [form, setForm] = useState({
     name: "",
@@ -140,6 +142,7 @@ function RsvpForm({ appsScriptUrl, whatsappNumber }) {
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
       setSubmittedData(form);
+      onCelebrate();
       setForm({ name: "", side: SIDES[0], attending: "Yes", guests: 1, parkingRequired: "No" });
     } catch {
       setStatus("error");
@@ -238,9 +241,12 @@ function RsvpForm({ appsScriptUrl, whatsappNumber }) {
 export default function BlessingsRSVP({ onBlessingSent }) {
   const { blessingsRsvp, integrations } = content;
   const [activeTab, setActiveTab] = useState("blessings");
+  const [celebrateTrigger, setCelebrateTrigger] = useState(0);
+  const celebrate = () => setCelebrateTrigger((t) => t + 1);
 
   return (
     <section id="blessings-rsvp" className="section section--surface">
+      <ConfettiBurst trigger={celebrateTrigger} />
       <div className="section__inner">
         <div className="section__heading">
           <span className="eyebrow">Join The Celebration</span>
@@ -275,11 +281,13 @@ export default function BlessingsRSVP({ onBlessingSent }) {
               <BlessingForm
                 appsScriptUrl={integrations.appsScriptUrl}
                 onBlessingSent={onBlessingSent}
+                onCelebrate={celebrate}
               />
             ) : (
               <RsvpForm
                 appsScriptUrl={integrations.appsScriptUrl}
                 whatsappNumber={integrations.whatsappNumber}
+                onCelebrate={celebrate}
               />
             )}
           </div>

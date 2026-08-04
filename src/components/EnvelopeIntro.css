@@ -1,0 +1,128 @@
+.envelope-intro {
+  /* Paper palette: a beige-ivory body, distinct from the page's flatter
+     --color-bg, plus a shared grain texture (inline SVG noise) so both the
+     body and the flap read as paper rather than flat color. */
+  --envelope-paper-color: #f0e6d2;
+  --envelope-flap-color: #6d2130;
+  --paper-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: var(--envelope-paper-color);
+  background-image: var(--paper-noise);
+  /* Duration here must match SLIDE_DURATION in EnvelopeIntro.jsx. */
+  transition: transform 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* The whole gate drops off the bottom of the viewport, starting at the same
+   moment the flap begins opening (see .envelope__flap--open), so the two
+   motions read as one continuous "opening" gesture instead of a sequence. */
+.envelope-intro--open {
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+.envelope {
+  /* A real length (not a %) — border-width (used below for the flap
+     triangle) doesn't accept percentages, so this has to resolve to an
+     actual unit for calc() to stay valid there. */
+  --envelope-height: 100svh;
+  --flap-ratio: 0.42;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 2000px;
+}
+
+.envelope__flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--envelope-height) * var(--flap-ratio));
+  background-color: var(--envelope-flap-color);
+  background-image: var(--paper-noise);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  transform-origin: top center;
+  /* Duration here must match FLAP_DURATION in EnvelopeIntro.jsx. */
+  transition: transform 0.7s ease-in, opacity 0.3s ease 0.4s;
+  z-index: 3;
+}
+
+.envelope__flap--open {
+  transform: rotateX(180deg);
+  opacity: 0;
+}
+
+.envelope__seal {
+  position: absolute;
+  top: calc(var(--envelope-height) * var(--flap-ratio));
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  z-index: 4;
+  box-shadow: 0 6px 18px rgba(46, 43, 40, 0.3);
+}
+
+.envelope__seal:hover {
+  filter: brightness(1.05);
+}
+
+.envelope__ganesh {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--envelope-height) * var(--flap-ratio) + var(--space-4));
+  transform: translateX(-50%);
+  width: 140px;
+  height: 140px;
+  z-index: 2;
+}
+
+.envelope__ganesh-glow {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(230, 173, 108, 0.85) 0%, rgba(230, 173, 108, 0.35) 45%, rgba(230, 173, 108, 0) 72%);
+  z-index: -1;
+}
+
+.envelope__ganesh-art {
+  width: 100%;
+  height: 100%;
+  color: var(--color-accent);
+  fill: currentColor;
+  filter: drop-shadow(0 4px 10px rgba(46, 43, 40, 0.25));
+}
+
+.envelope__ganesh-eye {
+  fill: var(--envelope-paper-color);
+}
+
+.envelope-intro__hint {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope-intro,
+  .envelope__flap {
+    transition: none;
+  }
+}

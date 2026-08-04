@@ -64,6 +64,7 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 
 ## 5. Page Structure (top to bottom)
 
+0. **Envelope Intro** — full-screen gate shown once per session, before everything else is interactive (see §6 for detail)
 1. **Nav** — fixed (floats over Hero)
 2. **Hero** (`#hero`) — full-height intro, scratch-to-reveal date + countdown
 3. **Meet the Couple** (`#couple`)
@@ -96,6 +97,16 @@ position.
 
 ## 6. Section-by-Section Detail
 
+### Envelope Intro
+- Full-viewport gate (`EnvelopeIntro.jsx`, `position: fixed`, `z-index: 1000`) shown once per browser session before any content is interactive; page scroll is locked (`body { overflow: hidden }`) while it's up. Persisted via `sessionStorage`, so it doesn't replay when navigating to/from the Blessings Wall page
+- **Real-paper look**: the flap is a deep maroon (`--envelope-flap-color: #6d2130`), the envelope body/backdrop a warm ivory-beige (`--envelope-paper-color: #f0e6d2`, deliberately distinct from the page's flatter `--color-bg`) — both carry a shared grain texture (`--paper-noise`, an inline SVG `feTurbulence` filter, no image asset) so they read as paper rather than flat color
+- The flap is a full-width triangle (`clip-path: polygon(...)`, not a border hack — chosen specifically so it can carry the paper texture/background, which a CSS border-triangle can't), sized to ~42% of the viewport height (`--flap-ratio`), pointing down to a circular gold seal button (couple's initials, e.g. "M & Y") sitting right at its tip
+- Below the seal, a small gold **Ganesh vector art icon** (`.envelope__ganesh`, hand-drawn inline SVG placeholder) sits centered with a soft warm radial glow behind it (`.envelope__ganesh-glow`). It isn't hidden once the gate opens — it slides down together with the rest of the gate as one rigid unit, same as the flap
+- **Interaction — flap and slide are simultaneous, not sequenced**: tapping the seal starts the flap rotating open (`rotateX`) *and* the entire gate sliding down off the bottom of the viewport at the same instant, so the two motions read as one continuous "opening" gesture — as if someone is actually tearing the envelope open — rather than two separate beats
+- **Timing is a config item** at the top of `EnvelopeIntro.jsx`: `FLAP_DURATION` (700ms) and `SLIDE_DURATION` (1500ms, intentionally the slower/more deliberate of the two — this was tuned down from an earlier, faster pass). The matching CSS `transition` duration on `.envelope-intro` (and `.envelope__flap`) must be kept in sync with these constants by hand — there's no shared config file
+- A "Tap to open" hint label sits near the bottom of the screen while closed
+- Degrades to an instant, motion-free transition under `prefers-reduced-motion`
+
 ### Nav
 - **Fixed** to the top of the viewport (`position: fixed`), but starts **hidden** (`opacity: 0`) while the Hero is in view — it fades softly in (`opacity` transition, ~0.4s) once you've scrolled roughly one Hero-height down, so the Hero photo is uninterrupted at first glance. Toggled via a scroll listener comparing `scrollY` against the Hero's height, not CSS alone
 - An initials monogram "logo" sits in the bar (e.g. "M & Y", derived from `content.couple`) — clicking/tapping it scrolls straight back to the Hero
@@ -116,6 +127,16 @@ position.
 - **Glitter effect**: ~16 small soft sparkles scattered across the photo, each twinkling on its own staggered timer (fade + scale via `@keyframes sparkle-twinkle`), plus a slow diagonal light-shimmer band that sweeps across the whole hero on a ~9s loop. Both are `pointer-events: none` (decorative only) and disabled under `prefers-reduced-motion`
 - Content, top to bottom: eyebrow tagline → couple's names (h1) → the scratch-reveal card (date + countdown, see below)
 - Max content width 40rem, centered
+- remove the background photo of the hero.
+- add Lord Ganesh vector art in the top center, with glowing background. not so big in size.
+- add 'vakra tund maha kaya' shlok in sanskrit font below the vector art
+- add the english translation of the shlok below above
+- add line 'we cordily invite you on the auspicious union of
+bride name 
+<bride parents name>
+&
+groom name
+<groom parents name>
 
 ### Scratch Reveal
 - A realistic scratch-off card (`src/components/ScratchReveal.jsx`) covers **both** the wedding date and the countdown together — scratching it away reveals them as one unit, not the countdown separately
@@ -124,7 +145,8 @@ position.
 - **Falling debris**: while scratching, small colored fragments (matching the paper's red tones) spawn at the scratch point and animate falling downward with a slight rotation and fade-out (~0.9s, CSS `@keyframes`), like actual scratch-off flakes coming loose. Spawned probabilistically per scratch move so it doesn't flood the DOM; skipped under `prefers-reduced-motion`
 - The revealed date is now the **larger** element (`clamp(1.75rem, 4.5vw, 2.75rem)`, serif) with the countdown shown smaller beneath it (`clamp(1.1rem, 3vw, 1.5rem)` per digit) — the reverse of an earlier iteration
 - Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds); small uppercase muted label underneath each; updates live every second. **Stays a single row at every width** — below 600px the blocks shrink to share the available width (`flex: 1 1 0`, `flex-wrap: nowrap`) instead of wrapping to two rows
-- After the wedding date passes, replaces the whole countdown with a single "We're married!" line
+- After the wedding date passes, replaces the whole countdown with a single "<bride> & <groom> are married" line
+- on the scratch layer, add this line 'Save the date' (bigger font) below it add line 'scratch to revel the date' in smaller font.
 
 ### Meet the Couple
 - Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card
@@ -143,10 +165,11 @@ position.
 - A **"Get Directions"** button sits below the map — links to `google.com/maps/dir/?api=1&destination=<mapAddress>`, opens in a new tab, drops the visitor straight into turn-by-turn navigation
 
 ### Gallery
-- White/surface section, rebuilt as a **slideshow**, not a plain grid
-- A large main frame (max-width 40rem, 4:3 aspect ratio) shows the currently-featured photo; clicking it opens the existing fullscreen lightbox (dark overlay, close × and prev/next ‹ › controls, all ≥44px tap targets)
-- A horizontally-scrollable strip of small thumbnails (64×64px) sits **centered** below the main frame — clicking one instantly features that photo in the main frame; the active thumbnail gets an accent-colored border and full opacity, others sit at reduced opacity. If there are enough photos to overflow the strip's width, it scrolls rather than staying centered
-- **Auto-advances** left to right on its own (every 4s) when left untouched; selecting a photo (thumbnail click, or prev/next inside the lightbox) resets that timer so it restarts counting from whatever you just picked, and it pauses entirely while the lightbox is open
+- White/surface section, rebuilt as a **3D coverflow**, not a slideshow or plain grid
+- Photos fan out in perspective around the active one: the centered photo sits large and flat, neighbors recede to either side (`rotateY` + `translateZ` + `scale`, distance-based), farther photos shrink and dim further. Distance-to-center wraps the "short way around" so cycling past the last photo turns whichever direction is closer rather than unwinding all the way back
+- Click a side cover to bring it to center; click the centered cover to open the existing fullscreen lightbox (dark overlay, close × and prev/next ‹ › controls, all ≥44px tap targets). Explicit prev/next chevron buttons flank the coverflow, and small dot indicators (one per photo) sit below it — no thumbnail strip
+- **Auto-advances** left to right on its own (every 4s) when left untouched; selecting a cover (click, dot, or prev/next inside the lightbox) resets that timer so it restarts counting from whatever you just picked, and it pauses entirely while the lightbox is open
+- On narrow screens the coverflow's stage height and 3D perspective shrink and covers widen slightly, but the fan-out mechanic stays the same at every width — it never collapses to a stacked column
 
 ### Blessings
 - White/surface section. Guest messages shown as individual sticky notes with **rounded corners** (`border-radius: 0.85rem`), 4 rotating pastel colors, soft drop shadow, each showing the message, then "— name" and, on its own line below, "(side)" in parentheses, then a small muted date
@@ -165,6 +188,7 @@ position.
 - RSVP fields: name, side, attending (Joyfully accept / Regretfully decline), number of guests, and **"Parking required?" (Yes/No)** — replaced an earlier free-text dietary-restrictions field
 - On successful blessing submission: the form holds on a "Thank you" message for **2 seconds** (so it's actually readable), then automatically navigates to the Blessings Wall page, where the guest's own note is already visible (see above)
 - On successful RSVP submission: inline confirmation message, plus a **"Share via WhatsApp"** button — pre-fills a `wa.me` message with the submitted name/side/attending/guests/parking so the guest can forward their RSVP directly. Opens `content.integrations.whatsappNumber`'s chat if set, otherwise opens WhatsApp's contact picker
+- **Confetti** (see §10) fires a one-shot burst on every successful submission, blessing or RSVP alike — each submission triggers its own burst independently, so back-to-back submissions each get one
 - If the Apps Script backend isn't configured (`content.integrations.appsScriptUrl` empty), both forms fail gracefully with an inline "not connected yet" message rather than erroring
 
 ### FAQ
@@ -183,7 +207,7 @@ position.
 - Mobile-first breakpoints, primarily at `480px`, `600px`, and `700px` — since most guests are expected to open this on a phone, mobile is treated as the primary layout, not an afterthought
 - Nav collapses to a hamburger menu ≤700px (see Nav section above)
 - Event Details collapses from an alternating left/right timeline to a single-column left-aligned timeline ≤700px (see Event Details section above)
-- Gallery's thumbnail strip scrolls horizontally rather than reflowing, so it works the same way at any width
+- Gallery's coverflow shrinks its stage height/perspective and widens covers slightly on narrow screens, but keeps the same fan-out mechanic (no reflow to a stacked column) at any width
 - **Meet the Couple is the one exception to "stack on mobile"** — it deliberately keeps bride/groom side-by-side at every width, shrinking sizes instead of stacking (see Meet the Couple section above)
 - Blessings switches from the circular floating cloud to a plain grid ≤700px (see Blessings section above)
 - The floating bottom-right controls (section arrows + music button) shift slightly closer to the corner (`--space-1` instead of `--space-2`) on screens ≤480px
@@ -203,6 +227,14 @@ in real photos.
 - Attempts to autoplay on load; if the browser blocks autoplay-with-sound (standard behavior until the visitor interacts with the page), it starts on the visitor's first click/tap anywhere on the site
 - Button icon swaps between a sound-on and sound-off (crossed-out) speaker glyph based on mute state
 - Hidden entirely — no button rendered at all — until a real audio file is configured (`content.music.src`), same "absent until configured" pattern as the Blessings backend. Currently set to `public/audio/background-music.mp3`. See `README.md` → "Background music" for where to legally source a track if you swap it out (music carries real copyright risk, unlike the stock photos above, so nothing was bundled by default originally)
+
+## 10. Sparkle & Celebration Effects
+
+Three small decorative components, layered on top of the page content, independent of any one section. All are `pointer-events: none` (never block clicks) and disabled outright under `prefers-reduced-motion`.
+
+- **Page Sparkles** (`PageSparkles.jsx`) — ~10 small twinkle dots at fixed positions scattered across the full viewport, each fading/scaling in on its own staggered timer, visible no matter which section is scrolled into view. Distinct from Hero's own denser "glitter" effect (§Hero above), which only lives on the Hero photo itself
+- **Cursor Sparkle Trail** (`CursorSparkleTrail.jsx`) — small gold star-shaped sparkles spawn at the pointer as it moves and fade out over ~700ms, capped at ~20 concurrent so it stays light. Skipped entirely on touch/coarse-pointer devices (no hover cursor to trail)
+- **Confetti Burst** (`ConfettiBurst.jsx`) — a one-shot, full-viewport burst of ~90 pieces (mixed accent/ivory/dark tones, matching the palette) that fall and fade over ~3.6s. Fires on successful Blessing or RSVP submission (see Blessings and RSVP above); each submission triggers its own independent burst
 
 ---
 

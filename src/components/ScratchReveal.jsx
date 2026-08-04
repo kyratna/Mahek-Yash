@@ -5,13 +5,16 @@ const REVEAL_THRESHOLD = 0.5;
 const BRUSH_RADIUS = 26;
 const DEBRIS_COLORS = ["#7a1f1a", "#932823", "#5c1512", "#a8362f"];
 
-export default function ScratchReveal({ children, label = "Scratch to reveal" }) {
+export default function ScratchReveal({ children, label = "Scratch to reveal", onReveal }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const isPointerDown = useRef(false);
   const debrisIdRef = useRef(0);
+  const hasRevealedRef = useRef(false);
   const [revealed, setRevealed] = useState(false);
   const [debris, setDebris] = useState([]);
+  const onRevealRef = useRef(onReveal);
+  onRevealRef.current = onReveal;
 
   useEffect(() => {
     if (revealed) return;
@@ -125,8 +128,10 @@ export default function ScratchReveal({ children, label = "Scratch to reveal" })
       const { x, y } = getPoint(event);
       scratchAt(x, y);
       spawnDebris(x, y);
-      if (measureCleared() > REVEAL_THRESHOLD) {
+      if (measureCleared() > REVEAL_THRESHOLD && !hasRevealedRef.current) {
+        hasRevealedRef.current = true;
         setRevealed(true);
+        onRevealRef.current?.();
       }
     }
 

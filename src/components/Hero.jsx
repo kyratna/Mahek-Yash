@@ -1,6 +1,8 @@
+import { useState } from "react";
 import content from "../content";
 import Countdown from "./Countdown";
 import ScratchReveal from "./ScratchReveal";
+import ConfettiBurst from "./ConfettiBurst";
 import "./Hero.css";
 
 // Fixed positions/timings for the twinkle sparkles — deterministic (no
@@ -25,7 +27,9 @@ const SPARKLES = [
 ];
 
 export default function Hero() {
-  const { couple, wedding, hero } = content;
+  const { couple, wedding, hero, coupleProfiles } = content;
+  const { bride, groom } = coupleProfiles;
+  const [revealed, setRevealed] = useState(false);
 
   return (
     <section
@@ -48,13 +52,23 @@ export default function Hero() {
         <h1 className="hero__names">
           {couple.partner1} &amp; {couple.partner2}
         </h1>
-        <ScratchReveal label="Scratch to reveal">
+        <p className="hero__parents">
+          {bride.parentage.person1} &amp; {bride.parentage.person2}
+          <br />
+          and
+          <br />
+          {groom.parentage.person1} &amp; {groom.parentage.person2}
+          <br />
+          request the pleasure of your company at the wedding of their children
+        </p>
+        <ScratchReveal label="Scratch to reveal" onReveal={() => setRevealed(true)}>
           <div className="hero__reveal-content">
             <p className="hero__date hero__date--reveal">{wedding.displayDate}</p>
             <Countdown targetDate={wedding.dateTimeISO} />
           </div>
         </ScratchReveal>
       </div>
+      <ConfettiBurst active={revealed} />
     </section>
   );
 }

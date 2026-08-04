@@ -1,0 +1,44 @@
+.cursor-sparkle-trail {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+}
+
+.cursor-sparkle {
+  position: absolute;
+  background: radial-gradient(circle, rgba(176, 137, 104, 0.95) 0%, rgba(176, 137, 104, 0) 70%);
+  clip-path: polygon(
+    50% 0%,
+    62% 38%,
+    100% 50%,
+    62% 62%,
+    50% 100%,
+    38% 62%,
+    0% 50%,
+    38% 38%
+  );
+  transform: translate(-50%, -50%) rotate(var(--sparkle-rotation)) scale(0.4);
+  animation: cursor-sparkle-fade 0.7s ease-out forwards;
+}
+
+@keyframes cursor-sparkle-fade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotation)) scale(0.4);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotation)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--sparkle-rotation)) scale(0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-sparkle-trail {
+    display: none;
+  }
+}

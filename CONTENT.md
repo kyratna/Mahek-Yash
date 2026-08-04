@@ -55,7 +55,15 @@ grandfather's first name is still blank — `__` — fill it in when ready.)*
 - Time: `[ 1:00 PM ]`
 - Date: `[ December 05, 2026 ]`
 
+**Sagai / Godh **
+- Time: `[ 1:00 PM ]`
+- Date: `[ December 05, 2026 ]`
+
 **Engagement**
+- Time: `[ e.g. 6:00 PM ]`
+- Date: `[ December 05, 2026 ]`
+
+**Musical Cocktail**
 - Time: `[ e.g. 6:00 PM ]`
 - Date: `[ December 05, 2026 ]`
 

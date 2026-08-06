@@ -42,7 +42,7 @@ Loaded via Google Fonts `<link>` in `index.html` (no npm font package).
 | `h3` | `1.4rem` |
 | Body text | `1.15rem`, line-height `1.6` |
 | Eyebrow labels (e.g. "HOW IT STARTED") | `0.8rem`, uppercase, `letter-spacing: 0.2em` |
-| Nav links | `0.95rem`, uppercase, `letter-spacing: 0.04em` (`0.85rem` on mobile) |
+| Nav links | `0.95rem`, uppercase, `letter-spacing: 0.04em` (same size on mobile) |
 
 ## 3. Spacing Scale
 
@@ -104,14 +104,14 @@ position.
 - **Two independently-animated layers, not one**: the flap (`.envelope__flap`) and the "gate" underneath it (`.envelope__gate` — paper background, Ganesh art, seal) are siblings, not parent/child. The flap is pinned to the top of the viewport and only rotates open in place (`rotateX`) like a lid swinging open; the gate is the piece that slides down (`translateY(100%)`) to reveal Hero. Splitting them this way means the flap is never dragged downward with the rest of the envelope — it stays put and fades away on its own
 - The flap is a full-width triangle (`clip-path: polygon(...)`, not a border hack — chosen specifically so it can carry the paper texture/background, which a CSS border-triangle can't), sized to ~42% of the viewport height (`--flap-ratio`), pointing down to a circular gold seal button (couple's initials, e.g. "M & Y") sitting right at its tip
 - Below the seal, a small gold **Ganesh vector art icon** (shared `GaneshArt.jsx` component — same artwork also used in Hero and the browser tab favicon, `public/favicon.svg`) sits centered on the gate, **no glow** here (kept plain so it doesn't compete with the seal below). It slides down together with the rest of the gate as one rigid unit
-- **The seal itself glows and shines** — a slow pulsing gold glow ring (`box-shadow` animation) plus a diagonal light sweep across its surface (`.envelope__seal-shine`, reusing the same shimmer technique as Hero's photo-sweep), both purely to signal "this is the button to tap" since it's the only interactive element on the whole gate
+- **The seal itself glows and shines** — a slow pulsing gold glow ring (`box-shadow` animation) plus a diagonal light sweep across its surface (`.envelope__seal-shine`, reusing the same shimmer technique as Hero's light-shimmer band), both purely to signal "this is the button to tap" since it's the only interactive element on the whole gate
 - **Interaction — flap and slide are simultaneous, not sequenced**: tapping the seal starts the flap rotating open (`rotateX`) *and* the gate sliding down off the bottom of the viewport at the same instant, so the two motions read as one continuous "opening" gesture — as if someone is actually tearing the envelope open — rather than two separate beats
 - **Timing is a config item** at the top of `EnvelopeIntro.jsx`: `FLAP_DURATION` (700ms) and `SLIDE_DURATION` (1500ms, intentionally the slower/more deliberate of the two — this was tuned down from an earlier, faster pass). The matching CSS `transition` durations on `.envelope__flap` and `.envelope__gate` must be kept in sync with these constants by hand — there's no shared config file
 - A "Tap to open" hint label sits near the bottom of the screen while closed
 - Degrades to an instant, motion-free transition under `prefers-reduced-motion`; the seal's glow/shine animations are also disabled (replaced with a static enhanced glow ring so the "tap me" affordance doesn't disappear entirely)
 
 ### Nav
-- **Fixed** to the top of the viewport (`position: fixed`), but starts **hidden** (`opacity: 0`) while the Hero is in view — it fades softly in (`opacity` transition, ~0.4s) once you've scrolled roughly one Hero-height down, so the Hero photo is uninterrupted at first glance. Toggled via a scroll listener comparing `scrollY` against the Hero's height, not CSS alone
+- **Fixed** to the top of the viewport (`position: fixed`), but starts **hidden** (`opacity: 0`) while the Hero is in view — it fades softly in (`opacity` transition, ~0.4s) once you've scrolled roughly one Hero-height down, so the Hero content is uninterrupted at first glance. Toggled via a scroll listener comparing `scrollY` against the Hero's height, not CSS alone
 - An initials monogram "logo" sits in the bar (e.g. "M & Y", derived from `content.couple`) — clicking/tapping it scrolls straight back to the Hero
 - Semi-transparent ivory background (`rgba(250,247,242,0.9)`) with backdrop blur, so content scrolling underneath is softly visible
 - Hairline border on bottom edge
@@ -142,7 +142,7 @@ position.
 - **Falling debris**: while scratching, small colored fragments (matching the paper's red tones) spawn at the scratch point and animate falling downward with a slight rotation and fade-out (~0.9s, CSS `@keyframes`), like actual scratch-off flakes coming loose. Spawned probabilistically per scratch move so it doesn't flood the DOM; skipped under `prefers-reduced-motion`
 - The revealed date is now the **larger** element (`clamp(1.75rem, 4.5vw, 2.75rem)`, serif) with the countdown shown smaller beneath it (`clamp(1.1rem, 3vw, 1.5rem)` per digit) — the reverse of an earlier iteration
 - Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds); small uppercase muted label underneath each; updates live every second. **Stays a single row at every width** — below 600px the blocks shrink to share the available width (`flex: 1 1 0`, `flex-wrap: nowrap`) instead of wrapping to two rows
-- After the wedding date passes, replaces the whole countdown with a single "<bride> & <groom> are married" line
+- After the wedding date passes, replaces the whole countdown with a single hardcoded "We're married!" line (`Countdown.jsx`, no names interpolated)
 - **The scratch-off surface itself shows two lines of canvas-drawn text** (not a single label): "Save the date" in a larger heading-weight line, and "Scratch to reveal the date" smaller beneath it. `ScratchReveal` takes both as props (`heading`, defaulting to "Save the date"; `label`, defaulting to "Scratch to reveal the date") — Hero doesn't override either, so it just uses the defaults
 
 ### Meet the Couple
@@ -157,7 +157,7 @@ position.
 - Events shown as a vertical **timeline**: a thin center line runs top to bottom, each event connects to it via a small circular marker, and event cards alternate left/right of the line (1st event left, 2nd right, 3rd left, ...)
 - Each card: event name (h3) → date (small, uppercase, muted) → time (accent color, larger) only — **no venue name or address on the cards themselves**; the shared map below covers location for all events
 - **Mobile (≤700px)**: the line moves to the left edge, every card sits full-width to its right (no more alternating), markers align to the line — a standard single-column timeline
-- Vertical spacing between items is intentionally tight (`--space-2` gap, `--space-2`/`--space-3` card padding) since cards are now short (3 lines) — this was widened back down after removing venue/address left too much dead space at the old spacing
+- Vertical spacing between items is intentionally tight (`--space-1` gap, `--space-1`/`--space-3` card padding) since cards are now short (3 lines) — this was widened back down after removing venue/address left too much dead space at the old spacing
 - Below the timeline: an embedded Google Map (key-free, built from `content.mapAddress`, currently "Winsome Resorts and Spa, Jim Corbett"), bordered, 320px tall (220px on mobile)
 - A **"Get Directions"** button sits below the map — links to `google.com/maps/dir/?api=1&destination=<mapAddress>`, opens in a new tab, drops the visitor straight into turn-by-turn navigation
 
@@ -212,11 +212,11 @@ position.
 
 ## 8. Images
 
-Current placeholder photos are free-to-use stock images (via Lorem Picsum,
-sourced from Unsplash's royalty-free library) — soft sky, desert dunes,
-misty forest, calla lily, ocean waves, a lighthouse, a map, the Eiffel
-Tower. No copyrighted/trademarked imagery. See `README.md` for how to swap
-in real photos.
+Current placeholder photos are 6 free-to-use stock images (via Lorem
+Picsum, sourced from Unsplash's royalty-free library) at
+`public/images/gallery/placeholder-01.jpg` through `placeholder-06.jpg`,
+random landscape/scenery shots — no copyrighted/trademarked imagery. See
+`README.md` for how to swap in real photos.
 
 ## 9. Background Music
 
@@ -229,7 +229,7 @@ in real photos.
 
 Three small decorative components, layered on top of the page content, independent of any one section. All are `pointer-events: none` (never block clicks) and disabled outright under `prefers-reduced-motion`.
 
-- **Page Sparkles** (`PageSparkles.jsx`) — ~10 small twinkle dots at fixed positions scattered across the full viewport, each fading/scaling in on its own staggered timer, visible no matter which section is scrolled into view. Distinct from Hero's own denser "glitter" effect (§Hero above), which only lives on the Hero photo itself
+- **Page Sparkles** (`PageSparkles.jsx`) — ~10 small twinkle dots at fixed positions scattered across the full viewport, each fading/scaling in on its own staggered timer, visible no matter which section is scrolled into view. Distinct from Hero's own denser "glitter" effect (§Hero above), which only lives on the Hero section itself
 - **Cursor Sparkle Trail** (`CursorSparkleTrail.jsx`) — small gold star-shaped sparkles spawn at the pointer as it moves and fade out over ~700ms, capped at ~20 concurrent so it stays light. Skipped entirely on touch/coarse-pointer devices (no hover cursor to trail)
 - **Confetti Burst** (`ConfettiBurst.jsx`) — a one-shot, full-viewport burst of ~90 pieces (mixed accent/ivory/dark tones, matching the palette) that fall and fade over ~3.6s. Fires on successful Blessing or RSVP submission (see Blessings and RSVP above) and on scratching the Hero card fully open (see Scratch Reveal above); each trigger fires its own independent burst
 

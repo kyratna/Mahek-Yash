@@ -28,7 +28,7 @@ guests watching from other timezones.)*
 
 ## 3. Hero Tagline
 
-A short line shown above your names (currently "We're getting married!"):
+A short line shown above your names (currently "Together with their families"):
 
 - Tagline: `[ ]`
 
@@ -55,20 +55,12 @@ grandfather's first name is still blank — `__` — fill it in when ready.)*
 - Time: `[ 1:00 PM ]`
 - Date: `[ December 05, 2026 ]`
 
-**Sagai / Godh **
-- Time: `[ 1:00 PM ]`
-- Date: `[ December 05, 2026 ]`
-
 **Engagement**
-- Time: `[ e.g. 6:00 PM ]`
-- Date: `[ December 05, 2026 ]`
-
-**Musical Cocktail**
-- Time: `[ e.g. 6:00 PM ]`
+- Time: `[ 6:00 PM — TODO: confirm, currently a placeholder ]`
 - Date: `[ December 05, 2026 ]`
 
 **Baarat**
-- Time: `[ e.g. 11:30 AM ]`
+- Time: `[ 11:30 AM — TODO: confirm, currently a placeholder ]`
 - Date: `[ December 06, 2026 ]`
 
 **Jaimaal**
@@ -79,6 +71,9 @@ grandfather's first name is still blank — `__` — fill it in when ready.)*
 - Time: `[ 5:00 PM ]`
 - Date: `[ December 06, 2026 ]`
 
+*(Sagai/Godh and Musical Cocktail were removed — the site only has these
+five events now.)*
+
 ## 6. Blessings Section Text
 
 - Subtext under the "Blessings" heading (currently "Sweet wishes from our
@@ -86,7 +81,7 @@ grandfather's first name is still blank — `__` — fill it in when ready.)*
 
 ## 7. Blessings & RSVP Section Text
 
-- RSVP deadline / subtext (currently "Please respond by [date]"): `[ e.g. Send blessings and RSVP]`
+- Subtext (currently "Send blessings and RSVP"): `[ ]`
 
 ## 8. Photos
 
@@ -94,8 +89,7 @@ Photos aren't typed into this file — instead, just send me (or drop into
 `public/images/...`) the actual image files for each slot below, and tell me
 which is which:
 
-- [ ] Hero background photo (1 photo, wide/landscape shape)
-- [ ] Gallery photos (as many as you'd like — currently set up for 6)
+- [x] Gallery photos (as many as you'd like — currently set up for 6) — placeholders in place, swap in real photos whenever ready
 - [x] Couple vector illustration (centered on the boundary between the two profile cards) — added
 - [x] Background music track — added (`public/audio/background-music.mp3`)
 

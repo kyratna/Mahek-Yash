@@ -159,7 +159,8 @@ Paste that URL into `content.integrations.appsScriptUrl` in `src/content.js`,
 then rebuild/redeploy the site. Blessings submitted through the form appear
 on the wall instantly for the sender, and the page also polls in the
 background every 10s so other visitors' blessings show up without a manual
-refresh. RSVPs land as new rows in the `RSVP` tab of your Sheet.
+refresh. RSVPs land as new rows in the `RSVP_BRIDE` or `RSVP_GROOM` tab of
+your Sheet, depending on which side the guest selects.
 
 **Note:** every time you edit the script in the Apps Script editor, you need
 to create a **new deployment** (or manage/update the existing one) for the

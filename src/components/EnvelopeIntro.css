@@ -1,14 +1,18 @@
 .envelope-intro {
-  /* Dark, photo-less "backdrop" palette for this scene only — the rest of
-     the site never goes this dark, so these stay local instead of joining
-     index.css's ivory-first tokens. Grain reuses the same inline SVG
-     feTurbulence trick as the rest of the site's paper textures, standing
-     in for the ported design's blurred background photo (no image asset
+  /* Dusty-rose envelope on a warm near-black backdrop — the rest of the
+     site never goes this dark or this pink, so these stay local instead
+     of joining index.css's ivory-first tokens. Grain reuses the same
+     inline SVG feTurbulence trick as the rest of the site's paper
+     textures, standing in for a photographed backdrop (no image asset
      needed). */
-  --envelope-charcoal-1: #3a332f;
-  --envelope-charcoal-2: #211d1b;
-  --envelope-charcoal-3: #2c2724;
-  --envelope-flap-fill: #4a4038;
+  --envelope-rose-1: #c98a92;
+  --envelope-rose-2: #a8626c;
+  /* Matches the body's own top-edge color exactly, so there's no visible
+     color seam where the flap meets the body — the fold shadow gradient
+     (see the SVG defs below) is what gives the flap its own depth instead. */
+  --envelope-flap-fill: var(--envelope-rose-1);
+  --envelope-backdrop-1: #2b1a1d;
+  --envelope-backdrop-2: #180f11;
   --envelope-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
   position: fixed;
   inset: 0;
@@ -30,14 +34,14 @@
   position: absolute;
   inset: 0;
   background: var(--envelope-noise),
-    radial-gradient(circle at 50% 35%, var(--envelope-charcoal-3), var(--envelope-charcoal-2) 75%);
+    radial-gradient(circle at 50% 35%, var(--envelope-backdrop-1), var(--envelope-backdrop-2) 75%);
   background-blend-mode: overlay, normal;
 }
 
 /* Everything visible — crest, overline, envelope, hint — lives in here so a
-   single opacity/scale transition dissolves the whole scene at once. The
-   peeking card (below) still carries its own separate fly-up transform on
-   top of this, since it's a nested element. */
+   single opacity/scale transition dissolves the whole scene at once, timed
+   to the card's own fly-out (below) so the scene falls away around it as
+   it rushes off toward the viewer. */
 .envelope-intro__content {
   position: relative;
   z-index: 1;
@@ -45,14 +49,13 @@
   flex-direction: column;
   align-items: center;
   padding: 0 var(--space-3);
-  /* Duration/delay here must match CONTENT_FADE_DURATION/CONTENT_FADE_DELAY
-     in EnvelopeIntro.jsx. */
-  transition: opacity 0.7s ease-out 0.25s, transform 0.7s ease-out 0.25s;
+  /* Duration here must match SCENE_FADE_DURATION in EnvelopeIntro.jsx. */
+  transition: opacity 0.7s ease-in, transform 0.7s ease-in;
 }
 
-.envelope-intro__content--open {
+.envelope-intro__content--flying {
   opacity: 0;
-  transform: scale(0.94);
+  transform: scale(0.92);
 }
 
 .envelope-intro__ganesh {
@@ -76,15 +79,24 @@
   position: relative;
   width: min(18rem, 80vw);
   height: 14rem;
+  perspective: 900px;
+}
+
+/* Body sits flush against the flap's apex (see --flap-apex below) with
+   only a hairline of overlap, matching a real envelope where the flap
+   folds down to meet the pocket's top edge rather than covering half of
+   it. */
+.envelope-box {
+  --flap-apex: 46%;
 }
 
 .envelope-box__body {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: 78%;
+  height: calc(100% - var(--flap-apex) + 6%);
   border-radius: 0.125rem 0.125rem 0.375rem 0.375rem;
-  background: linear-gradient(to bottom, var(--envelope-charcoal-1), var(--envelope-charcoal-2));
+  background: linear-gradient(to bottom, var(--envelope-rose-1), var(--envelope-rose-2));
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
@@ -92,58 +104,106 @@
   position: absolute;
   inset-inline: 0;
   top: 0;
-  height: 62%;
+  height: var(--flap-apex);
   width: 100%;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transform-origin: top center;
+  /* Duration here must match FLAP_OPEN_DURATION in EnvelopeIntro.jsx. */
+  transition: transform 0.9s ease-in-out, opacity 0.9s ease-in-out;
+}
+
+.envelope-box__flap--open {
+  transform: rotateX(-150deg);
+  opacity: 0.45;
 }
 
 .envelope-box__flap-shape {
   fill: var(--envelope-flap-fill);
 }
 
+/* Tucked inside the envelope by default — pulled down and slightly shrunk
+   so it reads as sitting behind the (still-closed) flap, invisible until
+   opened. Rises to its "peeking" position on open, then rushes toward the
+   viewer on fly-out (see modifiers below). */
 .envelope-box__card {
   position: absolute;
   inset-inline: 1rem;
-  top: -2.5rem;
-  height: 7rem;
+  top: -3.2rem;
+  height: 8.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  border: none;
+  gap: 0.4rem;
   border-radius: 0.125rem;
   background: var(--color-bg);
   padding: 0 var(--space-2);
   text-align: center;
   box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.45);
-  cursor: pointer;
-  /* Duration here must match CARD_FLY_DURATION in EnvelopeIntro.jsx. */
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(3.2rem) scale(0.82) rotate(-7deg);
+  opacity: 0;
+  pointer-events: none;
+  /* Delay/duration here must match CARD_RISE_DELAY/CARD_RISE_DURATION in
+     EnvelopeIntro.jsx — the delay is what makes the card wait a beat for
+     the flap to start opening before it lifts, instead of both moving at
+     once. */
+  transition: transform 0.9s ease-out 0.3s, opacity 0.9s ease-out 0.3s;
   z-index: 2;
 }
 
-.envelope-box__card--open {
-  transform: translateY(-115vh);
+/* Rises out at a slight angle, like being pulled from the envelope by
+   hand, then settles flat/straight once fully out. */
+.envelope-box__card--risen {
+  transform: translateY(0) scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+/* Card rushing toward the viewer, "out of the screen" — a big scale-up
+   plus fade, the standard fake-dolly-zoom trick for a flat 2D element.
+   Declared after --risen so it wins the cascade while both classes are
+   present together during the fly-out beat. Duration here must match
+   CARD_FLY_DURATION in EnvelopeIntro.jsx. */
+.envelope-box__card--flying {
+  transform: translateY(-2.4rem) scale(7);
+  opacity: 0;
+  transition: transform 0.75s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.6s ease-in 0.15s;
+}
+
+.envelope-box__card-eyebrow {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--color-text-muted);
 }
 
 .envelope-box__card-names {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   color: var(--color-text);
+}
+
+.envelope-box__card-divider {
+  width: 2rem;
+  height: 1px;
+  background: var(--color-border);
 }
 
 .envelope-box__card-date {
   font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.envelope-box__card-venue {
+  font-size: 0.55rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   color: var(--color-text-muted);
 }
 
 .envelope-box__seal {
   position: absolute;
   left: 50%;
-  top: 37%;
+  top: var(--flap-apex);
   transform: translate(-50%, -50%);
   width: 44px;
   height: 44px;
@@ -212,7 +272,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .envelope-intro__content,
-  .envelope-box__card {
+  .envelope-box__flap,
+  .envelope-box__card,
+  .envelope-box__card--flying {
     transition: none;
   }
 

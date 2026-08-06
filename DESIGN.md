@@ -31,6 +31,7 @@ accent color used sparingly, not as a background fill anywhere.
 |---|---|---|
 | Headings (h1/h2/h3) | **Playfair Display** | Falls back to Georgia, Times New Roman, serif. Weight 400 (not bold), `letter-spacing: 0.02em` |
 | Body text | **Cormorant Garamond** | Falls back to Georgia, serif |
+| Sanskrit shloka (Hero) | **Tiro Devanagari Sanskrit** | Falls back to `--font-heading`, serif. Only text on the site set in this font — see Hero below |
 
 Loaded via Google Fonts `<link>` in `index.html` (no npm font package).
 
@@ -100,12 +101,14 @@ position.
 ### Envelope Intro
 - Full-viewport gate (`EnvelopeIntro.jsx`, `position: fixed`, `z-index: 1000`) shown once per browser session before any content is interactive; page scroll is locked (`body { overflow: hidden }`) while it's up. Persisted via `sessionStorage`, so it doesn't replay when navigating to/from the Blessings Wall page
 - **Real-paper look**: the flap is a deep maroon (`--envelope-flap-color: #6d2130`), the envelope body/backdrop a warm ivory-beige (`--envelope-paper-color: #f0e6d2`, deliberately distinct from the page's flatter `--color-bg`) — both carry a shared grain texture (`--paper-noise`, an inline SVG `feTurbulence` filter, no image asset) so they read as paper rather than flat color
+- **Two independently-animated layers, not one**: the flap (`.envelope__flap`) and the "gate" underneath it (`.envelope__gate` — paper background, Ganesh art, seal) are siblings, not parent/child. The flap is pinned to the top of the viewport and only rotates open in place (`rotateX`) like a lid swinging open; the gate is the piece that slides down (`translateY(100%)`) to reveal Hero. Splitting them this way means the flap is never dragged downward with the rest of the envelope — it stays put and fades away on its own
 - The flap is a full-width triangle (`clip-path: polygon(...)`, not a border hack — chosen specifically so it can carry the paper texture/background, which a CSS border-triangle can't), sized to ~42% of the viewport height (`--flap-ratio`), pointing down to a circular gold seal button (couple's initials, e.g. "M & Y") sitting right at its tip
-- Below the seal, a small gold **Ganesh vector art icon** (`.envelope__ganesh`, hand-drawn inline SVG placeholder) sits centered with a soft warm radial glow behind it (`.envelope__ganesh-glow`). It isn't hidden once the gate opens — it slides down together with the rest of the gate as one rigid unit, same as the flap
-- **Interaction — flap and slide are simultaneous, not sequenced**: tapping the seal starts the flap rotating open (`rotateX`) *and* the entire gate sliding down off the bottom of the viewport at the same instant, so the two motions read as one continuous "opening" gesture — as if someone is actually tearing the envelope open — rather than two separate beats
-- **Timing is a config item** at the top of `EnvelopeIntro.jsx`: `FLAP_DURATION` (700ms) and `SLIDE_DURATION` (1500ms, intentionally the slower/more deliberate of the two — this was tuned down from an earlier, faster pass). The matching CSS `transition` duration on `.envelope-intro` (and `.envelope__flap`) must be kept in sync with these constants by hand — there's no shared config file
+- Below the seal, a small gold **Ganesh vector art icon** (shared `GaneshArt.jsx` component — same artwork also used in Hero and the browser tab favicon, `public/favicon.svg`) sits centered on the gate, **no glow** here (kept plain so it doesn't compete with the seal below). It slides down together with the rest of the gate as one rigid unit
+- **The seal itself glows and shines** — a slow pulsing gold glow ring (`box-shadow` animation) plus a diagonal light sweep across its surface (`.envelope__seal-shine`, reusing the same shimmer technique as Hero's photo-sweep), both purely to signal "this is the button to tap" since it's the only interactive element on the whole gate
+- **Interaction — flap and slide are simultaneous, not sequenced**: tapping the seal starts the flap rotating open (`rotateX`) *and* the gate sliding down off the bottom of the viewport at the same instant, so the two motions read as one continuous "opening" gesture — as if someone is actually tearing the envelope open — rather than two separate beats
+- **Timing is a config item** at the top of `EnvelopeIntro.jsx`: `FLAP_DURATION` (700ms) and `SLIDE_DURATION` (1500ms, intentionally the slower/more deliberate of the two — this was tuned down from an earlier, faster pass). The matching CSS `transition` durations on `.envelope__flap` and `.envelope__gate` must be kept in sync with these constants by hand — there's no shared config file
 - A "Tap to open" hint label sits near the bottom of the screen while closed
-- Degrades to an instant, motion-free transition under `prefers-reduced-motion`
+- Degrades to an instant, motion-free transition under `prefers-reduced-motion`; the seal's glow/shine animations are also disabled (replaced with a static enhanced glow ring so the "tap me" affordance doesn't disappear entirely)
 
 ### Nav
 - **Fixed** to the top of the viewport (`position: fixed`), but starts **hidden** (`opacity: 0`) while the Hero is in view — it fades softly in (`opacity` transition, ~0.4s) once you've scrolled roughly one Hero-height down, so the Hero photo is uninterrupted at first glance. Toggled via a scroll listener comparing `scrollY` against the Hero's height, not CSS alone
@@ -120,23 +123,17 @@ position.
 - Clicking any nav link (or the logo) doesn't jump instantly — it triggers a custom eased scroll (`src/lib/smoothScroll.js`, ease-out-cubic, ~700ms): fast at first, decelerating into the target section, offset by the nav's own height so the section isn't hidden underneath it
 
 ### Hero
-- Full viewport height (`min-height: 100svh`), content centered both axes; the Nav is invisible here (see above) so the photo reads uninterrupted
-- Background: full-bleed photo (`hero.backgroundImage` in content.js), `background-size: cover`
-- A soft ivory gradient overlay sits on top of the photo (`20%` opacity at top → `55%` at bottom) so the photo is visible but text stays legible
-- Text also has a soft ivory text-shadow/glow for extra contrast insurance against busy photos
-- **Glitter effect**: ~16 small soft sparkles scattered across the photo, each twinkling on its own staggered timer (fade + scale via `@keyframes sparkle-twinkle`), plus a slow diagonal light-shimmer band that sweeps across the whole hero on a ~9s loop. Both are `pointer-events: none` (decorative only) and disabled under `prefers-reduced-motion`
-- Content, top to bottom: eyebrow tagline → couple's names (h1) → the scratch-reveal card (date + countdown, see below)
+- Full viewport height (`min-height: 100svh`), content centered both axes. **No background photo** — a plain `--color-bg` (ivory) background; `content.hero.backgroundImage` and the placeholder image file were removed entirely (nothing references them anymore)
+- **Glitter effect**: ~16 small soft sparkles scattered across the section, each twinkling on its own staggered timer (fade + scale via `@keyframes sparkle-twinkle`), plus a slow diagonal light-shimmer band that sweeps across the whole hero on a ~9s loop. Both are `pointer-events: none` (decorative only) and disabled under `prefers-reduced-motion`. Sparkle color is warm gold (`rgba(176, 137, 104, ...)`) rather than near-white — against the flat ivory background a near-white dot barely registered; this was originally tuned for contrast against a busy photo that no longer exists
+- Content, top to bottom:
+  1. **Ganesh vector art** (`.hero__ganesh`, shared `GaneshArt.jsx` component — same artwork as the Envelope Intro seal-art and the browser tab favicon), small (64px) and centered, with a soft warm radial glow behind it — a stronger/more saturated glow recipe than the same technique elsewhere on the site, since a softer version nearly disappeared against the very light `--color-bg`
+  2. **Sanskrit shloka** (`.hero__shlok`, set in **Tiro Devanagari Sanskrit** — see §2 Typography) — the Ganesh mantra "वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ । निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥", hardcoded (not in `content.js` — it's fixed devotional text, not couple-specific data, same precedent as other static phrases already inline in Hero.jsx)
+  3. **English translation** (`.hero__shlok-translation`) directly below it, italic, muted, narrower max-width for readability
+  4. Eyebrow tagline (`hero.tagline`)
+  5. Couple's first names (`h1`, e.g. "Mahek & Yash")
+  6. **Invitation paragraph** (`.hero__invite`) — replaced the old shorter parentage line with a fuller formal invitation: "We cordially invite you on the auspicious union of", then the bride's full name (`.hero__invite-name`, styled slightly larger/darker to stand out) and her parents, an "&", then the groom's full name and his parents — all pulled from `content.coupleProfiles`
+  7. The scratch-reveal card (date + countdown, see below)
 - Max content width 40rem, centered
-- remove the background photo of the hero.
-- add Lord Ganesh vector art in the top center, with glowing background. not so big in size.
-- add 'vakra tund maha kaya' shlok in sanskrit font below the vector art
-- add the english translation of the shlok below above
-- add line 'we cordily invite you on the auspicious union of
-bride name 
-<bride parents name>
-&
-groom name
-<groom parents name>
 
 ### Scratch Reveal
 - A realistic scratch-off card (`src/components/ScratchReveal.jsx`) covers **both** the wedding date and the countdown together — scratching it away reveals them as one unit, not the countdown separately
@@ -146,7 +143,7 @@ groom name
 - The revealed date is now the **larger** element (`clamp(1.75rem, 4.5vw, 2.75rem)`, serif) with the countdown shown smaller beneath it (`clamp(1.1rem, 3vw, 1.5rem)` per digit) — the reverse of an earlier iteration
 - Countdown: four stat blocks in a row (Days / Hours / Minutes / Seconds); small uppercase muted label underneath each; updates live every second. **Stays a single row at every width** — below 600px the blocks shrink to share the available width (`flex: 1 1 0`, `flex-wrap: nowrap`) instead of wrapping to two rows
 - After the wedding date passes, replaces the whole countdown with a single "<bride> & <groom> are married" line
-- on the scratch layer, add this line 'Save the date' (bigger font) below it add line 'scratch to revel the date' in smaller font.
+- **The scratch-off surface itself shows two lines of canvas-drawn text** (not a single label): "Save the date" in a larger heading-weight line, and "Scratch to reveal the date" smaller beneath it. `ScratchReveal` takes both as props (`heading`, defaulting to "Save the date"; `label`, defaulting to "Scratch to reveal the date") — Hero doesn't override either, so it just uses the defaults
 
 ### Meet the Couple
 - Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card
@@ -234,7 +231,7 @@ Three small decorative components, layered on top of the page content, independe
 
 - **Page Sparkles** (`PageSparkles.jsx`) — ~10 small twinkle dots at fixed positions scattered across the full viewport, each fading/scaling in on its own staggered timer, visible no matter which section is scrolled into view. Distinct from Hero's own denser "glitter" effect (§Hero above), which only lives on the Hero photo itself
 - **Cursor Sparkle Trail** (`CursorSparkleTrail.jsx`) — small gold star-shaped sparkles spawn at the pointer as it moves and fade out over ~700ms, capped at ~20 concurrent so it stays light. Skipped entirely on touch/coarse-pointer devices (no hover cursor to trail)
-- **Confetti Burst** (`ConfettiBurst.jsx`) — a one-shot, full-viewport burst of ~90 pieces (mixed accent/ivory/dark tones, matching the palette) that fall and fade over ~3.6s. Fires on successful Blessing or RSVP submission (see Blessings and RSVP above); each submission triggers its own independent burst
+- **Confetti Burst** (`ConfettiBurst.jsx`) — a one-shot, full-viewport burst of ~90 pieces (mixed accent/ivory/dark tones, matching the palette) that fall and fade over ~3.6s. Fires on successful Blessing or RSVP submission (see Blessings and RSVP above) and on scratching the Hero card fully open (see Scratch Reveal above); each trigger fires its own independent burst
 
 ---
 

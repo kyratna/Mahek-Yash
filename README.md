@@ -44,7 +44,6 @@ own).
 Photos live in `public/images/` and are referenced by path in `content.js`:
 
 ```
-public/images/hero/       → hero.backgroundImage
 public/images/gallery/    → gallery
 ```
 
@@ -52,6 +51,9 @@ To swap in your own photos, drop your image files into the matching folder
 and update the `src`/`photo` paths in `content.js` to point at your new
 filenames (any image format works — jpg, png, etc.). You can add, remove, or
 reorder as many gallery photos as you like by editing the `gallery` array.
+
+The Hero section has no background photo — it's a plain ivory background
+with the Ganesh art, shloka, and invitation text.
 
 The placeholder images shipped in this repo are free-to-use stock photos
 (via [Lorem Picsum](https://picsum.photos), sourced from Unsplash's

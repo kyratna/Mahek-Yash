@@ -25,7 +25,6 @@ const content = {
 
   hero: {
     tagline: "Together with their families",
-    backgroundImage: asset("/images/hero/placeholder-hero.jpg"),
   },
 
   // Shown in the "Meet the Couple" section — one profile card per side, no

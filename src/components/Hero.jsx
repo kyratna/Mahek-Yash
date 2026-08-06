@@ -3,6 +3,7 @@ import content from "../content";
 import Countdown from "./Countdown";
 import ScratchReveal from "./ScratchReveal";
 import ConfettiBurst from "./ConfettiBurst";
+import GaneshArt from "./GaneshArt";
 import "./Hero.css";
 
 // Fixed positions/timings for the twinkle sparkles — deterministic (no
@@ -32,11 +33,7 @@ export default function Hero() {
   const [revealed, setRevealed] = useState(false);
 
   return (
-    <section
-      id="hero"
-      className="hero"
-      style={{ backgroundImage: `url(${hero.backgroundImage})` }}
-    >
+    <section id="hero" className="hero">
       <div className="hero__shimmer" aria-hidden="true" />
       <div className="hero__sparkles" aria-hidden="true">
         {SPARKLES.map((s, i) => (
@@ -48,27 +45,44 @@ export default function Hero() {
         ))}
       </div>
       <div className="hero__overlay">
+        <div className="hero__ganesh" aria-hidden="true">
+          <div className="hero__ganesh-glow" />
+          <GaneshArt className="hero__ganesh-art" />
+        </div>
+        <p className="hero__shlok" lang="sa">
+          वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।
+          <br />
+          निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥
+        </p>
+        <p className="hero__shlok-translation">
+          O Lord Ganesha, of the curved trunk and massive body, with the brilliance of a
+          million suns — please make all my endeavors free of obstacles, always.
+        </p>
         <span className="eyebrow">{hero.tagline}</span>
         <h1 className="hero__names">
           {couple.partner1} &amp; {couple.partner2}
         </h1>
-        <p className="hero__parents">
+        <p className="hero__invite">
+          We cordially invite you on the auspicious union of
+          <br />
+          <span className="hero__invite-name">{bride.name}</span>
+          <br />
           {bride.parentage.person1} &amp; {bride.parentage.person2}
           <br />
-          and
+          <span className="hero__invite-and">&amp;</span>
+          <br />
+          <span className="hero__invite-name">{groom.name}</span>
           <br />
           {groom.parentage.person1} &amp; {groom.parentage.person2}
-          <br />
-          request the pleasure of your company at the wedding of their children
         </p>
-        <ScratchReveal label="Scratch to reveal" onReveal={() => setRevealed(true)}>
+        <ScratchReveal onReveal={() => setRevealed(true)}>
           <div className="hero__reveal-content">
             <p className="hero__date hero__date--reveal">{wedding.displayDate}</p>
             <Countdown targetDate={wedding.dateTimeISO} />
           </div>
         </ScratchReveal>
       </div>
-      <ConfettiBurst active={revealed} />
+      <ConfettiBurst trigger={revealed} />
     </section>
   );
 }

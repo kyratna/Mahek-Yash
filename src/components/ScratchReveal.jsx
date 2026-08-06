@@ -5,7 +5,12 @@ const REVEAL_THRESHOLD = 0.5;
 const BRUSH_RADIUS = 26;
 const DEBRIS_COLORS = ["#7a1f1a", "#932823", "#5c1512", "#a8362f"];
 
-export default function ScratchReveal({ children, label = "Scratch to reveal", onReveal }) {
+export default function ScratchReveal({
+  children,
+  heading = "Save the date",
+  label = "Scratch to reveal the date",
+  onReveal,
+}) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const isPointerDown = useRef(false);
@@ -58,10 +63,17 @@ export default function ScratchReveal({ children, label = "Scratch to reveal", o
       }
 
       ctx.fillStyle = "#faf1ea";
-      ctx.font = `600 ${Math.max(13, Math.min(18, logicalWidth * 0.055))}px var(--font-body, serif)`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(label, logicalWidth / 2, logicalHeight / 2);
+
+      const headingSize = Math.max(17, Math.min(26, logicalWidth * 0.08));
+      const labelSize = Math.max(11, Math.min(15, logicalWidth * 0.045));
+
+      ctx.font = `600 ${headingSize}px var(--font-heading, serif)`;
+      ctx.fillText(heading, logicalWidth / 2, logicalHeight / 2 - headingSize * 0.6);
+
+      ctx.font = `500 ${labelSize}px var(--font-body, serif)`;
+      ctx.fillText(label, logicalWidth / 2, logicalHeight / 2 + labelSize * 1.1);
     }
 
     function resize() {
@@ -164,7 +176,7 @@ export default function ScratchReveal({ children, label = "Scratch to reveal", o
       canvas.removeEventListener("touchmove", handleMove);
       canvas.removeEventListener("touchend", handleUp);
     };
-  }, [revealed, label]);
+  }, [revealed, heading, label]);
 
   return (
     <div className="scratch-reveal" ref={containerRef}>

@@ -1,39 +1,31 @@
 .envelope-intro {
+  /* A real length (not a %) — border-width isn't used for the flap anymore,
+     but this still backs several calc()s below, so keep it a real unit. */
+  --envelope-height: 100svh;
+  --flap-ratio: 0.42;
   /* Paper palette: a beige-ivory body, distinct from the page's flatter
      --color-bg, plus a shared grain texture (inline SVG noise) so both the
-     body and the flap read as paper rather than flat color. */
+     flap and the gate read as paper rather than flat color. */
   --envelope-paper-color: #f0e6d2;
   --envelope-flap-color: #6d2130;
   --paper-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background-color: var(--envelope-paper-color);
-  background-image: var(--paper-noise);
-  /* Duration here must match SLIDE_DURATION in EnvelopeIntro.jsx. */
-  transition: transform 1.5s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* The whole gate drops off the bottom of the viewport, starting at the same
-   moment the flap begins opening (see .envelope__flap--open), so the two
-   motions read as one continuous "opening" gesture instead of a sequence. */
-.envelope-intro--open {
-  transform: translateY(100%);
-  pointer-events: none;
-}
-
-.envelope {
-  /* A real length (not a %) — border-width (used below for the flap
-     triangle) doesn't accept percentages, so this has to resolve to an
-     actual unit for calc() to stay valid there. */
-  --envelope-height: 100svh;
-  --flap-ratio: 0.42;
-  position: relative;
-  width: 100%;
-  height: 100%;
   perspective: 2000px;
 }
 
+/* Pointer-events turn off the instant opening starts (not once the
+   animation finishes), so Hero underneath becomes interactive as soon as
+   it's actually visible instead of waiting out the full slide/rotate. */
+.envelope-intro--open {
+  pointer-events: none;
+}
+
+/* The flap is pinned to the top of the viewport and only rotates/fades in
+   place — it is NOT part of the gate that slides down, so it reads as a
+   lid swinging open rather than being dragged downward with everything
+   else underneath it. */
 .envelope__flap {
   position: absolute;
   top: 0;
@@ -55,6 +47,22 @@
   opacity: 0;
 }
 
+/* The gate — paper body, Ganesh art, seal — is the piece that slides down
+   to reveal Hero underneath, independent of the flap opening above it. */
+.envelope__gate {
+  position: absolute;
+  inset: 0;
+  background-color: var(--envelope-paper-color);
+  background-image: var(--paper-noise);
+  /* Duration here must match SLIDE_DURATION in EnvelopeIntro.jsx. */
+  transition: transform 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 1;
+}
+
+.envelope__gate--open {
+  transform: translateY(100%);
+}
+
 .envelope__seal {
   position: absolute;
   top: calc(var(--envelope-height) * var(--flap-ratio));
@@ -71,7 +79,47 @@
   letter-spacing: 0.05em;
   cursor: pointer;
   z-index: 4;
+  overflow: hidden;
   box-shadow: 0 6px 18px rgba(46, 43, 40, 0.3);
+  /* Pulsing glow + a sweeping shine — both purely to signal "tap me", since
+     this is the only interactive element on the whole gate. */
+  animation: envelope-seal-glow 2.4s ease-in-out infinite;
+}
+
+.envelope__seal-shine {
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 60%;
+  height: 220%;
+  background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.65) 50%, transparent 60%);
+  animation: envelope-seal-shine 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.envelope__seal-label {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes envelope-seal-glow {
+  0%,
+  100% {
+    box-shadow: 0 6px 18px rgba(46, 43, 40, 0.3), 0 0 0 3px rgba(176, 137, 104, 0.25), 0 0 14px rgba(176, 137, 104, 0.32);
+  }
+  50% {
+    box-shadow: 0 6px 18px rgba(46, 43, 40, 0.3), 0 0 0 5px rgba(176, 137, 104, 0.42), 0 0 28px rgba(176, 137, 104, 0.62);
+  }
+}
+
+@keyframes envelope-seal-shine {
+  0% {
+    transform: translateX(0) rotate(8deg);
+  }
+  55%,
+  100% {
+    transform: translateX(220%) rotate(8deg);
+  }
 }
 
 .envelope__seal:hover {
@@ -88,24 +136,11 @@
   z-index: 2;
 }
 
-.envelope__ganesh-glow {
-  position: absolute;
-  inset: -35%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(230, 173, 108, 0.85) 0%, rgba(230, 173, 108, 0.35) 45%, rgba(230, 173, 108, 0) 72%);
-  z-index: -1;
-}
-
 .envelope__ganesh-art {
   width: 100%;
   height: 100%;
   color: var(--color-accent);
-  fill: currentColor;
   filter: drop-shadow(0 4px 10px rgba(46, 43, 40, 0.25));
-}
-
-.envelope__ganesh-eye {
-  fill: var(--envelope-paper-color);
 }
 
 .envelope-intro__hint {
@@ -121,8 +156,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .envelope-intro,
-  .envelope__flap {
+  .envelope__flap,
+  .envelope__gate {
     transition: none;
+  }
+
+  .envelope__seal,
+  .envelope__seal-shine {
+    animation: none;
+  }
+
+  .envelope__seal {
+    box-shadow: 0 6px 18px rgba(46, 43, 40, 0.3), 0 0 0 4px rgba(176, 137, 104, 0.35), 0 0 20px rgba(176, 137, 104, 0.45);
+  }
+
+  .envelope__seal-shine {
+    display: none;
   }
 }

@@ -1,50 +1,108 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import content from "../content";
 import GaneshArt from "./GaneshArt";
 import "./EnvelopeIntro.css";
 
-// Config: the flap-open rotation and the gate's slide-down both start the
-// instant the seal is tapped (not sequenced), so the motion reads as one
-// continuous "opening" gesture instead of two separate beats. The slide is
-// intentionally the slower, more deliberate of the two. If you retune
-// SLIDE_DURATION, update the matching `transition` duration on
-// `.envelope__gate` in EnvelopeIntro.css to keep the two in sync.
-const FLAP_DURATION = 700; // ms — flap rotating open
-const SLIDE_DURATION = 1500; // ms — gate sliding down off-screen
+// Ported from the InteractiveWeddingInvite prototype's Envelope.tsx (React +
+// Tailwind + Framer Motion) and rebuilt in this project's plain JS/CSS style
+// — no new dependencies added. Two independent animations fire the instant
+// either tap target (the peeking card or the seal) is tapped: the card
+// flies straight up off-screen, while the whole dark scene (card included,
+// since it's a child) fades/scales out slightly behind it, started a beat
+// later so the card is already mid-flight before the scene starts to go.
+// If you retune these, keep the matching CSS `transition` durations in
+// EnvelopeIntro.css in sync — there's no shared config file.
+const CARD_FLY_DURATION = 900; // ms — peeking card flying up off-screen
+const CONTENT_FADE_DURATION = 700; // ms — dark scene dissolving
+const CONTENT_FADE_DELAY = 250; // ms — scene fade starts just after the card leaves
+const HINT_DELAY = 3200; // ms — "tap to open" hint appears after a pause
 
-// A full-screen envelope gate shown before the site: tap the center seal to
-// open the flap — which stays pinned at the top and only rotates/fades in
-// place, like a lid swinging open — while, independently, the paper "gate"
-// underneath (background, Ganesh art, seal) slides down to land on the page
-// beneath (already mounted, just hidden behind this overlay).
+const TOTAL_OPEN_DURATION = Math.max(
+  CARD_FLY_DURATION,
+  CONTENT_FADE_DELAY + CONTENT_FADE_DURATION
+);
+
+// A dark, full-screen envelope scene shown before the site: a peeking
+// invitation card and a monogram seal are both valid tap targets to open.
 export default function EnvelopeIntro({ onOpen }) {
   const [phase, setPhase] = useState("closed"); // closed -> open
-  const { couple } = content;
+  const [showHint, setShowHint] = useState(false);
+  const { couple, wedding, hero } = content;
   const initials = `${couple.partner1[0]} & ${couple.partner2[0]}`;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowHint(true), HINT_DELAY);
+    return () => clearTimeout(timer);
+  }, []);
 
   function handleOpen() {
     if (phase !== "closed") return;
     setPhase("open");
-    setTimeout(() => onOpen(), Math.max(FLAP_DURATION, SLIDE_DURATION));
+    setTimeout(() => onOpen(), TOTAL_OPEN_DURATION);
   }
 
   const isOpen = phase === "open";
 
   return (
     <div className={`envelope-intro ${isOpen ? "envelope-intro--open" : ""}`}>
-      <div className={`envelope__flap ${isOpen ? "envelope__flap--open" : ""}`} />
-      <div className={`envelope__gate ${isOpen ? "envelope__gate--open" : ""}`}>
-        <div className="envelope__ganesh" aria-hidden="true">
-          <GaneshArt className="envelope__ganesh-art" />
-        </div>
-        {phase === "closed" && (
-          <button className="envelope__seal" onClick={handleOpen} aria-label="Open the invitation">
-            <span className="envelope__seal-shine" aria-hidden="true" />
-            <span className="envelope__seal-label">{initials}</span>
+      <div className="envelope-intro__backdrop" aria-hidden="true" />
+      <div
+        className={`envelope-intro__content ${
+          isOpen ? "envelope-intro__content--open" : ""
+        }`}
+      >
+        <GaneshArt className="envelope-intro__ganesh" />
+        <p className="envelope-intro__overline">{hero.tagline}</p>
+
+        <div className="envelope-box">
+          <div className="envelope-box__body" />
+          <svg
+            className="envelope-box__flap"
+            viewBox="0 0 288 130"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <polygon points="0,0 288,0 144,120" className="envelope-box__flap-shape" />
+            <polygon points="0,0 288,0 144,120" fill="url(#envelope-flap-shade)" fillOpacity="0.4" />
+            <defs>
+              <linearGradient id="envelope-flap-shade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#000" stopOpacity="0" />
+                <stop offset="100%" stopColor="#000" stopOpacity="0.5" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <button
+            type="button"
+            className={`envelope-box__card ${isOpen ? "envelope-box__card--open" : ""}`}
+            onClick={handleOpen}
+            aria-label="Open the invitation"
+          >
+            <span className="envelope-box__card-names">
+              {couple.partner1} &amp; {couple.partner2}
+            </span>
+            <span className="envelope-box__card-date">{wedding.displayDate}</span>
           </button>
+
+          <button
+            type="button"
+            className="envelope-box__seal"
+            onClick={handleOpen}
+            aria-label="Open the invitation"
+          >
+            {initials}
+          </button>
+        </div>
+
+        {showHint && (
+          <div className="envelope-intro__hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+              <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span>tap to open</span>
+          </div>
         )}
       </div>
-      {phase === "closed" && <p className="envelope-intro__hint">Tap to open</p>}
     </div>
   );
 }

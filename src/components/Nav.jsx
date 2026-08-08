@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { smoothScrollTo } from "../lib/smoothScroll";
-import content from "../content";
+import content, { asset } from "../content";
 import "./Nav.css";
 
 const LINKS = [
@@ -18,7 +18,6 @@ export default function Nav() {
   const [isVisible, setIsVisible] = useState(false);
 
   const { partner1, partner2 } = content.couple;
-  const initials = `${partner1?.[0] || ""} & ${partner2?.[0] || ""}`;
 
   useEffect(() => {
     function updateVisibility() {
@@ -52,7 +51,11 @@ export default function Nav() {
     <nav className={`nav ${isVisible ? "nav--visible" : ""}`} ref={navRef}>
       <div className="nav__bar">
         <button type="button" className="nav__logo" onClick={handleLogoClick} aria-label="Back to top">
-          {initials}
+          <img
+            src={asset("/images/monogram/monogramseal-clean-180.png")}
+            alt={`${partner1} & ${partner2}`}
+            className="nav__logo-img"
+          />
         </button>
         <button
           type="button"

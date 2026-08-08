@@ -30,18 +30,28 @@
   background: none;
   border: 0;
   cursor: pointer;
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  letter-spacing: 0.04em;
-  color: var(--color-text);
   padding: var(--space-1) 0;
   min-height: 44px;
   display: flex;
   align-items: center;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
 }
 
 .nav__logo:hover {
-  color: var(--color-accent);
+  opacity: 1;
+}
+
+.nav__logo-img {
+  height: 34px;
+  width: auto;
+  display: block;
+  /* Forces its own GPU compositing layer — without this, Chrome can
+     checkerboard/glitch a transparent PNG sitting inside a
+     `backdrop-filter: blur` ancestor (see `.nav`) instead of rendering it
+     cleanly. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .nav__toggle {

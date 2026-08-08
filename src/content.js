@@ -6,8 +6,10 @@
 
 // Prefixes image paths with Vite's base URL (see `base` in vite.config.js)
 // so photos resolve correctly whether the site is hosted at a domain root
-// or a subpath (e.g. GitHub Pages' username.github.io/repo-name/).
-const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+// or a subpath (e.g. GitHub Pages' username.github.io/repo-name/). Exported
+// so components reaching into `public/` directly (not through this content
+// object) can prefix their own paths the same way.
+export const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
 const content = {
   couple: {

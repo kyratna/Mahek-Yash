@@ -1,16 +1,26 @@
 .envelope-intro {
-  /* Dusty-rose envelope on a warm near-black backdrop — the rest of the
-     site never goes this dark or this pink, so these stay local instead
-     of joining index.css's ivory-first tokens. Grain reuses the same
-     inline SVG feTurbulence trick as the rest of the site's paper
+  /* Deep-maroon envelope on a warm near-black backdrop — the rest of the
+     site never goes this dark or this saturated, so these stay local
+     instead of joining index.css's ivory-first tokens. Grain reuses the
+     same inline SVG feTurbulence trick as the rest of the site's paper
      textures, standing in for a photographed backdrop (no image asset
      needed). */
-  --envelope-rose-1: #c98a92;
-  --envelope-rose-2: #a8626c;
+  --envelope-maroon-1: #8f3350;
+  --envelope-maroon-2: #6d2130;
   /* Matches the body's own top-edge color exactly, so there's no visible
      color seam where the flap meets the body — the fold shadow gradient
-     (see the SVG defs below) is what gives the flap its own depth instead. */
-  --envelope-flap-fill: var(--envelope-rose-1);
+     and hairline stroke (see the SVG defs below) are what give the flap
+     its own definition instead of a mismatched fill. */
+  --envelope-flap-fill: var(--envelope-maroon-1);
+  /* The seal's own disc color — distinct from the site's ivory
+     `--color-bg`, warmer/blush-toned so the gold monogram sits on
+     something closer to real sealing wax than plain paper-white. */
+  --seal-fill: #f1dfd4;
+  /* The card's back face — noticeably darker than both envelope maroons,
+     not a reused shade, so flipping the card reads as turning it over to
+     a different, more intimate surface rather than just matching its
+     envelope. */
+  --card-back-fill: #3a1420;
   --envelope-backdrop-1: #2b1a1d;
   --envelope-backdrop-2: #180f11;
   --envelope-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
@@ -38,10 +48,10 @@
   background-blend-mode: overlay, normal;
 }
 
-/* Everything visible — crest, overline, envelope, hint — lives in here so a
-   single opacity/scale transition dissolves the whole scene at once, timed
-   to the card's own fly-out (below) so the scene falls away around it as
-   it rushes off toward the viewer. */
+/* Everything visible — crest, overline, envelope, invocation, hint — lives
+   in here so a single opacity/scale transition dissolves the whole scene
+   at once, timed to the card's own fly-out (below) so the scene falls
+   away around it as it rushes off toward the viewer. */
 .envelope-intro__content {
   position: relative;
   z-index: 1;
@@ -59,11 +69,17 @@
 }
 
 .envelope-intro__ganesh {
-  width: 56px;
-  height: 56px;
-  color: rgba(250, 247, 242, 0.85);
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
   margin-bottom: var(--space-2);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+  /* Own GPU compositing layer — cheap insurance against the class of
+     Chrome bugs where transparent PNGs checkerboard/glitch in certain
+     compositing contexts. See the matching comment on `.nav__logo-img`
+     in Nav.css. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .envelope-intro__overline {
@@ -80,14 +96,12 @@
   width: min(18rem, 80vw);
   height: 14rem;
   perspective: 900px;
-}
-
-/* Body sits flush against the flap's apex (see --flap-apex below) with
-   only a hairline of overlap, matching a real envelope where the flap
-   folds down to meet the pocket's top edge rather than covering half of
-   it. */
-.envelope-box {
-  --flap-apex: 46%;
+  /* A classic banker-style fold — the crease point reaches the vertical
+     center of the envelope, where the seal sits directly on top of it.
+     Body height and the seal's position are both derived from this one
+     value, so retuning the fold only means changing it here. */
+  --flap-apex: 50%;
+  --card-radius: 0.75rem;
 }
 
 .envelope-box__body {
@@ -95,28 +109,67 @@
   inset-inline: 0;
   bottom: 0;
   height: calc(100% - var(--flap-apex) + 6%);
-  border-radius: 0.125rem 0.125rem 0.375rem 0.375rem;
-  background: linear-gradient(to bottom, var(--envelope-rose-1), var(--envelope-rose-2));
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  background: linear-gradient(to bottom, var(--envelope-maroon-1), var(--envelope-maroon-2));
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
+/* Static counterpart to the animated triangular lid below — never
+   rotates, always fully covers this top band. Same fill as the lid, so
+   while closed the two are indistinguishable (one seamless surface); once
+   the lid lifts away, this stays put and keeps the side wedges (either
+   side of the triangle) envelope-colored instead of exposing the
+   backdrop — the card (which sits in front of this but behind the lid,
+   see z-index below) becomes visible through the vacated triangle. */
+.envelope-box__flap-backing {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: var(--flap-apex);
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  background: var(--envelope-flap-fill);
+}
+
+/* The flap is a plain div (not the surface below it) so the seal — nested
+   inside it, sticking out past its bottom edge — isn't clipped. It owns
+   the rotation, so the seal is carried along with it as it lifts, rather
+   than vanishing separately. z-index sits above the card so the flap
+   visibly passes in front while swinging up toward the viewer, and above
+   the static backing so it's indistinguishable while closed. */
 .envelope-box__flap {
   position: absolute;
   inset-inline: 0;
   top: 0;
   height: var(--flap-apex);
   width: 100%;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   transform-origin: top center;
+  z-index: 3;
   /* Duration here must match FLAP_OPEN_DURATION in EnvelopeIntro.jsx. */
-  transition: transform 0.9s ease-in-out, opacity 0.9s ease-in-out;
+  transition: transform 0.9s ease-in-out;
 }
 
+/* Rotated toward the viewer (positive angle), like a hand lifting the flap
+   up and out of the screen — not away/into it. Stays fully opaque
+   throughout — it's a solid piece of paper, not a fading ghost. */
 .envelope-box__flap--open {
-  transform: rotateX(-150deg);
-  opacity: 0.45;
+  transform: rotateX(150deg);
 }
 
+/* border-radius + overflow:hidden clip the triangle polygon's own sharp
+   top corners (a raw `<polygon>` has none of its own) so they round off to
+   match the backing/body's rounded corners instead of poking a small
+   pointed "ear" past the rounded silhouette. */
+.envelope-box__flap-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  overflow: hidden;
+}
+
+/* A true triangle (flat top edge, point at the vertical center) — not the
+   full bounding rect — so the card shows through the same pointed shape a
+   real envelope's flap actually has, instead of being hidden behind a
+   rectangle until the lid rotates fully out of the way. */
 .envelope-box__flap-shape {
   fill: var(--envelope-flap-fill);
 }
@@ -124,25 +177,19 @@
 /* Tucked inside the envelope by default — pulled down and slightly shrunk
    so it reads as sitting behind the (still-closed) flap, invisible until
    opened. Rises to its "peeking" position on open, then rushes toward the
-   viewer on fly-out (see modifiers below). */
+   viewer on fly-out (see modifiers below). Purely a positioning/transform
+   shell now — content lives in `.envelope-box__card-face` faces inside
+   `-inner`, so this can flip independently of rising/flying. */
 .envelope-box__card {
   position: absolute;
   inset-inline: 1rem;
   top: -3.2rem;
   height: 8.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  border-radius: 0.125rem;
-  background: var(--color-bg);
-  padding: 0 var(--space-2);
-  text-align: center;
   box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.45);
   transform: translateY(3.2rem) scale(0.82) rotate(-7deg);
   opacity: 0;
   pointer-events: none;
+  perspective: 1200px;
   /* Delay/duration here must match CARD_RISE_DELAY/CARD_RISE_DURATION in
      EnvelopeIntro.jsx — the delay is what makes the card wait a beat for
      the flap to start opening before it lifts, instead of both moving at
@@ -162,11 +209,77 @@
    plus fade, the standard fake-dolly-zoom trick for a flat 2D element.
    Declared after --risen so it wins the cascade while both classes are
    present together during the fly-out beat. Duration here must match
-   CARD_FLY_DURATION in EnvelopeIntro.jsx. */
+   CARD_FLY_DURATION in EnvelopeIntro.jsx. By the time this class lands,
+   phase is always "flying", which only follows "flipped" — so it's
+   always the back face (see `-inner--flipped`) that flies. Stays fully
+   opaque and jumps above every other layer in the scene (flap included)
+   so it reads as a solid card rushing into the foreground and covering
+   everything behind it, not a ghost fading through them. */
 .envelope-box__card--flying {
   transform: translateY(-2.4rem) scale(7);
-  opacity: 0;
-  transition: transform 0.75s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.6s ease-in 0.15s;
+  z-index: 10;
+  transition: transform 0.75s cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+/* The actual flipping element — rotates independently of the outer
+   card's rise/fly transform, so both compose without fighting each
+   other. Duration here must match CARD_FLIP_DURATION in
+   EnvelopeIntro.jsx. */
+.envelope-box__card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s ease-in-out;
+}
+
+.envelope-box__card-inner--flipped {
+  transform: rotateY(180deg);
+}
+
+/* Both faces stack in the same box; backface-visibility hides whichever
+   one is currently facing away, so only one is ever visible at a time. */
+.envelope-box__card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 0.125rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 var(--space-2);
+  text-align: center;
+}
+
+.envelope-box__card-face--front {
+  background: var(--color-bg);
+}
+
+/* Pre-rotated 180° so it faces the "wrong" way until `-inner` itself
+   rotates a further 180° — the two cancel out and it lands right-reading,
+   not mirrored. Darker than the envelope's own maroons (not just reusing
+   one) so the back reads as a deliberately different, more intimate
+   surface once turned over. */
+.envelope-box__card-face--back {
+  background: var(--card-back-fill);
+  transform: rotateY(180deg);
+}
+
+/* Pre-flattened onto `--card-back-fill` at export time (not a transparent
+   PNG), same reasoning as `.envelope-box__seal-monogram` above — its own
+   background matches the face behind it exactly, and it avoids real-time
+   alpha compositing while sitting inside the card's rotateY flip. No
+   drop-shadow here: this is now a fully opaque square, so a drop-shadow
+   would trace its hard corners instead of the monogram's own shape. */
+.envelope-box__card-seal {
+  width: 62%;
+  max-width: 120px;
+  height: auto;
+  object-fit: contain;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .envelope-box__card-eyebrow {
@@ -200,53 +313,72 @@
   color: var(--color-text-muted);
 }
 
+/* Large ivory disc — sized and placed like an actual wax seal sitting
+   right at the flap's fold, not a small badge. Nested inside
+   `.envelope-box__flap` now (not a sibling), positioned against *that*
+   element's own box — its fold-point is the flap's own bottom edge
+   (100%), not `--flap-apex` again, which is a fraction of the envelope,
+   not of the flap. The couple's own monogram artwork (gold, its own
+   circular wreath baked in) sits on top — no separate CSS ring needed. */
 .envelope-box__seal {
   position: absolute;
   left: 50%;
-  top: var(--flap-apex);
+  top: 100%;
   transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
+  width: 72px;
+  height: 72px;
   padding: 0;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  background: var(--color-accent);
-  color: var(--color-surface);
-  font-family: var(--font-heading);
-  font-size: 0.6rem;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
+  /* A darker shade of the envelope itself (not a new one-off color) rings
+     the seal, like a rim pressed into wax. */
+  border: 3px solid var(--card-back-fill);
+  background: var(--seal-fill);
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4);
   z-index: 3;
   transition: transform 0.15s ease;
 }
 
+/* This image is pre-flattened onto `--seal-fill` at export time (not a
+   transparent PNG) — its own background already matches the disc behind
+   it exactly, so it can fill the whole circle with no visible seam at the
+   corners, and doesn't need real-time alpha compositing while sitting
+   inside the flap's rotateX transform. */
+.envelope-box__seal-monogram {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
 .envelope-box__seal:active {
-  transform: translate(-50%, -50%) scale(0.92);
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+.envelope-intro__invocation {
+  margin: var(--space-3) 0 0;
+  text-align: center;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(250, 247, 242, 0.6);
 }
 
 .envelope-intro__hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: var(--space-4);
-  color: rgba(250, 247, 242, 0.7);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
+  margin: var(--space-2) 0 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: rgba(250, 247, 242, 0.65);
   opacity: 0;
   animation: envelope-hint-in 0.6s ease forwards;
-}
-
-.envelope-intro__hint svg {
-  width: 16px;
-  height: 16px;
-  animation: envelope-hint-bounce 1.6s ease-in-out infinite;
 }
 
 @keyframes envelope-hint-in {
@@ -260,26 +392,16 @@
   }
 }
 
-@keyframes envelope-hint-bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .envelope-intro__content,
   .envelope-box__flap,
   .envelope-box__card,
-  .envelope-box__card--flying {
+  .envelope-box__card--flying,
+  .envelope-box__card-inner {
     transition: none;
   }
 
-  .envelope-intro__hint,
-  .envelope-intro__hint svg {
+  .envelope-intro__hint {
     animation: none;
     opacity: 1;
   }

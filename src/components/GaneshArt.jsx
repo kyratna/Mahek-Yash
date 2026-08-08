@@ -1,8 +1,9 @@
 import "./GaneshArt.css";
 
-// Shared Ganesh silhouette icon — same artwork used in the Envelope Intro,
-// the Hero section, and the browser tab favicon (public/favicon.svg), so
-// changing the mark means editing all of those, not just this one.
+// Hand-built Ganesh silhouette icon used in the Hero section. The Envelope
+// Intro and the browser tab favicon use a separate, photographic Ganesh/
+// monogram image pipeline instead — see EnvelopeIntro's Assets note in
+// DESIGN.md — so this component's own mark can be edited independently.
 export default function GaneshArt({ className }) {
   return (
     <svg viewBox="0 0 120 136" className={`ganesh-art ${className || ""}`} aria-hidden="true">

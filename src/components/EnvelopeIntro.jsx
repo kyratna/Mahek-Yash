@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import content, { asset } from "../content";
 import "./EnvelopeIntro.css";
 
-// Config: tapping the seal chains three beats, each timed by its own
+// Config: tapping the seal chains four beats, each timed by its own
 // setTimeout below. Durations are deliberately unhurried — this should read
 // as a real hand slowly opening a real envelope, not a UI transition. If
 // you retune any of these, keep the matching CSS `transition` durations in
@@ -17,7 +17,6 @@ const BACK_PAUSE_DURATION = 500; // ms — back face (seal) sits still before fl
 const CARD_FLY_DURATION = 750; // ms — card rushing toward the viewer, out of the screen
 const SCENE_FADE_DURATION = 700; // ms — the rest of the scene dissolving behind it
 const FLYING_DURATION = Math.max(CARD_FLY_DURATION, SCENE_FADE_DURATION);
-const HINT_DELAY = 3200; // ms — hint appears after a pause
 
 // A deep-maroon envelope scene shown before the site: tap the seal and the
 // flap peels back, a beat later a card lifts out of the envelope
@@ -28,13 +27,7 @@ const HINT_DELAY = 3200; // ms — hint appears after a pause
 // (already-mounted) page underneath.
 export default function EnvelopeIntro({ onOpen }) {
   const [phase, setPhase] = useState("closed"); // closed -> open -> flipped -> flying
-  const [showHint, setShowHint] = useState(false);
   const { couple, wedding, mapAddress } = content;
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowHint(true), HINT_DELAY);
-    return () => clearTimeout(timer);
-  }, []);
 
   function handleOpen() {
     if (phase !== "closed") return;
@@ -145,9 +138,9 @@ export default function EnvelopeIntro({ onOpen }) {
 
         <p className="envelope-intro__invocation">‖ Shree Ganeshay Namah ‖</p>
 
-        {isClosed && showHint && (
-          <p className="envelope-intro__hint">Tap the seal to open your invitation</p>
-        )}
+        <p className={`envelope-intro__hint ${hasOpened ? "envelope-intro__hint--hidden" : ""}`}>
+          Tap the seal to open your invitation
+        </p>
       </div>
     </div>
   );

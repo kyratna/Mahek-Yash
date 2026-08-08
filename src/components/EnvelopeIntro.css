@@ -69,8 +69,8 @@
 }
 
 .envelope-intro__ganesh {
-  width: 120px;
-  height: 120px;
+  width: 145px;
+  height: 145px;
   object-fit: contain;
   margin-bottom: var(--space-2);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
@@ -95,6 +95,7 @@
   position: relative;
   width: min(18rem, 80vw);
   height: 14rem;
+  margin-top: 1.25rem;
   perspective: 900px;
   /* A classic banker-style fold — the crease point reaches the vertical
      center of the envelope, where the seal sits directly on top of it.
@@ -158,12 +159,19 @@
 /* border-radius + overflow:hidden clip the triangle polygon's own sharp
    top corners (a raw `<polygon>` has none of its own) so they round off to
    match the backing/body's rounded corners instead of poking a small
-   pointed "ear" past the rounded silhouette. */
+   pointed "ear" past the rounded silhouette. backface-visibility:hidden is
+   just as important once the flap swings past 90° open — without it, the
+   browser renders this surface's *mirrored back*, and the rounded-corner
+   clip no longer lines up with the envelope beneath it, showing up as a
+   stray notch/edge poking out at the top corners. The seal (a sibling,
+   with its own counter-rotation back to front-facing) is unaffected —
+   this only hides the flap's own triangle/crease graphic. */
 .envelope-box__flap-surface {
   position: absolute;
   inset: 0;
   border-radius: var(--card-radius) var(--card-radius) 0 0;
   overflow: hidden;
+  backface-visibility: hidden;
 }
 
 /* A true triangle (flat top edge, point at the vertical center) — not the
@@ -195,7 +203,10 @@
      the flap to start opening before it lifts, instead of both moving at
      once. */
   transition: transform 0.9s ease-out 0.3s, opacity 0.9s ease-out 0.3s;
-  z-index: 2;
+  /* Above the flap (z-index 3) always, not just once flying — the flap's
+     rotated silhouette otherwise pokes over the card's own top corners as
+     it swings past. */
+  z-index: 5;
 }
 
 /* Rises out at a slight angle, like being pulled from the envelope by
@@ -253,8 +264,11 @@
   text-align: center;
 }
 
+/* Matches the seal's own blush tone (`--seal-fill`) rather than the
+   site's plain ivory `--color-bg`, so the card reads as part of the same
+   envelope/seal palette instead of a mismatched paper-white insert. */
 .envelope-box__card-face--front {
-  background: var(--color-bg);
+  background: var(--seal-fill);
 }
 
 /* Pre-rotated 180° so it faces the "wrong" way until `-inner` itself
@@ -338,7 +352,9 @@
   border: 3px solid var(--card-back-fill);
   background: var(--seal-fill);
   cursor: pointer;
-  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4);
+  /* Drop shadow for lift, plus a soft gold glow radiating from the edge —
+     `--color-accent` is the site's own muted-gold token, not a one-off. */
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4), 0 0 22px 3px rgba(176, 137, 104, 0.55);
   z-index: 3;
   transition: transform 0.15s ease;
 }
@@ -361,6 +377,19 @@
   transform: translate(-50%, -50%) scale(0.94);
 }
 
+/* Riding along on the flap (see the flap's own comment above), the seal
+   would otherwise inherit the flap's full rotateX and end up viewed
+   edge-on — heavily perspective-foreshortened into a thin sliver rather
+   than a readable disc. Countering that same rotation on the seal itself
+   (`rotateX(-150deg)`, canceling the parent's `rotateX(150deg)`) brings it
+   back to a flat, undistorted, straight-on, right-reading plane instead of
+   a foreshortened smear. Duration matches FLAP_OPEN_DURATION so the
+   correction settles in step with the flap's own opening motion. */
+.envelope-box__flap--open .envelope-box__seal {
+  transform: translate(-50%, -50%) rotateX(-150deg);
+  transition: transform 0.9s ease-in-out;
+}
+
 .envelope-intro__invocation {
   margin: var(--space-3) 0 0;
   text-align: center;
@@ -370,6 +399,11 @@
   color: rgba(250, 247, 242, 0.6);
 }
 
+/* Always mounted (even before its 3.2s reveal), so it reserves its own
+   layout space from the very first paint — the earlier version only
+   rendered once a JS timer fired, and the whole scene visibly reflowed
+   around it appearing mid-view. The delay is pure CSS (`animation-delay`)
+   now, not a JS `setTimeout`, for the same reason. */
 .envelope-intro__hint {
   margin: var(--space-2) 0 0;
   text-align: center;
@@ -378,7 +412,15 @@
   font-size: 0.95rem;
   color: rgba(250, 247, 242, 0.65);
   opacity: 0;
-  animation: envelope-hint-in 0.6s ease forwards;
+  animation: envelope-hint-in 0.6s ease 3.2s forwards;
+}
+
+/* Once the envelope's been tapped, fade the hint out quickly rather than
+   leaving "tap the seal" lingering through the rest of the sequence. */
+.envelope-intro__hint--hidden {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 @keyframes envelope-hint-in {
@@ -404,5 +446,9 @@
   .envelope-intro__hint {
     animation: none;
     opacity: 1;
+  }
+
+  .envelope-intro__hint--hidden {
+    opacity: 0;
   }
 }

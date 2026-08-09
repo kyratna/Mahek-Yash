@@ -16,14 +16,31 @@
      `--color-bg`, warmer/blush-toned so the gold monogram sits on
      something closer to real sealing wax than plain paper-white. */
   --seal-fill: #f1dfd4;
-  /* The card's back face — noticeably darker than both envelope maroons,
-     not a reused shade, so flipping the card reads as turning it over to
-     a different, more intimate surface rather than just matching its
-     envelope. */
-  --card-back-fill: #3a1420;
+  /* The card's back face — a brighter crimson-maroon than the envelope's
+     own maroons (matching the user's reference photo), not a reused
+     shade, so flipping the card reads as turning it over to a different,
+     more intimate surface rather than just matching its envelope. Safe to
+     recolor freely: the monogram riding on top of it (--card-seal) is a
+     genuinely transparent PNG, not baked onto this exact color. */
+  --card-back-fill: #7c1f36;
   --envelope-backdrop-1: #2b1a1d;
   --envelope-backdrop-2: #180f11;
   --envelope-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  /* Same feTurbulence/saturate(0)/overlay-blend recipe as --envelope-noise
+     above, its own token so the envelope shell's paper grain (coarser, on
+     the maroon body/flap/backing) can be tuned independently of the
+     backdrop's finer atmospheric dust. */
+  --envelope-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  /* Card front face — a warm mustard/gold cardstock (distinct from the
+     envelope's own maroons), matching the "invitation card" reference the
+     user shared. */
+  --card-front-fill-1: #dcc07a;
+  --card-front-fill-2: #c7a352;
+  /* Corner-flourish/border color per face — front is a subtle darker
+     bronze-on-gold, back is bright gold-on-maroon, echoing how the two
+     reference photos are the same ornament on two different cardstocks. */
+  --card-front-frame: #8a6a2e;
+  --card-back-frame: #d9b96a;
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -115,6 +132,41 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
+/* Same feTurbulence recipe as .envelope-box__flap-grain, via the shared
+   #envelope-paper-grain-filter (defined once, inside the flap's own SVG
+   defs, referenced here across element boundaries — SVG url() references
+   resolve document-wide, not by DOM order). Deliberately not the CSS
+   background-blend-mode:overlay approach used elsewhere on the site
+   (--envelope-noise) — that produced a visibly muddier/grayer result on
+   this mid-tone maroon than the SVG-filter version, so every maroon
+   surface here (body/backing/flap) shares this one rendering path
+   instead of drifting apart in shade. */
+.envelope-box__body-grain {
+  fill: #fff;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+}
+
+/* Traces where a real diamond-flap envelope's tucked side flaps would
+   seam — purely decorative linework, not a structural second flap.
+   Positioned/sized to match .envelope-box__body's own box exactly. The
+   dip point sits below the lid's own crease apex (which is at this box's
+   top edge, y=0) so it complements rather than retraces that line. */
+.envelope-box__body-seams {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: calc(100% - var(--flap-apex) + 6%);
+  display: block;
+  pointer-events: none;
+}
+
+.envelope-box__body-seam-line {
+  stroke: rgba(0, 0, 0, 0.2);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
 /* Static counterpart to the animated triangular lid below — never
    rotates, always fully covers this top band. Same fill as the lid, so
    while closed the two are indistinguishable (one seamless surface); once
@@ -128,7 +180,40 @@
   top: 0;
   height: var(--flap-apex);
   border-radius: var(--card-radius) var(--card-radius) 0 0;
+  overflow: hidden;
+}
+
+/* Starts as a full rectangle (matching the lid's own rotating bounding
+   box, see the JSX comment above), then clip-paths down to the same
+   triangle the lid draws. Both endpoints are 4-point polygons (the
+   triangle repeats its apex as two coincident points) so the browser
+   interpolates each point's position smoothly instead of cross-fading.
+   Duration/easing matches FLAP_OPEN_DURATION so the two move in lockstep. */
+.envelope-box__flap-backing-fill {
+  position: absolute;
+  inset: 0;
   background: var(--envelope-flap-fill);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  transition: clip-path 0.9s ease-in-out;
+}
+
+.envelope-box__flap-backing-fill--open {
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%, 50% 100%);
+}
+
+/* Same sizing fix as .envelope-box__flap-surface svg below — without
+   explicit width/height the SVG renders at its UA-default intrinsic box
+   instead of stretching to fill this container. */
+.envelope-box__flap-backing-fill svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.envelope-box__flap-backing-grain {
+  fill: #fff;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
 }
 
 /* The flap is a plain div (not the surface below it) so the seal — nested
@@ -144,6 +229,13 @@
   height: var(--flap-apex);
   width: 100%;
   transform-origin: top center;
+  /* Without this, .envelope-box__flap-surface's own backface-visibility:
+     hidden (below) is a no-op — with the default transform-style:flat,
+     this element's rotation flattens its children into its own plane
+     *before* their individual 3D properties are considered, so past 90°
+     the flattened (mirrored) content still paints instead of vanishing.
+     preserve-3d gives the child a genuine 3D context to hide itself in. */
+  transform-style: preserve-3d;
   z-index: 3;
   /* Duration here must match FLAP_OPEN_DURATION in EnvelopeIntro.jsx. */
   transition: transform 0.9s ease-in-out;
@@ -174,12 +266,40 @@
   backface-visibility: hidden;
 }
 
+/* The flap's SVG has no width/height attributes of its own, so without
+   this it renders at the browser's default intrinsic replaced-element box
+   (300x150) instead of stretching to fill its actual container — the
+   viewBox's preserveAspectRatio="none" mapping then lands the polygon's
+   corners outside the real 288x112 box, clipping the top-right corner and
+   the fold apex short of where they should be. Forcing it to fill its
+   parent exactly makes the polygon's corners land exactly on the
+   envelope's real corners at every point in the open rotation. */
+.envelope-box__flap-surface svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* A true triangle (flat top edge, point at the vertical center) — not the
    full bounding rect — so the card shows through the same pointed shape a
    real envelope's flap actually has, instead of being hidden behind a
    rectangle until the lid rotates fully out of the way. */
 .envelope-box__flap-shape {
   fill: var(--envelope-flap-fill);
+}
+
+/* Paper grain for the triangle itself — can't be a div-level CSS
+   background like the body/backing above (the polygon fill sits on top of
+   that), so it's a second polygon filtered with the same feTurbulence
+   recipe, inheriting this surface's existing overflow/backface clipping
+   for free. Needs an opaque fill for the filter to render (a filtered
+   shape with no fill renders nothing); the filter itself replaces the
+   visual output with turbulence, so the fill color chosen doesn't matter,
+   only that mix-blend-mode:overlay reads it as grain. */
+.envelope-box__flap-grain {
+  fill: #fff;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
 }
 
 /* Tucked inside the envelope by default — pulled down and slightly shrunk
@@ -264,29 +384,89 @@
   text-align: center;
 }
 
-/* Matches the seal's own blush tone (`--seal-fill`) rather than the
-   site's plain ivory `--color-bg`, so the card reads as part of the same
-   envelope/seal palette instead of a mismatched paper-white insert. */
+/* A warm mustard/gold textured cardstock (matching the user's reference
+   invitation-card photo), replacing the earlier plain blush fill —
+   `--seal-fill` itself is untouched, the flap's seal disc still uses it.
+   `color` here drives the frame border + corner flourish below via
+   currentColor, so this one declaration recolors the whole ornament. */
 .envelope-box__card-face--front {
-  background: var(--seal-fill);
+  background: var(--envelope-paper-grain),
+    linear-gradient(135deg, var(--card-front-fill-1), var(--card-front-fill-2));
+  background-blend-mode: overlay, normal;
+  color: var(--card-front-frame);
 }
 
 /* Pre-rotated 180° so it faces the "wrong" way until `-inner` itself
    rotates a further 180° — the two cancel out and it lands right-reading,
-   not mirrored. Darker than the envelope's own maroons (not just reusing
-   one) so the back reads as a deliberately different, more intimate
-   surface once turned over. */
+   not mirrored. A brighter crimson-maroon than the envelope's own maroons
+   (see `--card-back-fill`'s own comment) so the back reads as a
+   deliberately different, more intimate surface once turned over. `color`
+   here drives the frame border + corner flourish via currentColor, same
+   mechanism as the front face. */
 .envelope-box__card-face--back {
-  background: var(--card-back-fill);
+  background: var(--envelope-paper-grain), var(--card-back-fill);
+  background-blend-mode: overlay, normal;
+  color: var(--card-back-frame);
   transform: rotateY(180deg);
 }
 
-/* Pre-flattened onto `--card-back-fill` at export time (not a transparent
-   PNG), same reasoning as `.envelope-box__seal-monogram` above — its own
-   background matches the face behind it exactly, and it avoids real-time
-   alpha compositing while sitting inside the card's rotateY flip. No
-   drop-shadow here: this is now a fully opaque square, so a drop-shadow
-   would trace its hard corners instead of the monogram's own shape. */
+/* Shared double-line border, reused on both faces — see the `cardFrame`
+   JSX constant in EnvelopeIntro.jsx. Plain CSS insets, not SVG, so there's
+   no stretching/aspect-ratio risk at any card size. */
+.envelope-box__card-frame {
+  position: absolute;
+  border: 1px solid currentColor;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.envelope-box__card-frame--outer {
+  inset: 0.3rem;
+}
+
+.envelope-box__card-frame--inner {
+  inset: 0.45rem;
+}
+
+/* One hand-drawn flourish (see #card-corner-flourish in EnvelopeIntro.jsx)
+   reused via <use> at all 4 corners, mirrored per corner rather than
+   rotated — the motif is corner-oriented (hugs two edges), not radially
+   symmetric, so rotation would point it the wrong way at 2 of the 4
+   corners. */
+.envelope-box__card-corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  color: inherit;
+  pointer-events: none;
+}
+
+.envelope-box__card-corner--tl {
+  top: 0.2rem;
+  left: 0.2rem;
+}
+
+.envelope-box__card-corner--tr {
+  top: 0.2rem;
+  right: 0.2rem;
+  transform: scaleX(-1);
+}
+
+.envelope-box__card-corner--bl {
+  bottom: 0.2rem;
+  left: 0.2rem;
+  transform: scaleY(-1);
+}
+
+.envelope-box__card-corner--br {
+  bottom: 0.2rem;
+  right: 0.2rem;
+  transform: scale(-1, -1);
+}
+
+/* Genuinely transparent artwork (no baked-in background), so it composites
+   cleanly onto `--card-back-fill` regardless of that token's exact value —
+   see the color comment on `--card-back-fill` above. */
 .envelope-box__card-seal {
   width: 62%;
   max-width: 120px;
@@ -312,7 +492,12 @@
 .envelope-box__card-divider {
   width: 2rem;
   height: 1px;
-  background: var(--color-border);
+  /* var(--color-border) (near-white) would nearly vanish against the
+     front face's new gold background — the frame's own bronze tone
+     (currentColor, set on .envelope-box__card-face--front) stays visible
+     on both faces instead. */
+  background: currentColor;
+  opacity: 0.6;
 }
 
 .envelope-box__card-date {
@@ -359,11 +544,9 @@
   transition: transform 0.15s ease;
 }
 
-/* This image is pre-flattened onto `--seal-fill` at export time (not a
-   transparent PNG) — its own background already matches the disc behind
-   it exactly, so it can fill the whole circle with no visible seam at the
-   corners, and doesn't need real-time alpha compositing while sitting
-   inside the flap's rotateX transform. */
+/* The artwork already includes its own circular blush disc (transparent
+   only outside the circle), so it fills the button's circular frame with
+   no visible seam against `--seal-fill` behind it. */
 .envelope-box__seal-monogram {
   width: 100%;
   height: 100%;
@@ -437,6 +620,7 @@
 @media (prefers-reduced-motion: reduce) {
   .envelope-intro__content,
   .envelope-box__flap,
+  .envelope-box__flap-backing-fill,
   .envelope-box__card,
   .envelope-box__card--flying,
   .envelope-box__card-inner {

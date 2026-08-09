@@ -5,6 +5,10 @@
   --color-text-muted: #6f6a63;
   --color-accent: #b08968; /* muted gold / terracotta */
   --color-border: #e6ddd2;
+  /* Same hex as --envelope-maroon-1 (EnvelopeIntro.css) — a shared global
+     token (that component's own maroon tokens are scoped locally to it)
+     so the nav bar reads as the same material family as the envelope. */
+  --color-burgundy: #8f3350;
 
   --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: "Cormorant Garamond", Georgia, serif;

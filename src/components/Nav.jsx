@@ -5,7 +5,7 @@ import "./Nav.css";
 
 const LINKS = [
   { href: "#couple", label: "The Couple" },
-  { href: "#details", label: "Details" },
+  { href: "#details", label: "Events" },
   { href: "#gallery", label: "Gallery" },
   { href: "#blessings", label: "Blessings" },
   { href: "#blessings-rsvp", label: "RSVP" },
@@ -52,7 +52,7 @@ export default function Nav() {
       <div className="nav__bar">
         <button type="button" className="nav__logo" onClick={handleLogoClick} aria-label="Back to top">
           <img
-            src={asset("/images/monogram/monogramseal-clean-180.png")}
+            src={asset("/images/monogram/monogramCircularWithoutBg.png")}
             alt={`${partner1} & ${partner2}`}
             className="nav__logo-img"
           />

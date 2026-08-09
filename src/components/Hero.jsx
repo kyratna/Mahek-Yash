@@ -1,9 +1,8 @@
 import { useState } from "react";
-import content from "../content";
+import content, { asset } from "../content";
 import Countdown from "./Countdown";
 import ScratchReveal from "./ScratchReveal";
 import ConfettiBurst from "./ConfettiBurst";
-import GaneshArt from "./GaneshArt";
 import "./Hero.css";
 
 // Fixed positions/timings for the twinkle sparkles — deterministic (no
@@ -47,7 +46,12 @@ export default function Hero() {
       <div className="hero__overlay">
         <div className="hero__ganesh" aria-hidden="true">
           <div className="hero__ganesh-glow" />
-          <GaneshArt className="hero__ganesh-art" />
+          <img
+            src={asset("/images/lordganesh/ganeshWithoutBackground.png")}
+            alt=""
+            className="hero__ganesh-art"
+            aria-hidden="true"
+          />
         </div>
         <p className="hero__shlok" lang="sa">
           वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।

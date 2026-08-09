@@ -137,63 +137,36 @@ export default function EnvelopeIntro({ onOpen }) {
           >
             <polyline points="0,0 50,42 100,0" className="envelope-box__body-seam-line" fill="none" />
           </svg>
-          {/* Outer wrapper: never animates, just rounds the top corners
-              (overflow:hidden + border-radius) to match the envelope's own
-              silhouette — same pattern as .envelope-box__flap-surface
-              below, so the inner fill can have plain sharp corners and
-              still come out rounded. Must stay a full rectangle at every
-              moment *during* the lid's rotation (the lid's own rotating
-              box is a full rectangle too — only the triangle within it is
-              painted, so its transparent side-wedges expose whatever's
-              behind across the *entire* rectangle at intermediate angles,
-              not just near the final triangle silhouette). The inner fill
-              below morphs from that rectangle down to the same triangle
-              the lid draws, on the lid's own timing, so by the time the
-              lid visually vanishes past 90° there's no rectangular block
-              left behind it — only the matching triangular fold. Plain CSS
-              background (same recipe/token as the body and the lid's own
-              fill below), not an SVG filter — see the lid's own comment
-              for why: a feTurbulence filter's baseFrequency is evaluated
-              in each element's own local coordinate space, so the exact
-              same filter produced visibly different-looking grain on a
-              288-unit-wide viewBox vs a 100-unit one. A plain tiled raster
-              background-image has no such per-element rescaling, so it's
-              the only way to guarantee body/backing/lid render *identical*
-              texture rather than three techniques drifting apart in shade. */}
-          <div className="envelope-box__flap-backing" aria-hidden="true">
-            <div
-              className={`envelope-box__flap-backing-fill ${hasOpened ? "envelope-box__flap-backing-fill--open" : ""}`}
-            />
-          </div>
+          {/* The envelope's inside back wall — a plain full rectangle that
+              NEVER animates and never changes shape. This is what a real
+              envelope shows once its flap swings away: the flat back panel,
+              not a triangle. An earlier pass had this morph rectangle ->
+              triangle in step with the lid, which caused two visible bugs
+              at once: a second, rectangular thing appeared to "open"
+              alongside the lid, and as it narrowed, its lower corners
+              turned transparent right where the risen card sits, so the
+              envelope looked like it vanished behind the card. Keeping it
+              a static rectangle fixes both. Same flat fill + grain as the
+              body and the lid, so while closed all three are one seamless
+              surface. */}
+          <div className="envelope-box__flap-backing" aria-hidden="true" />
           <div className={`envelope-box__flap ${hasOpened ? "envelope-box__flap--open" : ""}`}>
             <div className="envelope-box__flap-surface">
-              {/* Fill + grain: a plain clipped div (triangle via
-                  clip-path), not an SVG polygon — same CSS background-image
-                  recipe as the body/backing above, for the reason explained
-                  there. The SVG below now only draws the semi-transparent
-                  shade gradient and the crease stroke — neither is a
-                  turbulence texture, so neither has the per-element scaling
-                  problem the grain did. */}
+              {/* The only part that opens, and it's a triangle: a plain div
+                  shaped by clip-path, carrying the same flat fill + grain
+                  as every other envelope surface. The sibling <svg> draws
+                  nothing but the hairline fold crease — no shading, no
+                  gradient, since any tonal overlay here would reappear as
+                  the "color variation" this scene is meant not to have. */}
               <div className="envelope-box__flap-fill" />
               <svg viewBox="0 0 288 130" preserveAspectRatio="none" aria-hidden="true">
-                <polygon
-                  points="0,0 288,0 144,130"
-                  fill="url(#envelope-flap-shade)"
-                  fillOpacity="0.18"
-                />
                 <polyline
                   points="0,0 144,130 288,0"
                   fill="none"
-                  stroke="rgba(0,0,0,0.25)"
-                  strokeWidth="1.5"
+                  stroke="rgba(0,0,0,0.16)"
+                  strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
                 />
-                <defs>
-                  <linearGradient id="envelope-flap-shade" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#000" stopOpacity="0" />
-                    <stop offset="100%" stopColor="#000" stopOpacity="0.4" />
-                  </linearGradient>
-                </defs>
               </svg>
             </div>
 

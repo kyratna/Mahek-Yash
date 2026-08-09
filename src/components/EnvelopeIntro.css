@@ -6,12 +6,6 @@
      textures, standing in for a photographed backdrop (no image asset
      needed). */
   --envelope-maroon-1: #8f3350;
-  --envelope-maroon-2: #6d2130;
-  /* Matches the body's own top-edge color exactly, so there's no visible
-     color seam where the flap meets the body — the fold shadow gradient
-     and hairline stroke (see the SVG defs below) are what give the flap
-     its own definition instead of a mismatched fill. */
-  --envelope-flap-fill: var(--envelope-maroon-1);
   /* The seal's own disc color — distinct from the site's ivory
      `--color-bg`, warmer/blush-toned so the gold monogram sits on
      something closer to real sealing wax than plain paper-white. */
@@ -31,6 +25,15 @@
      the maroon body/flap/backing) can be tuned independently of the
      backdrop's finer atmospheric dust. */
   --envelope-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  /* THE single surface declaration for every maroon face of the envelope —
+     body, inside back wall, and the lid that opens. All three set exactly
+     `background: var(--envelope-surface)` (plus the matching
+     `background-blend-mode: overlay, normal`) and nothing else, which is
+     what makes the closed envelope read as one continuous piece of paper.
+     Any per-surface gradient, tint, or shading overlay added on top of
+     this reintroduces the banding it exists to prevent — if a surface
+     needs to look different, change this token, not one caller. */
+  --envelope-surface: var(--envelope-paper-grain), var(--envelope-maroon-1);
   /* Card front face — a warm mustard/gold cardstock (distinct from the
      envelope's own maroons), matching the "invitation card" reference the
      user shared. */
@@ -128,17 +131,16 @@
   bottom: 0;
   height: calc(100% - var(--flap-apex) + 6%);
   border-radius: 0 0 var(--card-radius) var(--card-radius);
-  /* Same --envelope-paper-grain + background-blend-mode:overlay recipe as
-     .envelope-box__flap-backing-fill and .envelope-box__flap-fill below —
-     deliberately the *same technique* on all three maroon surfaces. An
-     earlier pass used a per-element SVG feTurbulence filter instead, which
-     looked visibly different in grain size/contrast on each one, because
-     baseFrequency is evaluated in each element's own local viewBox
-     coordinates — the same value produces finer noise on a wide viewBox
-     and coarser noise on a narrow one. A plain tiled raster background has
-     no such per-element rescaling, so it renders identically everywhere. */
-  background: var(--envelope-paper-grain),
-    linear-gradient(to bottom, var(--envelope-maroon-1), var(--envelope-maroon-2));
+  /* --envelope-surface: the ONE declaration every maroon surface uses (see
+     its definition up top). A flat color, not a gradient: an earlier pass
+     had this body run maroon-1 -> maroon-2 top-to-bottom while the lid
+     above it was flat maroon-1, which is precisely why the closed envelope
+     read as banded rather than one seamless piece of paper. Grain is a
+     plain tiled background-image blended over that flat color, identical
+     on every surface — not a per-element SVG feTurbulence filter, whose
+     baseFrequency is evaluated in each element's own viewBox coordinates
+     and so rendered visibly different grain on each one. */
+  background: var(--envelope-surface);
   background-blend-mode: overlay, normal;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
@@ -167,18 +169,21 @@
 }
 
 .envelope-box__body-seam-line {
-  stroke: rgba(0, 0, 0, 0.2);
+  stroke: rgba(0, 0, 0, 0.12);
   stroke-width: 0.6;
   vector-effect: non-scaling-stroke;
 }
 
-/* Static counterpart to the animated triangular lid below — never
-   rotates, always fully covers this top band. Same fill as the lid, so
-   while closed the two are indistinguishable (one seamless surface); once
-   the lid lifts away, this stays put and keeps the side wedges (either
-   side of the triangle) envelope-colored instead of exposing the
-   backdrop — the card (which sits in front of this but behind the lid,
-   see z-index below) becomes visible through the vacated triangle. */
+/* The envelope's inside back wall: a static full rectangle that never
+   animates and never changes shape — what a real envelope actually shows
+   once its flap swings away. Same --envelope-surface as the body and the
+   lid, so while closed all three are one indistinguishable piece of
+   paper; once the lid lifts, this keeps the whole top band opaque, so
+   nothing behind the risen card can show through to the backdrop.
+   (An earlier version animated this rectangle down into a triangle in
+   step with the lid — see the JSX comment — which both looked like a
+   second rectangular flap opening and punched transparent holes either
+   side of the card. Deliberately not reinstated.) */
 .envelope-box__flap-backing {
   position: absolute;
   inset-inline: 0;
@@ -186,25 +191,8 @@
   height: var(--flap-apex);
   border-radius: var(--card-radius) var(--card-radius) 0 0;
   overflow: hidden;
-}
-
-/* Starts as a full rectangle (matching the lid's own rotating bounding
-   box, see the JSX comment above), then clip-paths down to the same
-   triangle the lid draws. Both endpoints are 4-point polygons (the
-   triangle repeats its apex as two coincident points) so the browser
-   interpolates each point's position smoothly instead of cross-fading.
-   Duration/easing matches FLAP_OPEN_DURATION so the two move in lockstep. */
-.envelope-box__flap-backing-fill {
-  position: absolute;
-  inset: 0;
-  background: var(--envelope-paper-grain), var(--envelope-flap-fill);
+  background: var(--envelope-surface);
   background-blend-mode: overlay, normal;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-  transition: clip-path 0.9s ease-in-out;
-}
-
-.envelope-box__flap-backing-fill--open {
-  clip-path: polygon(0% 0%, 100% 0%, 50% 100%, 50% 100%);
 }
 
 /* The flap is a plain div (not the surface below it) so the seal — nested
@@ -254,7 +242,15 @@
   inset: 0;
   border-radius: var(--card-radius) var(--card-radius) 0 0;
   overflow: hidden;
-  backface-visibility: hidden;
+  /* Deliberately NOT backface-visibility: hidden. The lid swings 150°,
+     so it spends its last 60° showing its own back — the underside of the
+     paper. Hiding that made the lid pop out of existence at 90°, which
+     read as the flap falling *into* the screen rather than lifting out of
+     it, and left the seal apparently floating unattached. Showing the
+     backface is both correct (you do see the inside of a real flap once
+     it's past vertical) and free of artifacts here, because the lid is a
+     left-right symmetric triangle in one flat color with a symmetric
+     crease — its mirror image is identical to its front. */
 }
 
 /* The flap's SVG has no width/height attributes of its own, so without
@@ -271,23 +267,20 @@
   height: 100%;
 }
 
-/* A true triangle (flat top edge, point at the vertical center) — not the
-   full bounding rect — so the card shows through the same pointed shape a
-   real envelope's flap actually has, instead of being hidden behind a
-   rectangle until the lid rotates fully out of the way. Plain clipped div,
-   same --envelope-paper-grain background recipe as the body/backing above
-   (see the body's own comment for why this replaced an earlier per-element
-   SVG filter) — this is what makes the lid's own fill, its static backing,
-   and the body all render identical texture. Sits behind the sibling
-   `<svg>` (shade gradient + crease stroke) in the same
-   .envelope-box__flap-surface wrapper, which already provides the
-   rounded-corner clipping + backface-visibility this needs too, so it
-   doesn't need to redeclare either. */
+/* The lid — and the only thing in this scene that opens. A true triangle
+   (flat top edge, point at the envelope's vertical center) rather than the
+   full bounding rect, so the card is revealed through a point that widens
+   as the lid lifts, the way a real envelope opens. Same
+   --envelope-surface as the body and back wall, so all three are one
+   seamless surface while closed. Sits behind the sibling `<svg>` (which
+   now draws only the hairline fold crease) inside
+   .envelope-box__flap-surface, which already supplies the rounded-corner
+   clipping and backface-visibility, so neither is redeclared here. */
 .envelope-box__flap-fill {
   position: absolute;
   inset: 0;
   clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
-  background: var(--envelope-paper-grain), var(--envelope-flap-fill);
+  background: var(--envelope-surface);
   background-blend-mode: overlay, normal;
 }
 
@@ -549,17 +542,19 @@
   transform: translate(-50%, -50%) scale(0.94);
 }
 
-/* Riding along on the flap (see the flap's own comment above), the seal
-   would otherwise inherit the flap's full rotateX and end up viewed
-   edge-on — heavily perspective-foreshortened into a thin sliver rather
-   than a readable disc. Countering that same rotation on the seal itself
-   (`rotateX(-150deg)`, canceling the parent's `rotateX(150deg)`) brings it
-   back to a flat, undistorted, straight-on, right-reading plane instead of
-   a foreshortened smear. Duration matches FLAP_OPEN_DURATION so the
-   correction settles in step with the flap's own opening motion. */
+/* The seal rides the lid, physically attached to its fold edge — it
+   inherits the parent's rotateX in full and is deliberately NOT
+   counter-rotated. An earlier version cancelled the rotation
+   (`rotateX(-150deg)`) to keep the monogram flat and readable, but paired
+   with the lid vanishing at 90° that left the seal apparently floating
+   free of the envelope, sailing up the screen on its own. Travelling with
+   the lid is what reads as wax stuck to paper. It does turn away from the
+   viewer as the lid passes vertical, so it fades over the back half of the
+   motion rather than lingering as a mirrored, foreshortened disc — by then
+   the card is rising and the seal has served its purpose. */
 .envelope-box__flap--open .envelope-box__seal {
-  transform: translate(-50%, -50%) rotateX(-150deg);
-  transition: transform 0.9s ease-in-out;
+  opacity: 0;
+  transition: opacity 0.9s ease-in;
 }
 
 .envelope-intro__invocation {
@@ -609,7 +604,6 @@
 @media (prefers-reduced-motion: reduce) {
   .envelope-intro__content,
   .envelope-box__flap,
-  .envelope-box__flap-backing-fill,
   .envelope-box__card,
   .envelope-box__card--flying,
   .envelope-box__card-inner {

@@ -615,11 +615,30 @@
   border: 3px solid var(--card-back-fill);
   background: var(--seal-fill);
   cursor: pointer;
-  /* Drop shadow for lift, plus a soft gold glow radiating from the edge —
-     `--color-accent` is the site's own muted-gold token, not a one-off. */
-  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4), 0 0 22px 3px rgba(176, 137, 104, 0.55);
+  /* Drop shadow for lift, plus a glow radiating from the edge — a
+     brighter, more saturated gold (#ffcf40) than the site's own muted
+     `--color-accent` (#b08968), a deliberate one-off: this is the single
+     tap target in the whole intro, so it's allowed to shine rather than
+     stay tonally polite. The glow layer breathes in and out (see the
+     keyframes below) rather than sitting static, so the seal reads as
+     inviting/tappable at a glance instead of needing the "tap the seal"
+     hint text to be noticed first. */
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4), 0 0 22px 4px rgba(255, 207, 64, 0.65);
   z-index: 3;
   transition: transform 0.15s ease;
+  animation: envelope-seal-glow 2.6s ease-in-out infinite;
+}
+
+/* Only the glow layer's spread/opacity moves — the lift shadow (first
+   value) stays fixed at both ends, so the seal doesn't appear to bob. */
+@keyframes envelope-seal-glow {
+  0%,
+  100% {
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4), 0 0 50px 3px rgba(255, 207, 64, 0.65);
+  }
+  50% {
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.4), 0 0 38px 9px rgba(255, 207, 64, 1);
+  }
 }
 
 /* The artwork already includes its own circular blush disc (transparent
@@ -651,6 +670,10 @@
 .envelope-box__flap--open .envelope-box__seal {
   opacity: 0;
   transition: opacity 0.9s ease-in;
+  /* Stops the breathing glow once tapped — by then the seal is already
+     fading away, and a still-pulsing glow on a fading element reads as
+     unfinished rather than intentional. */
+  animation-play-state: paused;
 }
 
 .envelope-intro__invocation {
@@ -711,6 +734,10 @@
   .envelope-intro__hint {
     animation: none;
     opacity: 1;
+  }
+
+  .envelope-box__seal {
+    animation: none;
   }
 
   .envelope-intro__hint--hidden {

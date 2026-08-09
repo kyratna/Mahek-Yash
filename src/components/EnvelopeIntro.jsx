@@ -160,8 +160,13 @@ export default function EnvelopeIntro({ onOpen }) {
                   the "color variation" this scene is meant not to have. */}
               <div className="envelope-box__flap-fill" />
               <svg viewBox="0 0 288 130" preserveAspectRatio="none" aria-hidden="true">
+                {/* Endpoints match .envelope-box__flap-fill's clip-path,
+                    which holds the lid's base 5% clear of each top corner
+                    (14.4 = 5% of this 288-unit viewBox) — a full-width
+                    crease would draw past the lid's own edge and put the
+                    corner overhang straight back. */}
                 <polyline
-                  points="0,0 144,130 288,0"
+                  points="14.4,0 144,130 273.6,0"
                   fill="none"
                   stroke="rgba(0,0,0,0.16)"
                   strokeWidth="1"

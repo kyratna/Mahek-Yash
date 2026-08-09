@@ -34,6 +34,11 @@
      this reintroduces the banding it exists to prevent — if a surface
      needs to look different, change this token, not one caller. */
   --envelope-surface: var(--envelope-paper-grain), var(--envelope-maroon-1);
+  /* The lid's color once it has swung open and is showing its underside,
+     angled away from the light. Only ever used in that open state (see
+     `.envelope-box__flap--open .envelope-box__flap-fill`) — while closed
+     the lid stays --envelope-surface like every other face. */
+  --envelope-flap-shadow: #5c2035;
   /* Card front face — a warm mustard/gold cardstock (distinct from the
      envelope's own maroons), matching the "invitation card" reference the
      user shared. */
@@ -123,6 +128,11 @@
      value, so retuning the fold only means changing it here. */
   --flap-apex: 50%;
   --card-radius: 0.75rem;
+  /* How far the lid's base is held back from each top corner, so its
+     geometry never reaches the envelope's rounded corners — see
+     .envelope-box__flap-fill. Slightly wider than --card-radius (12px on
+     this 18rem box ≈ 4.2%) to cover antialiasing at the curve. */
+  --flap-corner-inset: 5%;
 }
 
 .envelope-box__body {
@@ -279,9 +289,39 @@
 .envelope-box__flap-fill {
   position: absolute;
   inset: 0;
-  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  /* The base is inset by --flap-corner-inset at each end instead of
+     running the full 0%–100% width, which is what keeps the lid's two
+     base corners clear of the envelope's rounded top corners entirely.
+     Two earlier attempts failed here: the parent's border-radius +
+     overflow:hidden stops clipping once .envelope-box__flap sets
+     transform-style: preserve-3d (children get their own 3D rendering
+     context and escape it), and putting border-radius on this element
+     instead still left a sliver, because a rounded corner drawn in the
+     lid's local space is foreshortened by cos(150°) once rotated and so
+     can never trace the backing's un-rotated corner. Simply not putting
+     any lid geometry in the corner sidesteps the mismatch. Invisible
+     while closed — the backing behind is the identical colour there. */
+  clip-path: polygon(
+    var(--flap-corner-inset) 0%,
+    calc(100% - var(--flap-corner-inset)) 0%,
+    50% 100%
+  );
   background: var(--envelope-surface);
   background-blend-mode: overlay, normal;
+  /* Duration matches FLAP_OPEN_DURATION so the lid darkens exactly as it
+     lifts — see the --open rule below. */
+  transition: background-color 0.9s ease-in-out;
+}
+
+/* Once lifted, the lid is showing the viewer its underside, angled away
+   from the light — so it darkens to a deeper maroon as it opens. This is
+   what makes the open envelope read as a real object with an inside and
+   an outside rather than a flat cutout. Deliberately scoped to the open
+   state only: while closed the lid must stay exactly --envelope-surface
+   like every other face, or the seamless closed envelope goes back to
+   looking banded. */
+.envelope-box__flap--open .envelope-box__flap-fill {
+  background-color: var(--envelope-flap-shadow);
 }
 
 /* Tucked inside the envelope by default — pulled down and slightly shrunk
@@ -604,6 +644,7 @@
 @media (prefers-reduced-motion: reduce) {
   .envelope-intro__content,
   .envelope-box__flap,
+  .envelope-box__flap-fill,
   .envelope-box__card,
   .envelope-box__card--flying,
   .envelope-box__card-inner {

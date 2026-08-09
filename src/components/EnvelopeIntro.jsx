@@ -128,17 +128,13 @@ export default function EnvelopeIntro({ onOpen }) {
               tucked side flaps would seam, so the body reads as folded
               paper instead of a flat rectangle once the lid's out of the
               way. Sits above the body's own fill but stays fully hidden
-              under flap-backing below while closed. Grain rect uses the
-              same filter as the flap/backing below, so all three maroon
-              surfaces render identical texture instead of drifting apart
-              in shade. */}
+              under flap-backing below while closed. */}
           <svg
             className="envelope-box__body-seams"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <rect width="100" height="100" filter="url(#envelope-paper-grain-filter)" className="envelope-box__body-grain" />
             <polyline points="0,0 50,42 100,0" className="envelope-box__body-seam-line" fill="none" />
           </svg>
           {/* Outer wrapper: never animates, just rounds the top corners
@@ -154,34 +150,36 @@ export default function EnvelopeIntro({ onOpen }) {
               below morphs from that rectangle down to the same triangle
               the lid draws, on the lid's own timing, so by the time the
               lid visually vanishes past 90° there's no rectangular block
-              left behind it — only the matching triangular fold. */}
+              left behind it — only the matching triangular fold. Plain CSS
+              background (same recipe/token as the body and the lid's own
+              fill below), not an SVG filter — see the lid's own comment
+              for why: a feTurbulence filter's baseFrequency is evaluated
+              in each element's own local coordinate space, so the exact
+              same filter produced visibly different-looking grain on a
+              288-unit-wide viewBox vs a 100-unit one. A plain tiled raster
+              background-image has no such per-element rescaling, so it's
+              the only way to guarantee body/backing/lid render *identical*
+              texture rather than three techniques drifting apart in shade. */}
           <div className="envelope-box__flap-backing" aria-hidden="true">
             <div
               className={`envelope-box__flap-backing-fill ${hasOpened ? "envelope-box__flap-backing-fill--open" : ""}`}
-            >
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <rect
-                  width="100"
-                  height="100"
-                  filter="url(#envelope-paper-grain-filter)"
-                  className="envelope-box__flap-backing-grain"
-                />
-              </svg>
-            </div>
+            />
           </div>
           <div className={`envelope-box__flap ${hasOpened ? "envelope-box__flap--open" : ""}`}>
             <div className="envelope-box__flap-surface">
+              {/* Fill + grain: a plain clipped div (triangle via
+                  clip-path), not an SVG polygon — same CSS background-image
+                  recipe as the body/backing above, for the reason explained
+                  there. The SVG below now only draws the semi-transparent
+                  shade gradient and the crease stroke — neither is a
+                  turbulence texture, so neither has the per-element scaling
+                  problem the grain did. */}
+              <div className="envelope-box__flap-fill" />
               <svg viewBox="0 0 288 130" preserveAspectRatio="none" aria-hidden="true">
-                <polygon points="0,0 288,0 144,130" className="envelope-box__flap-shape" />
                 <polygon
                   points="0,0 288,0 144,130"
                   fill="url(#envelope-flap-shade)"
                   fillOpacity="0.18"
-                />
-                <polygon
-                  points="0,0 288,0 144,130"
-                  filter="url(#envelope-paper-grain-filter)"
-                  className="envelope-box__flap-grain"
                 />
                 <polyline
                   points="0,0 144,130 288,0"
@@ -195,10 +193,6 @@ export default function EnvelopeIntro({ onOpen }) {
                     <stop offset="0%" stopColor="#000" stopOpacity="0" />
                     <stop offset="100%" stopColor="#000" stopOpacity="0.4" />
                   </linearGradient>
-                  <filter id="envelope-paper-grain-filter" x="-20%" y="-20%" width="140%" height="140%">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
-                    <feColorMatrix type="saturate" values="0" />
-                  </filter>
                 </defs>
               </svg>
             </div>

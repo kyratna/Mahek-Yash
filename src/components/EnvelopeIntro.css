@@ -128,23 +128,19 @@
   bottom: 0;
   height: calc(100% - var(--flap-apex) + 6%);
   border-radius: 0 0 var(--card-radius) var(--card-radius);
-  background: linear-gradient(to bottom, var(--envelope-maroon-1), var(--envelope-maroon-2));
+  /* Same --envelope-paper-grain + background-blend-mode:overlay recipe as
+     .envelope-box__flap-backing-fill and .envelope-box__flap-fill below —
+     deliberately the *same technique* on all three maroon surfaces. An
+     earlier pass used a per-element SVG feTurbulence filter instead, which
+     looked visibly different in grain size/contrast on each one, because
+     baseFrequency is evaluated in each element's own local viewBox
+     coordinates — the same value produces finer noise on a wide viewBox
+     and coarser noise on a narrow one. A plain tiled raster background has
+     no such per-element rescaling, so it renders identically everywhere. */
+  background: var(--envelope-paper-grain),
+    linear-gradient(to bottom, var(--envelope-maroon-1), var(--envelope-maroon-2));
+  background-blend-mode: overlay, normal;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-}
-
-/* Same feTurbulence recipe as .envelope-box__flap-grain, via the shared
-   #envelope-paper-grain-filter (defined once, inside the flap's own SVG
-   defs, referenced here across element boundaries — SVG url() references
-   resolve document-wide, not by DOM order). Deliberately not the CSS
-   background-blend-mode:overlay approach used elsewhere on the site
-   (--envelope-noise) — that produced a visibly muddier/grayer result on
-   this mid-tone maroon than the SVG-filter version, so every maroon
-   surface here (body/backing/flap) shares this one rendering path
-   instead of drifting apart in shade. */
-.envelope-box__body-grain {
-  fill: #fff;
-  mix-blend-mode: overlay;
-  opacity: 0.4;
 }
 
 /* Traces where a real diamond-flap envelope's tucked side flaps would
@@ -156,6 +152,15 @@
   position: absolute;
   inset-inline: 0;
   bottom: 0;
+  /* Explicit width, not just inset-inline:0 — an absolutely positioned
+     SVG root with an intrinsic ratio (from its viewBox) computes its
+     "auto" width from that ratio times the explicit height, instead of
+     stretching to fill left:0/right:0, unless width is pinned too. Without
+     this it rendered as a 1:1 square clipped to the left edge, leaving the
+     right ~57% of the body with no grain/seam-line at all — the exact
+     same class of bug the flap's own SVG had (see the width/height fix on
+     .envelope-box__flap-surface svg below). */
+  width: 100%;
   height: calc(100% - var(--flap-apex) + 6%);
   display: block;
   pointer-events: none;
@@ -192,28 +197,14 @@
 .envelope-box__flap-backing-fill {
   position: absolute;
   inset: 0;
-  background: var(--envelope-flap-fill);
+  background: var(--envelope-paper-grain), var(--envelope-flap-fill);
+  background-blend-mode: overlay, normal;
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   transition: clip-path 0.9s ease-in-out;
 }
 
 .envelope-box__flap-backing-fill--open {
   clip-path: polygon(0% 0%, 100% 0%, 50% 100%, 50% 100%);
-}
-
-/* Same sizing fix as .envelope-box__flap-surface svg below — without
-   explicit width/height the SVG renders at its UA-default intrinsic box
-   instead of stretching to fill this container. */
-.envelope-box__flap-backing-fill svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.envelope-box__flap-backing-grain {
-  fill: #fff;
-  mix-blend-mode: overlay;
-  opacity: 0.4;
 }
 
 /* The flap is a plain div (not the surface below it) so the seal — nested
@@ -283,23 +274,21 @@
 /* A true triangle (flat top edge, point at the vertical center) — not the
    full bounding rect — so the card shows through the same pointed shape a
    real envelope's flap actually has, instead of being hidden behind a
-   rectangle until the lid rotates fully out of the way. */
-.envelope-box__flap-shape {
-  fill: var(--envelope-flap-fill);
-}
-
-/* Paper grain for the triangle itself — can't be a div-level CSS
-   background like the body/backing above (the polygon fill sits on top of
-   that), so it's a second polygon filtered with the same feTurbulence
-   recipe, inheriting this surface's existing overflow/backface clipping
-   for free. Needs an opaque fill for the filter to render (a filtered
-   shape with no fill renders nothing); the filter itself replaces the
-   visual output with turbulence, so the fill color chosen doesn't matter,
-   only that mix-blend-mode:overlay reads it as grain. */
-.envelope-box__flap-grain {
-  fill: #fff;
-  mix-blend-mode: overlay;
-  opacity: 0.4;
+   rectangle until the lid rotates fully out of the way. Plain clipped div,
+   same --envelope-paper-grain background recipe as the body/backing above
+   (see the body's own comment for why this replaced an earlier per-element
+   SVG filter) — this is what makes the lid's own fill, its static backing,
+   and the body all render identical texture. Sits behind the sibling
+   `<svg>` (shade gradient + crease stroke) in the same
+   .envelope-box__flap-surface wrapper, which already provides the
+   rounded-corner clipping + backface-visibility this needs too, so it
+   doesn't need to redeclare either. */
+.envelope-box__flap-fill {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  background: var(--envelope-paper-grain), var(--envelope-flap-fill);
+  background-blend-mode: overlay, normal;
 }
 
 /* Tucked inside the envelope by default — pulled down and slightly shrunk

@@ -685,6 +685,24 @@
   color: rgba(250, 247, 242, 0.6);
 }
 
+/* The Devanagari line sits above its English transliteration (see JSX) —
+   same color/tracking-adjacent styling, but its own font (matching Hero's
+   own shlok) and no uppercase transform (meaningless on this script) or
+   heavy letter-spacing (which fragments Devanagari conjuncts). Tightened
+   bottom margin so the pair reads as one two-line invocation rather than
+   two separately-spaced lines. */
+.envelope-intro__invocation--sanskrit {
+  font-family: "Tiro Devanagari Sanskrit", var(--font-heading), serif;
+  font-size: 1.1rem;
+  text-transform: none;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.envelope-intro__invocation--sanskrit + .envelope-intro__invocation {
+  margin-top: 0;
+}
+
 /* Always mounted (even before its 3.2s reveal), so it reserves its own
    layout space from the very first paint — the earlier version only
    rendered once a JS timer fired, and the whole scene visibly reflowed

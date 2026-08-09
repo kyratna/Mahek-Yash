@@ -247,6 +247,9 @@ export default function EnvelopeIntro({ onOpen }) {
           </div>
         </div>
 
+        <p className="envelope-intro__invocation envelope-intro__invocation--sanskrit" lang="sa">
+          ‖ श्री गणेशाय नमः ‖
+        </p>
         <p className="envelope-intro__invocation">‖ Shree Ganeshay Namah ‖</p>
 
         <p className={`envelope-intro__hint ${hasOpened ? "envelope-intro__hint--hidden" : ""}`}>

@@ -42,8 +42,8 @@ const content = {
       },
       parentage: {
         label: "Daughter of",
-        person1: "Shri Rajeev Gupta",
-        person2: "Smt Deepa Gupta",
+        person1: "Smt Deepa Gupta",
+        person2: "Shri Rajeev Gupta",
       },
     },
     groom: {
@@ -55,8 +55,8 @@ const content = {
       },
       parentage: {
         label: "Son of",
-        person1: "Shri Sandeep Kumar Gupta",
-        person2: "Smt Renu Gupta",
+        person1: "Smt Renu Gupta",
+        person2: "Shri Sandeep Kumar Gupta",
       },
     },
   },

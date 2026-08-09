@@ -1,11 +1,27 @@
 .hero {
+  background-color: var(--color-bg);
+  position: relative;
+}
+
+/* Each view is its own full screen — scrolling from the intro (crest +
+   shlok) to the invite (names + date reveal) is a plain scroll past this
+   boundary, not a slideshow/snap transition, so it composes for free with
+   the rest of the page's normal scroll behavior (Nav's scroll listener,
+   the up/down section frame-nav, etc). */
+.hero__view {
   min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: var(--color-bg);
   position: relative;
+}
+
+/* Only the intro view clips — it's the one carrying the shimmer sweep and
+   sparkles (see below), both of which are sized/positioned relative to
+   this box specifically so they read as this screen's own atmosphere
+   rather than spanning both. */
+.hero__view--intro {
   overflow: hidden;
 }
 
@@ -82,21 +98,41 @@
 
 .hero__ganesh {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 200px;
+  height: 200px;
   margin: 0 auto var(--space-2);
 }
 
 .hero__ganesh-glow {
   position: absolute;
-  inset: -55%;
+  inset: -22%;
   border-radius: 50%;
-  /* Stronger/more saturated than the same glow recipe elsewhere on the
-     site — against the page's very light ivory (--color-bg), a softer
-     version was nearly invisible; this needed more contrast to actually
-     read as "glowing" at only 64px across. */
-  background: radial-gradient(circle, rgba(216, 150, 76, 0.95) 0%, rgba(216, 150, 76, 0.55) 40%, rgba(216, 150, 76, 0) 72%);
-  z-index: -1;
+  /* One fixed golden-pink blend (not cross-fading hue — an earlier
+     version animated the gradient's own colors between a gold-leaning
+     and pink-leaning version, which read as muddy/uneven rather than a
+     clean glow) that instead pulses via opacity + scale, the same
+     breathing technique as the envelope seal's own glow elsewhere in the
+     site. No z-index here (deliberately) — this element is already first
+     in DOM order among .hero__ganesh's children, which alone puts it
+     behind the crest image at z-index:auto. An earlier z-index:-1 here
+     escaped .hero__ganesh entirely (position:relative alone doesn't
+     create a stacking context without an explicit z-index), sinking the
+     glow all the way to the root stacking context and hiding it behind
+     the page's own background — invisible with no visual indication why. */
+  background: radial-gradient(circle, rgba(230, 155, 165, 0.7) 0%, rgba(216, 150, 76, 0.45) 45%, rgba(216, 150, 76, 0) 72%);
+  animation: hero-ganesh-glow-pulse 5.5s ease-in-out infinite;
+}
+
+@keyframes hero-ganesh-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
 }
 
 .hero__ganesh-art {
@@ -106,14 +142,25 @@
   filter: drop-shadow(0 2px 6px rgba(46, 43, 40, 0.2));
 }
 
+/* font-size is set inline per-instance by FitDevanagari (see that
+   component) — measured against each line's actual rendered width so the
+   two Devanagari half-lines (split by the <br/> the component renders)
+   always stay on one line each, at any viewport width, rather than
+   wrapping once a fixed min-font-size floor is hit. The value here is
+   just the pre-JS/initial fallback, matching FitDevanagari's own
+   MAX_FONT_PX ceiling. */
 .hero__shlok {
   font-family: "Tiro Devanagari Sanskrit", var(--font-heading), serif;
-  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  font-size: 1.3rem;
   color: var(--color-text);
   line-height: 1.6;
   margin: 0 0 var(--space-1);
 }
 
+/* Free to wrap onto as many lines as it needs (unlike .hero__shlok
+   above) — the fixed-size Devanagari couplet is the one thing this
+   layout guarantees stays put; the italic translation is the pressure
+   valve that absorbs whatever width is left over on narrow screens. */
 .hero__shlok-translation {
   font-style: italic;
   font-size: 0.85rem;
@@ -123,8 +170,29 @@
   margin: 0 auto var(--space-3);
 }
 
-.hero__names {
-  margin: var(--space-1) 0;
+/* Small ornamental rule between the two shloks — a fading line with a
+   centered dot, the same --color-accent gold used for the invite's own
+   "&" and the site's other one-off accents. */
+.hero__shlok-divider {
+  display: block;
+  position: relative;
+  width: 6rem;
+  height: 1px;
+  margin: 0 auto var(--space-3);
+  background: linear-gradient(to right, transparent, var(--color-accent) 50%, transparent);
+  opacity: 0.7;
+}
+
+.hero__shlok-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
 }
 
 .hero__invite {
@@ -161,7 +229,7 @@
   min-width: 14rem;
 }
 
-.hero > .hero__overlay > .scratch-reveal {
+.hero__overlay > .scratch-reveal {
   margin: var(--space-2) 0;
 }
 
@@ -173,7 +241,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__shimmer,
-  .sparkle {
+  .sparkle,
+  .hero__ganesh-glow {
     animation: none;
   }
 }

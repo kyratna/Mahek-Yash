@@ -3,6 +3,7 @@ import content, { asset } from "../content";
 import Countdown from "./Countdown";
 import ScratchReveal from "./ScratchReveal";
 import ConfettiBurst from "./ConfettiBurst";
+import FitDevanagari from "./FitDevanagari";
 import "./Hero.css";
 
 // Fixed positions/timings for the twinkle sparkles — deterministic (no
@@ -33,58 +34,76 @@ export default function Hero() {
 
   return (
     <section id="hero" className="hero">
-      <div className="hero__shimmer" aria-hidden="true" />
-      <div className="hero__sparkles" aria-hidden="true">
-        {SPARKLES.map((s, i) => (
-          <span
-            key={i}
-            className="sparkle"
-            style={{ top: s.top, left: s.left, animationDelay: s.delay, animationDuration: s.duration }}
-          />
-        ))}
-      </div>
-      <div className="hero__overlay">
-        <div className="hero__ganesh" aria-hidden="true">
-          <div className="hero__ganesh-glow" />
-          <img
-            src={asset("/images/lordganesh/ganeshWithoutBackground.png")}
-            alt=""
-            className="hero__ganesh-art"
-            aria-hidden="true"
-          />
+      {/* First screen: the invocation alone — Ganesh crest, the Sanskrit
+          shlok, and its English translation. Nothing else competes for
+          attention here; the couple's own announcement is a deliberate
+          scroll away, on the second screen below. */}
+      <div className="hero__view hero__view--intro">
+        <div className="hero__shimmer" aria-hidden="true" />
+        <div className="hero__sparkles" aria-hidden="true">
+          {SPARKLES.map((s, i) => (
+            <span
+              key={i}
+              className="sparkle"
+              style={{ top: s.top, left: s.left, animationDelay: s.delay, animationDuration: s.duration }}
+            />
+          ))}
         </div>
-        <p className="hero__shlok" lang="sa">
-          वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।
-          <br />
-          निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥
-        </p>
-        <p className="hero__shlok-translation">
-          O Lord Ganesha, of the curved trunk and massive body, with the brilliance of a
-          million suns — please make all my endeavors free of obstacles, always.
-        </p>
-        <span className="eyebrow">{hero.tagline}</span>
-        <h1 className="hero__names">
-          {couple.partner1} &amp; {couple.partner2}
-        </h1>
-        <p className="hero__invite">
-          We cordially invite you on the auspicious union of
-          <br />
-          <span className="hero__invite-name">{bride.name}</span>
-          <br />
-          {bride.parentage.person1} &amp; {bride.parentage.person2}
-          <br />
-          <span className="hero__invite-and">&amp;</span>
-          <br />
-          <span className="hero__invite-name">{groom.name}</span>
-          <br />
-          {groom.parentage.person1} &amp; {groom.parentage.person2}
-        </p>
-        <ScratchReveal onReveal={() => setRevealed(true)}>
-          <div className="hero__reveal-content">
-            <p className="hero__date hero__date--reveal">{wedding.displayDate}</p>
-            <Countdown targetDate={wedding.dateTimeISO} />
+        <div className="hero__overlay">
+          <div className="hero__ganesh" aria-hidden="true">
+            <div className="hero__ganesh-glow" />
+            <img
+              src={asset("/images/lordganesh/ganeshWithoutBackground.png")}
+              alt=""
+              className="hero__ganesh-art"
+              aria-hidden="true"
+            />
           </div>
-        </ScratchReveal>
+          <FitDevanagari
+            className="hero__shlok"
+            lines={["वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।", "निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥"]}
+          />
+          <p className="hero__shlok-translation">
+            O Lord Ganesha, of the curved trunk and massive body, with the brilliance of a
+            million suns — please make all my endeavors free of obstacles, always.
+          </p>
+          <span className="hero__shlok-divider" aria-hidden="true" />
+          <FitDevanagari
+            className="hero__shlok"
+            lines={["मंगलम् भगवान विष्णुः, मंगलम् गरुणध्वजः ।", "मंगलम् पुण्डरी काक्षः, मंगलाय तनो हरिः ॥"]}
+          />
+          <p className="hero__shlok-translation">
+            Auspicious is Lord Vishnu, auspicious is He who bears the Garuda banner —
+            auspicious is the lotus-eyed One; may Hari make every undertaking blessed.
+          </p>
+        </div>
+      </div>
+      {/* Second screen: the actual invitation — tagline, the couple's
+          names with both sets of parents, and the scratch-to-reveal date/
+          countdown. */}
+      <div className="hero__view hero__view--invite">
+        <div className="hero__overlay">
+          <span className="eyebrow">{hero.tagline}</span>
+          <p className="hero__invite">
+            We cordially invite you on the auspicious union of
+            <br />
+            {bride.parentage.person1} &amp; {bride.parentage.person2}
+            <br />
+            <span className="hero__invite-name">{couple.partner1}</span>
+            <br />
+            <span className="hero__invite-and">&amp;</span>
+            <br />
+            <span className="hero__invite-name">{couple.partner2}</span>
+            <br />
+            {groom.parentage.person1} &amp; {groom.parentage.person2}
+          </p>
+          <ScratchReveal onReveal={() => setRevealed(true)}>
+            <div className="hero__reveal-content">
+              <p className="hero__date hero__date--reveal">{wedding.displayDate}</p>
+              <Countdown targetDate={wedding.dateTimeISO} />
+            </div>
+          </ScratchReveal>
+        </div>
       </div>
       <ConfettiBurst trigger={revealed} />
     </section>

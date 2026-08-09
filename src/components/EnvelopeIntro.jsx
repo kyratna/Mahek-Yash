@@ -149,7 +149,20 @@ export default function EnvelopeIntro({ onOpen }) {
               a static rectangle fixes both. Same flat fill + grain as the
               body and the lid, so while closed all three are one seamless
               surface. */}
-          <div className="envelope-box__flap-backing" aria-hidden="true" />
+          <div className="envelope-box__flap-backing" aria-hidden="true">
+            {/* Only the triangular footprint that was actually under the
+                lid darkens once open — not the whole backing rectangle,
+                which also covers the safety-net side wedges beside the
+                triangle (see the lid's own comment on why those exist).
+                Fades in on top of the backing's normal fill rather than
+                replacing it, so the side wedges stay their usual lighter
+                tone in both states. */}
+            <div
+              className={`envelope-box__flap-backing-shade ${
+                hasOpened ? "envelope-box__flap-backing-shade--open" : ""
+              }`}
+            />
+          </div>
           <div className={`envelope-box__flap ${hasOpened ? "envelope-box__flap--open" : ""}`}>
             <div className="envelope-box__flap-surface">
               {/* The only part that opens, and it's a triangle: a plain div

@@ -205,6 +205,34 @@
   background-blend-mode: overlay, normal;
 }
 
+/* Sits on top of the backing's own fill, shaped to the exact triangle the
+   lid itself draws (full corner-to-corner — unlike the lid's own
+   --flap-corner-inset clip-path, this layer never rotates in 3D, so
+   there's no foreshortening risk at the corners; the parent's ordinary
+   border-radius + overflow:hidden already clips it correctly, same as it
+   clips the backing's base rectangle). Invisible while closed; fades in
+   once open to the same --envelope-paper-grain + --envelope-flap-shadow
+   recipe as the lid's own darkened underside (.envelope-box__flap-fill's
+   --open rule), so the two read as one continuous dark interior instead
+   of the lid darkening while the wall behind it — and behind the risen
+   card, since the card's own span sits entirely within this triangle's
+   height — stays the lighter closed-envelope tone. */
+.envelope-box__flap-backing-shade {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  background: var(--envelope-paper-grain), var(--envelope-flap-shadow);
+  background-blend-mode: overlay, normal;
+  opacity: 0;
+  /* Duration matches FLAP_OPEN_DURATION so this darkens in step with the
+     lid's own underside. */
+  transition: opacity 0.9s ease-in-out;
+}
+
+.envelope-box__flap-backing-shade--open {
+  opacity: 1;
+}
+
 /* The flap is a plain div (not the surface below it) so the seal — nested
    inside it, sticking out past its bottom edge — isn't clipped. It owns
    the rotation, so the seal is carried along with it as it lifts, rather
@@ -666,6 +694,7 @@
   .envelope-intro__content,
   .envelope-box__flap,
   .envelope-box__flap-fill,
+  .envelope-box__flap-backing-shade,
   .envelope-box__card,
   .envelope-box__card--flying,
   .envelope-box__card-inner {

@@ -94,8 +94,8 @@
 }
 
 .envelope-intro__ganesh {
-  width: 145px;
-  height: 145px;
+  width: 165px;
+  height: 165px;
   object-fit: contain;
   margin-bottom: var(--space-2);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
@@ -110,7 +110,7 @@
 .envelope-intro__overline {
   margin: 0 0 var(--space-4);
   text-align: center;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.28em;
   color: rgba(250, 247, 242, 0.7);
@@ -373,27 +373,34 @@
   filter: none;
 }
 
-/* Tucked inside the envelope by default — pulled down and slightly shrunk
-   so it reads as sitting behind the (still-closed) flap, invisible until
-   opened. Rises to its "peeking" position on open, then rushes toward the
-   viewer on fly-out (see modifiers below). Purely a positioning/transform
-   shell now — content lives in `.envelope-box__card-face` faces inside
-   `-inner`, so this can flip independently of rising/flying. */
+/* Tucked inside the envelope by default — pulled down further and slightly
+   shrunk so it starts well behind the (still-closed) flap, invisible until
+   opened. Rises to its "peeking" position on open, sliding up out of the
+   envelope, then rushes toward the viewer on fly-out (see modifiers below).
+   Purely a positioning/transform shell now — content lives in
+   `.envelope-box__card-face` faces inside `-inner`, so this can flip
+   independently of rising/flying. */
 .envelope-box__card {
   position: absolute;
   inset-inline: 1rem;
   top: -3.2rem;
   height: 8.5rem;
   box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.45);
-  transform: translateY(3.2rem) scale(0.82) rotate(-7deg);
+  transform: translateY(6rem) scale(0.82) rotate(-7deg);
   opacity: 0;
   pointer-events: none;
   perspective: 1200px;
   /* Delay/duration here must match CARD_RISE_DELAY/CARD_RISE_DURATION in
-     EnvelopeIntro.jsx — the delay is what makes the card wait a beat for
-     the flap to start opening before it lifts, instead of both moving at
-     once. */
-  transition: transform 0.9s ease-out 0.3s, opacity 0.9s ease-out 0.3s;
+     EnvelopeIntro.jsx: the 1.1s delay is what makes the card wait for the
+     flap to be most of the way open before it lifts, instead of both
+     moving at once. Two different paces on purpose, not one shared
+     transition: `transform` runs the full 0.9s duration so the card
+     travels the whole distance out of the envelope, but `opacity` finishes
+     in a third of that time. Fading in quickly and then spending the rest
+     of the duration fully opaque and still moving is what reads as the
+     card sliding out from inside the envelope, rather than the previous
+     even pacing, which read as the card fading/materializing into place. */
+  transition: transform 0.9s ease-out 1.1s, opacity 0.3s ease-out 1.1s;
   /* Above the flap (z-index 3) always, not just once flying — the flap's
      rotated silhouette otherwise pokes over the card's own top corners as
      it swings past. */
@@ -649,7 +656,7 @@
 .envelope-intro__invocation {
   margin: var(--space-3) 0 0;
   text-align: center;
-  font-size: 0.65rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: rgba(250, 247, 242, 0.6);

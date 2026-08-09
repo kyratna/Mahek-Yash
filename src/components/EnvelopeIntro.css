@@ -308,13 +308,33 @@
   );
   background: var(--envelope-surface);
   background-blend-mode: overlay, normal;
-  /* Duration matches FLAP_OPEN_DURATION so the lid darkens exactly as it
-     lifts — see the --open rule below. */
-  transition: background-color 0.9s ease-in-out;
+  /* Closed-state only — sells the lid as a physical flap of paper resting
+     on top of the envelope rather than flat artwork, without touching its
+     fill (which has to stay byte-identical to the body/backing to keep
+     the closed envelope seamless — see --envelope-surface's own comment).
+     filter: drop-shadow, not box-shadow: box-shadow follows the element's
+     rectangular box, not its clip-path, so it would shadow the full
+     rectangle instead of the triangle; drop-shadow traces the actual
+     clipped silhouette. With a downward offset on a shape that's wide at
+     top and narrows to a point, the shadow only shows up along the two
+     diagonal edges (falling onto the side wedges/body beside the lid) —
+     the flat top edge casts effectively none, since the shifted copy's
+     top region stays covered by the original shape. That's the wanted
+     result: a shadow at the seam where the lid meets the surface below
+     it, not a halo around the envelope's own outer silhouette. Removed
+     once open (see the --open rule below) rather than left on through the
+     3D rotation, since a flat 2D filter doesn't account for the lid's
+     perspective tilt and the open state already has its own shading cue. */
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+  /* Duration matches FLAP_OPEN_DURATION so the lid darkens and its
+     closed-state shadow fades out exactly as it lifts — see the --open
+     rule below. */
+  transition: background-color 0.9s ease-in-out, filter 0.9s ease-in-out;
 }
 
 /* Once lifted, the lid is showing the viewer its underside, angled away
-   from the light — so it darkens to a deeper maroon as it opens. This is
+   from the light — so it darkens to a deeper maroon as it opens, and its
+   closed-state edge shadow (see the base rule above) is removed. This is
    what makes the open envelope read as a real object with an inside and
    an outside rather than a flat cutout. Deliberately scoped to the open
    state only: while closed the lid must stay exactly --envelope-surface
@@ -322,6 +342,7 @@
    looking banded. */
 .envelope-box__flap--open .envelope-box__flap-fill {
   background-color: var(--envelope-flap-shadow);
+  filter: none;
 }
 
 /* Tucked inside the envelope by default — pulled down and slightly shrunk

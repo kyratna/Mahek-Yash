@@ -47,8 +47,25 @@
   /* Corner-flourish/border color per face — front is a subtle darker
      bronze-on-gold, back is bright gold-on-maroon, echoing how the two
      reference photos are the same ornament on two different cardstocks. */
-  --card-front-frame: #8a6a2e;
+  --card-front-frame: #000000;
   --card-back-frame: #d9b96a;
+  --env-width: min(18rem, 80vw);
+  --env-height: 14rem;
+  --env-ganesh-size: 165px;
+  --env-seal-size: 72px;
+  --env-margin-top: 20px;
+  --card-inset: 20px;
+  --card-height: 150px;
+  --card-top-offset: -34px;
+  --card-names-font: var(--font-heading);
+  --card-names-size: 1.4rem;
+  --card-names-color: #6b1d33;
+  --card-text-color: #000000;
+  --card-frame-color: #000000;
+  --card-divider-margin: 10px 0;
+  --card-venue-size: 0.6rem;
+  --card-eyebrow-size: 0.55rem;
+  --card-back-seal-size: 62%;
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -94,8 +111,8 @@
 }
 
 .envelope-intro__ganesh {
-  width: 165px;
-  height: 165px;
+  width: var(--env-ganesh-size, 165px);
+  height: var(--env-ganesh-size, 165px);
   object-fit: contain;
   margin-bottom: var(--space-2);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
@@ -118,9 +135,9 @@
 
 .envelope-box {
   position: relative;
-  width: min(18rem, 80vw);
-  height: 14rem;
-  margin-top: 1.25rem;
+  width: var(--env-width, min(18rem, 80vw));
+  height: var(--env-height, 14rem);
+  margin-top: var(--env-margin-top, 1.25rem);
   perspective: 900px;
   /* A classic banker-style fold — the crease point reaches the vertical
      center of the envelope, where the seal sits directly on top of it.
@@ -382,9 +399,9 @@
    independently of rising/flying. */
 .envelope-box__card {
   position: absolute;
-  inset-inline: 1rem;
-  top: -3.2rem;
-  height: 8.5rem;
+  inset-inline: var(--card-inset, 1rem);
+  top: var(--card-top-offset, -3.2rem);
+  height: var(--card-height, 8.5rem);
   box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.45);
   transform: translateY(6rem) scale(0.82) rotate(-7deg);
   opacity: 0;
@@ -471,7 +488,7 @@
   background: var(--envelope-paper-grain),
     linear-gradient(135deg, var(--card-front-fill-1), var(--card-front-fill-2));
   background-blend-mode: overlay, normal;
-  color: var(--card-front-frame);
+  color: var(--card-frame-color, var(--card-front-frame));
 }
 
 /* Pre-rotated 180° so it faces the "wrong" way until `-inner` itself
@@ -546,8 +563,8 @@
    cleanly onto `--card-back-fill` regardless of that token's exact value —
    see the color comment on `--card-back-fill` above. */
 .envelope-box__card-seal {
-  width: 62%;
-  max-width: 120px;
+  width: var(--card-back-seal-size, 62%);
+  max-width: 140px;
   height: auto;
   object-fit: contain;
   transform: translateZ(0);
@@ -555,39 +572,51 @@
 }
 
 .envelope-box__card-eyebrow {
-  font-size: 0.55rem;
+  font-size: var(--card-eyebrow-size, 0.55rem);
   text-transform: uppercase;
   letter-spacing: 0.24em;
-  color: var(--color-text-muted);
+  color: var(--card-text-color, var(--color-text-muted));
 }
 
 .envelope-box__card-names {
-  font-family: var(--font-heading);
-  font-size: 1.3rem;
-  color: var(--color-text);
+  font-family: var(--card-names-font, var(--font-heading));
+  font-size: var(--card-names-size, 1.4rem);
+  color: var(--card-names-color, var(--color-text));
+  line-height: 1.15;
 }
 
 .envelope-box__card-divider {
-  width: 2rem;
+  display: block;
+  position: relative;
+  width: 3.6rem;
   height: 1px;
-  /* var(--color-border) (near-white) would nearly vanish against the
-     front face's new gold background — the frame's own bronze tone
-     (currentColor, set on .envelope-box__card-face--front) stays visible
-     on both faces instead. */
-  background: currentColor;
-  opacity: 0.6;
+  background: linear-gradient(to right, transparent, #000000 50%, transparent);
+  margin: var(--card-divider-margin, 10px 0);
+  opacity: 0.85;
 }
 
-.envelope-box__card-date {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
+.envelope-box__card-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #000000;
+  transform: translate(-50%, -50%);
 }
 
 .envelope-box__card-venue {
-  font-size: 0.55rem;
+  font-size: var(--card-venue-size, 0.6rem);
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-text-muted);
+  color: var(--card-text-color, var(--color-text-muted));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  line-height: 1.25;
 }
 
 /* Large ivory disc — sized and placed like an actual wax seal sitting
@@ -602,8 +631,8 @@
   left: 50%;
   top: 100%;
   transform: translate(-50%, -50%);
-  width: 72px;
-  height: 72px;
+  width: var(--env-seal-size, 72px);
+  height: var(--env-seal-size, 72px);
   padding: 0;
   box-sizing: border-box;
   display: flex;
@@ -762,3 +791,4 @@
     opacity: 0;
   }
 }
+

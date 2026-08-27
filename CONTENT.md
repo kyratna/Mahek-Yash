@@ -9,45 +9,36 @@ how the site *looks*, use `DESIGN.md` instead.
 
 ---
 
-## 1. The Couple (shown in the Hero)
+## 1. The Couple (shown in the Invitation & Nav Drawer)
 
 - Partner 1's first name: `[ Mahek ]`
 - Partner 2's first name: `[ Yash ]`
 
-*(This is the short "Names & Partner Two" line at the very top of the site —
-just first names is usually enough.)*
+*(Rendered in Alex Brush cursive on the Invitation and the floating Nav Drawer.)*
 
 ## 2. Wedding Date & Time
 
 - Wedding date: `[ December 06, 2026 ]`
-- Ceremony start time: `[ e.g. 4:00 PM ]`
+- Ceremony start time: `[ 12:00 PM ]`
 - City/timezone the wedding is in: `[ IST ]`
 
-*(The timezone matters — it's used so the countdown timer is accurate for
-guests watching from other timezones.)*
+*(The timezone matters — it's used so the countdown timer is accurate for guests watching from other timezones.)*
 
-## 3. Hero Tagline
+## 3. Tagline
 
-A short line shown above your names (currently "Together with their families"):
+A short line shown above your names in the Invitation:
 
-- Tagline: `[ ]`
+- Tagline: `[ With All The Blessings ]`
 
 ## 4. Meet the Bride & Groom
 
-Each profile shows two blocks — grandparentage, then parentage — each laid
-out as: a label line, the first person's name, "&", then the second
-person's name, each on its own line.
-
 **Bride** — Mahek Gupta
 - Grandparentage: "Granddaughter of" / "Shri Late __ Gupta" / & / "Smt Late __ Gupta"
-- Parentage: "Daughter of" / "Shri Rajeev Gupta" / & / "Smt Deepa Gupta"
+- Parentage: "Daughter of" / "Smt Deepa Gupta and Shri Rajeev Gupta"
 
 **Groom** — Yash Gupta
 - Grandparentage: "Grandson of" / "Shri Late Shri Niwas Gupta" / & / "Smt Late Rama Gupta"
-- Parentage: "Son of" / "Shri Sandeep Kumar Gupta" / & / "Smt Renu Gupta"
-
-*(These two cards don't show a photo — just the text above. The bride's
-grandfather's first name is still blank — `__` — fill it in when ready.)*
+- Parentage: "Son of" / "Smt Renu Gupta and Shri Sandeep Kumar Gupta"
 
 ## 5. Event Details
 
@@ -98,16 +89,13 @@ which is which:
 Edit, delete, or add to these as needed:
 
 - **What is the dress code?**
-  `[ e.g. Cocktail attire / Black tie optional ]`
-- **Are kids welcome?**
-  `[ ]`
-- **Can I bring a plus-one?**
-  `[ ]`
-- **What about dietary restrictions?**
-  `[ ]`
-- *(Add another question here if you want one, e.g. parking, gifts, hotel
-  block, etc.)*
-
+  `[ Dress code of Haldi Ceremony - 'Shades of Pink'
+     Other Events are open for all the dressings ]`
+- **What are parking arrangement?**
+  '[ Parking is available at the venue ]'
+- **Where to reach after coming to venue?**
+  '[ Reach the main reception as soon as you arrive the venue ]'
+ 
 ## 10. Blessings & RSVP Backend (optional, technical)
 
 Only fill this in once you've deployed the Google Apps Script backend

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Nav from "./components/Nav";
-import Hero from "./components/Hero";
+import ShreeGanesh from "./components/ShreeGanesh";
+import Invitation from "./components/Invitation";
 import MeetCouple from "./components/MeetCouple";
 import EventDetails from "./components/EventDetails";
 import Gallery from "./components/Gallery";
@@ -32,13 +33,19 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
     setOpened(true);
   }
 
+  function handleReopenEnvelope() {
+    sessionStorage.removeItem("envelopeOpened");
+    setOpened(false);
+  }
+
   return (
     <>
       {!opened && <EnvelopeIntro onOpen={handleOpen} />}
       <PageSparkles />
       <CursorSparkleTrail />
       <Nav />
-      <Hero />
+      <ShreeGanesh />
+      <Invitation />
       <MeetCouple />
       <EventDetails />
       <Gallery />
@@ -46,7 +53,7 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
       <BlessingsRSVP onBlessingSent={addLocalBlessing} />
       <FAQ />
       <Footer />
-      <FloatingControls />
+      <FloatingControls onReopenEnvelope={handleReopenEnvelope} />
     </>
   );
 }

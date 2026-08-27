@@ -1,10 +1,7 @@
-import { useState } from "react";
-import content, { asset } from "../content";
-import Countdown from "./Countdown";
-import ScratchReveal from "./ScratchReveal";
-import ConfettiBurst from "./ConfettiBurst";
+import { asset } from "../content";
 import FitDevanagari from "./FitDevanagari";
-import "./Hero.css";
+import { smoothScrollTo } from "../lib/smoothScroll";
+import "./ShreeGanesh.css";
 
 // Fixed positions/timings for the twinkle sparkles — deterministic (no
 // Math.random on every render) but spread out enough to look organic.
@@ -27,20 +24,12 @@ const SPARKLES = [
   { top: "8%", left: "55%", delay: "2.6s", duration: "3.5s" },
 ];
 
-export default function Hero() {
-  const { couple, wedding, hero, coupleProfiles } = content;
-  const { bride, groom } = coupleProfiles;
-  const [revealed, setRevealed] = useState(false);
-
+export default function ShreeGanesh() {
   return (
-    <section id="hero" className="hero">
-      {/* First screen: the invocation alone — Ganesh crest, the Sanskrit
-          shlok, and its English translation. Nothing else competes for
-          attention here; the couple's own announcement is a deliberate
-          scroll away, on the second screen below. */}
-      <div className="hero__view hero__view--intro">
-        <div className="hero__shimmer" aria-hidden="true" />
-        <div className="hero__sparkles" aria-hidden="true">
+    <section id="shree-ganesh" className="shree-ganesh">
+      <div className="shree-ganesh__view">
+        <div className="shree-ganesh__shimmer" aria-hidden="true" />
+        <div className="shree-ganesh__sparkles" aria-hidden="true">
           {SPARKLES.map((s, i) => (
             <span
               key={i}
@@ -49,63 +38,49 @@ export default function Hero() {
             />
           ))}
         </div>
-        <div className="hero__overlay">
-          <div className="hero__ganesh" aria-hidden="true">
-            <div className="hero__ganesh-glow" />
+        <div className="shree-ganesh__overlay">
+          <div className="shree-ganesh__ganesh" aria-hidden="true">
+            <div className="shree-ganesh__ganesh-glow" />
             <img
               src={asset("/images/lordganesh/ganeshWithoutBackground.png")}
               alt=""
-              className="hero__ganesh-art"
+              className="shree-ganesh__ganesh-art"
               aria-hidden="true"
             />
           </div>
+
           <FitDevanagari
-            className="hero__shlok"
+            className="shree-ganesh__shlok"
             lines={["वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।", "निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥"]}
           />
-          <p className="hero__shlok-translation">
+          <p className="shree-ganesh__shlok-translation">
             O Lord Ganesha, of the curved trunk and massive body, with the brilliance of a
             million suns — please make all my endeavors free of obstacles, always.
           </p>
-          <span className="hero__shlok-divider" aria-hidden="true" />
+          <span className="shree-ganesh__shlok-divider" aria-hidden="true" />
           <FitDevanagari
-            className="hero__shlok"
+            className="shree-ganesh__shlok"
             lines={["मंगलम् भगवान विष्णुः, मंगलम् गरुणध्वजः ।", "मंगलम् पुण्डरी काक्षः, मंगलाय तनो हरिः ॥"]}
           />
-          <p className="hero__shlok-translation">
+          <p className="shree-ganesh__shlok-translation">
             Auspicious is Lord Vishnu, auspicious is He who bears the Garuda banner —
             auspicious is the lotus-eyed One; may Hari make every undertaking blessed.
           </p>
+
+          <button
+            type="button"
+            className="shree-ganesh__scroll-btn"
+            onClick={() => smoothScrollTo("invitation", { offset: 0 })}
+            aria-label="Scroll to Invitation"
+          >
+            <span className="shree-ganesh__scroll-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
-      {/* Second screen: the actual invitation — tagline, the couple's
-          names with both sets of parents, and the scratch-to-reveal date/
-          countdown. */}
-      <div className="hero__view hero__view--invite">
-        <div className="hero__overlay">
-          <span className="eyebrow">{hero.tagline}</span>
-          <p className="hero__invite">
-            We cordially invite you on the auspicious union of
-            <br />
-            {bride.parentage.person1} &amp; {bride.parentage.person2}
-            <br />
-            <span className="hero__invite-name">{couple.partner1}</span>
-            <br />
-            <span className="hero__invite-and">&amp;</span>
-            <br />
-            <span className="hero__invite-name">{couple.partner2}</span>
-            <br />
-            {groom.parentage.person1} &amp; {groom.parentage.person2}
-          </p>
-          <ScratchReveal onReveal={() => setRevealed(true)}>
-            <div className="hero__reveal-content">
-              <p className="hero__date hero__date--reveal">{wedding.displayDate}</p>
-              <Countdown targetDate={wedding.dateTimeISO} />
-            </div>
-          </ScratchReveal>
-        </div>
-      </div>
-      <ConfettiBurst trigger={revealed} />
     </section>
   );
 }

@@ -15,14 +15,14 @@
 
 .countdown__value {
   font-family: var(--font-heading);
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-size: 1.35rem;
   color: var(--color-text);
 }
 
 .countdown__label {
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--color-text-muted);
   margin-top: var(--space-1);
 }

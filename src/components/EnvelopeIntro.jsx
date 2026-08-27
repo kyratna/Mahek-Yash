@@ -146,25 +146,8 @@ export default function EnvelopeIntro({ onOpen }) {
             <polyline points="0,0 50,42 100,0" className="envelope-box__body-seam-line" fill="none" />
           </svg>
           {/* The envelope's inside back wall — a plain full rectangle that
-              NEVER animates and never changes shape. This is what a real
-              envelope shows once its flap swings away: the flat back panel,
-              not a triangle. An earlier pass had this morph rectangle ->
-              triangle in step with the lid, which caused two visible bugs
-              at once: a second, rectangular thing appeared to "open"
-              alongside the lid, and as it narrowed, its lower corners
-              turned transparent right where the risen card sits, so the
-              envelope looked like it vanished behind the card. Keeping it
-              a static rectangle fixes both. Same flat fill + grain as the
-              body and the lid, so while closed all three are one seamless
-              surface. */}
+              NEVER animates and never changes shape. */}
           <div className="envelope-box__flap-backing" aria-hidden="true">
-            {/* Only the triangular footprint that was actually under the
-                lid darkens once open — not the whole backing rectangle,
-                which also covers the safety-net side wedges beside the
-                triangle (see the lid's own comment on why those exist).
-                Fades in on top of the backing's normal fill rather than
-                replacing it, so the side wedges stay their usual lighter
-                tone in both states. */}
             <div
               className={`envelope-box__flap-backing-shade ${
                 hasOpened ? "envelope-box__flap-backing-shade--open" : ""
@@ -173,23 +156,8 @@ export default function EnvelopeIntro({ onOpen }) {
           </div>
           <div className={`envelope-box__flap ${hasOpened ? "envelope-box__flap--open" : ""}`}>
             <div className="envelope-box__flap-surface">
-              {/* The only part that opens, and it's a triangle: a plain div
-                  shaped by clip-path, carrying the same flat fill + grain
-                  as every other envelope surface. The sibling <svg> draws
-                  nothing but the fold outline — no shading, no gradient,
-                  since any tonal overlay here would reappear as the "color
-                  variation" this scene is meant not to have. */}
               <div className="envelope-box__flap-fill" />
               <svg viewBox="0 0 288 130" preserveAspectRatio="none" aria-hidden="true">
-                {/* Endpoints match .envelope-box__flap-fill's clip-path,
-                    which holds the lid's base 5% clear of each top corner
-                    (14.4 = 5% of this 288-unit viewBox) — a full-width
-                    line would draw past the lid's own edge and put the
-                    corner overhang straight back. Only the two diagonal
-                    fold edges are stroked (the ~90°-apex V) — the flat top
-                    edge is deliberately left bare, since it's not part of
-                    the fold and already reads as a seam against the body
-                    below via .envelope-box__flap-fill's drop-shadow. */}
                 <polyline
                   points="14.4,0 144,130 273.6,0"
                   fill="none"
@@ -232,8 +200,10 @@ export default function EnvelopeIntro({ onOpen }) {
                   {couple.partner1} &amp; {couple.partner2}
                 </span>
                 <span className="envelope-box__card-divider" aria-hidden="true" />
-                <span className="envelope-box__card-date">{wedding.displayDate}</span>
-                <span className="envelope-box__card-venue">{mapAddress}</span>
+                <div className="envelope-box__card-venue">
+                  <span>Winsome Resorts and Spa</span>
+                  <span>Jim Corbett</span>
+                </div>
               </div>
               <div className="envelope-box__card-face envelope-box__card-face--back">
                 {cardFrame}

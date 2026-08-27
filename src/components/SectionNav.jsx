@@ -8,7 +8,8 @@ import "./SectionNav.css";
 const SCROLL_LOCK_MS = 750;
 
 const SECTION_IDS = [
-  "hero",
+  "shree-ganesh",
+  "invitation",
   "couple",
   "details",
   "gallery",
@@ -62,8 +63,9 @@ export default function SectionNav() {
     const id = SECTION_IDS[index];
     if (!id) return;
     const navHeight = document.querySelector(".nav")?.offsetHeight || 0;
+    const offset = id === "shree-ganesh" || id === "invitation" ? 0 : navHeight + 8;
     isAnimatingRef.current = true;
-    smoothScrollTo(id, { offset: navHeight + 8 });
+    smoothScrollTo(id, { offset });
     setTimeout(() => {
       isAnimatingRef.current = false;
     }, SCROLL_LOCK_MS);

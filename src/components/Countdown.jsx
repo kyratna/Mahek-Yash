@@ -8,7 +8,7 @@ const UNITS = [
   { key: "seconds", label: "Seconds" },
 ];
 
-export default function Countdown({ targetDate }) {
+export default function Countdown({ targetDate, numSize, labelSize }) {
   const timeLeft = useCountdown(targetDate);
 
   if (timeLeft.isPast) {
@@ -19,8 +19,18 @@ export default function Countdown({ targetDate }) {
     <div className="countdown">
       {UNITS.map((unit) => (
         <div className="countdown__unit" key={unit.key}>
-          <span className="countdown__value">{timeLeft[unit.key]}</span>
-          <span className="countdown__label">{unit.label}</span>
+          <span
+            className="countdown__value"
+            style={numSize ? { fontSize: `${numSize}rem` } : undefined}
+          >
+            {timeLeft[unit.key]}
+          </span>
+          <span
+            className="countdown__label"
+            style={labelSize ? { fontSize: `${labelSize}rem` } : undefined}
+          >
+            {unit.label}
+          </span>
         </div>
       ))}
     </div>

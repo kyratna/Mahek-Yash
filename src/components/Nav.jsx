@@ -4,6 +4,8 @@ import content, { asset } from "../content";
 import "./Nav.css";
 
 const LINKS = [
+  { href: "#shree-ganesh", label: "Shree Ganesh" },
+  { href: "#invitation", label: "Invitation" },
   { href: "#couple", label: "The Couple" },
   { href: "#details", label: "Events" },
   { href: "#gallery", label: "Gallery" },
@@ -13,7 +15,6 @@ const LINKS = [
 ];
 
 export default function Nav() {
-  const navRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -21,9 +22,8 @@ export default function Nav() {
 
   useEffect(() => {
     function updateVisibility() {
-      const hero = document.getElementById("hero");
-      const navHeight = navRef.current?.offsetHeight || 0;
-      const threshold = hero ? hero.offsetHeight - navHeight : 0;
+      const shreeGanesh = document.getElementById("shree-ganesh");
+      const threshold = shreeGanesh ? shreeGanesh.offsetHeight - 80 : 200;
       setIsVisible(window.scrollY > threshold);
     }
     updateVisibility();
@@ -35,49 +35,97 @@ export default function Nav() {
     };
   }, []);
 
-  const scrollTo = (id, offset) => {
-    smoothScrollTo(id, { offset });
+  // Close menu on Escape key
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  const scrollTo = (id) => {
+    smoothScrollTo(id, { offset: 0 });
     setIsOpen(false);
   };
 
   const handleLinkClick = (event, href) => {
     event.preventDefault();
-    scrollTo(href.slice(1), (navRef.current?.offsetHeight || 0) + 8);
+    scrollTo(href.slice(1));
   };
 
-  const handleLogoClick = () => scrollTo("hero", 0);
+  const handleLogoClick = () => scrollTo("hero");
 
   return (
-    <nav className={`nav ${isVisible ? "nav--visible" : ""}`} ref={navRef}>
-      <div className="nav__bar">
-        <button type="button" className="nav__logo" onClick={handleLogoClick} aria-label="Back to top">
-          <img
-            src={asset("/images/monogram/monogramCircularWithoutBg.png")}
-            alt={`${partner1} & ${partner2}`}
-            className="nav__logo-img"
-          />
-        </button>
+    <>
+      {/* Floating left hamburger button — only visible from 2nd page onwards */}
+      <div className={`nav-trigger ${isVisible ? "nav-trigger--visible" : ""}`}>
         <button
           type="button"
-          className="nav__toggle"
+          className={`nav-btn ${isOpen ? "nav-btn--active" : ""}`}
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
           onClick={() => setIsOpen((open) => !open)}
         >
-          <span className={`nav__toggle-bar ${isOpen ? "nav__toggle-bar--open" : ""}`} />
-          <span className={`nav__toggle-bar ${isOpen ? "nav__toggle-bar--open" : ""}`} />
-          <span className={`nav__toggle-bar ${isOpen ? "nav__toggle-bar--open" : ""}`} />
+          <span className="nav-btn__bar" />
+          <span className="nav-btn__bar" />
+          <span className="nav-btn__bar" />
         </button>
-        <ul className={`nav__list ${isOpen ? "nav__list--open" : ""}`}>
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <a href={link.href} onClick={(e) => handleLinkClick(e, link.href)}>
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
-    </nav>
+
+      {/* Dimmed backdrop when menu is open */}
+      <div
+        className={`nav-backdrop ${isOpen ? "nav-backdrop--open" : ""}`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Slide-out side drawer */}
+      <aside
+        className={`nav-drawer ${isOpen ? "nav-drawer--open" : ""}`}
+        aria-label="Site navigation"
+        aria-hidden={!isOpen}
+      >
+        <div className="nav-drawer__header">
+          <button type="button" className="nav-drawer__logo" onClick={handleLogoClick} aria-label="Back to top">
+            <img
+              src={asset("/images/monogram/monogramCircularWithoutBg.png")}
+              alt={`${partner1} & ${partner2}`}
+              className="nav-drawer__logo-img"
+            />
+          </button>
+          <div className="nav-drawer__couple-title">
+            <span>{partner1} <span className="nav-drawer__amp">&amp;</span> {partner2}</span>
+          </div>
+          <button
+            type="button"
+            className="nav-drawer__close"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+          >
+            ✕
+          </button>
+        </div>
+
+        <nav className="nav-drawer__nav">
+          <ul className="nav-drawer__list">
+            {LINKS.map((link) => (
+              <li key={link.href} className="nav-drawer__item">
+                <a
+                  href={link.href}
+                  className="nav-drawer__link"
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                >
+                  <span className="nav-drawer__link-dot" aria-hidden="true" />
+                  <span className="nav-drawer__link-text">{link.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    </>
   );
 }

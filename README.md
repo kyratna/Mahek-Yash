@@ -1,8 +1,15 @@
 # Our Wedding Website
 
-A React + Vite single-page wedding invitation site: hero with a scratch-to-reveal
-date and countdown, a "Meet the Couple" section, event details with a map,
-photo gallery, a live Blessings wall, a combined Blessings & RSVP form, and FAQ.
+A React + Vite single-page luxury wedding invitation site:
+- **Envelope Intro**: 3D opening animation with wax seal and card emergence
+- **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest, rose-gold divine glow aura, and Sanskrit shlokas
+- **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, parents lineage, and monogrammed scratch-to-reveal card with live countdown
+- **Navigation Drawer**: Clean top view with floating left hamburger menu
+- **Meet the Couple (`#couple`)**: Side-by-side lineage cards with centered couple illustration
+- **Event Details (`#details`)**: Interactive timeline with Google Maps navigation
+- **3D Photo Gallery (`#gallery`)**: Perspective coverflow gallery with fullscreen lightbox
+- **Blessings & RSVP (`#blessings`, `#blessings-rsvp`)**: Google Sheets-powered live blessings wall and RSVP form with WhatsApp sharing
+- **FAQ (`#faq`)**: Interactive questions & answers accordion
 
 ## Running it locally
 
@@ -25,7 +32,7 @@ for basic content edits.
 Edit `content.couple` and `content.wedding`. Keep `dateTimeISO` in the format
 `YYYY-MM-DDTHH:MM:SS±HH:MM` (an explicit timezone offset, not `Z`) so the
 countdown timer is accurate for guests in other timezones. The date is
-revealed by a scratch card in the Hero — guests scratch it to reveal
+revealed by a scratch card in the Invitation section — guests scratch it to reveal
 `wedding.displayDate`.
 
 ### 2. Meet the Couple
@@ -52,8 +59,8 @@ and update the `src`/`photo` paths in `content.js` to point at your new
 filenames (any image format works — jpg, png, etc.). You can add, remove, or
 reorder as many gallery photos as you like by editing the `gallery` array.
 
-The Hero section has no background photo — it's a plain ivory background
-with the Ganesh art, shloka, and invitation text.
+The Shree Ganesh section has no background photo — it's a plain ivory background
+with the Ganesh art, shlokas, and smooth scroll button.
 
 The placeholder images shipped in this repo are free-to-use stock photos
 (via [Lorem Picsum](https://picsum.photos), sourced from Unsplash's
@@ -86,8 +93,7 @@ blank and the button opens WhatsApp's contact picker instead.
 
 ### 7. Background music
 
-There's a mute/unmute button built into the site (bottom-right corner, next
-to the section up/down arrows) that controls a looping background track —
+There's a mute/unmute button built into the floating controls in the bottom-right corner (along with the envelope intro re-opener and section up/down arrows) that controls a looping background track —
 currently set to `public/audio/background-music.mp3`. To swap it for a
 different track: unlike the stock photos, music carries real copyright risk,
 so make sure whatever you use is properly licensed or royalty-free. Some
@@ -194,7 +200,7 @@ src/
     useBlessings.js   Blessings wall fetch/poll/optimistic-update logic
   lib/
     smoothScroll.js   eased nav-link scrolling
-  components/         one component per section (Hero, Gallery, FAQ, ...)
+  components/         one component per section (ShreeGanesh, Invitation, EnvelopeIntro, Gallery, FAQ, ...)
 public/
   images/             your photos live here
   audio/              your background music track goes here (see above)

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { asset } from "../content";
 import "./ScratchReveal.css";
 
 const REVEAL_THRESHOLD = 0.5;
@@ -7,9 +8,12 @@ const DEBRIS_COLORS = ["#7a1f1a", "#932823", "#5c1512", "#a8362f"];
 
 export default function ScratchReveal({
   children,
-  heading = "Save the date",
-  label = "Scratch to reveal the date",
+  logoSrc = asset("/images/monogram/monogramCircularWithoutBg.png"),
+  heading = "SAVE THE DATE",
+  label = "Scratch to reveal",
   onReveal,
+  forceRevealed = false,
+  unrevealedSizes,
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -18,21 +22,33 @@ export default function ScratchReveal({
   const hasRevealedRef = useRef(false);
   const [revealed, setRevealed] = useState(false);
   const [debris, setDebris] = useState([]);
+  const logoImgRef = useRef(null);
   const onRevealRef = useRef(onReveal);
   onRevealRef.current = onReveal;
 
+  const isActuallyRevealed = revealed || forceRevealed;
+
   useEffect(() => {
-    if (revealed) return;
+    if (isActuallyRevealed) return;
 
     const container = containerRef.current;
     const canvas = canvasRef.current;
+    if (!canvas || !container) return;
     const ctx = canvas.getContext("2d");
 
-    // NOTE: after ctx.setTransform(ratio, ...) below, all drawing must use
-    // *logical* (CSS) pixel coordinates — the transform already handles the
-    // device-pixel-ratio scaling. Using canvas.width/height (physical
-    // pixels) here would double-scale everything.
+    // Preload logo image
+    const img = new Image();
+    img.src = logoSrc;
+    img.onload = () => {
+      logoImgRef.current = img;
+      if (!isActuallyRevealed && container) {
+        const rect = container.getBoundingClientRect();
+        paintOverlay(rect.width, rect.height);
+      }
+    };
+
     function paintOverlay(logicalWidth, logicalHeight) {
+      if (!logicalWidth || !logicalHeight) return;
       ctx.globalCompositeOperation = "source-over";
 
       // Base red paper-like gradient.
@@ -62,18 +78,42 @@ export default function ScratchReveal({
         ctx.fillRect(x, y, 1.3, 1.3);
       }
 
+      // Delicate gold inner border frame
+      ctx.strokeStyle = "rgba(216, 178, 126, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(8, 8, logicalWidth - 16, logicalHeight - 16);
+
+      const targetLogoSize = unrevealedSizes?.logoSize ?? 78;
+      const headingSize = unrevealedSizes?.headingSize ?? 10;
+      const labelSize = unrevealedSizes?.labelSize ?? 12;
+      const spacing = unrevealedSizes?.spacing ?? 21;
+
+      const logoX = (logicalWidth - targetLogoSize) / 2;
+      const totalBlockHeight = targetLogoSize + spacing + headingSize + (labelSize * 1.3);
+      const startY = (logicalHeight - totalBlockHeight) / 2;
+      const logoY = startY;
+
+      // Draw Initials Monogram Logo in center of scratch card
+      if (logoImgRef.current && logoImgRef.current.complete && logoImgRef.current.naturalWidth > 0) {
+        ctx.save();
+        ctx.shadowColor = "rgba(0, 0, 0, 0.28)";
+        ctx.shadowBlur = 6;
+        ctx.drawImage(logoImgRef.current, logoX, logoY, targetLogoSize, targetLogoSize);
+        ctx.restore();
+      }
+
+      // Heading: "SAVE THE DATE"
       ctx.fillStyle = "#faf1ea";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
+      ctx.font = `600 ${headingSize}px "Playfair Display", Georgia, serif`;
+      const headingY = logoY + targetLogoSize + spacing;
+      ctx.fillText(heading, logicalWidth / 2, headingY);
 
-      const headingSize = Math.max(17, Math.min(26, logicalWidth * 0.08));
-      const labelSize = Math.max(11, Math.min(15, logicalWidth * 0.045));
-
-      ctx.font = `600 ${headingSize}px var(--font-heading, serif)`;
-      ctx.fillText(heading, logicalWidth / 2, logicalHeight / 2 - headingSize * 0.6);
-
-      ctx.font = `500 ${labelSize}px var(--font-body, serif)`;
-      ctx.fillText(label, logicalWidth / 2, logicalHeight / 2 + labelSize * 1.1);
+      // Subtitle: "Scratch to reveal"
+      ctx.fillStyle = "rgba(250, 241, 234, 0.85)";
+      ctx.font = `italic 400 ${labelSize}px "Cormorant Garamond", Georgia, serif`;
+      ctx.fillText(label, logicalWidth / 2, headingY + headingSize * 0.7 + labelSize * 0.7);
     }
 
     function resize() {
@@ -176,12 +216,15 @@ export default function ScratchReveal({
       canvas.removeEventListener("touchmove", handleMove);
       canvas.removeEventListener("touchend", handleUp);
     };
-  }, [revealed, heading, label]);
+  }, [isActuallyRevealed, logoSrc, heading, label, unrevealedSizes]);
 
   return (
-    <div className="scratch-reveal" ref={containerRef}>
+    <div
+      className={`scratch-reveal ${isActuallyRevealed ? "scratch-reveal--revealed" : ""}`}
+      ref={containerRef}
+    >
       <div className="scratch-reveal__content">{children}</div>
-      {!revealed && (
+      {!isActuallyRevealed && (
         <canvas className="scratch-reveal__canvas" ref={canvasRef} aria-hidden="true" />
       )}
       {debris.map((p) => (

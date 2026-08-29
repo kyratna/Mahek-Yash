@@ -195,9 +195,11 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 - **Dedicated Blessings Wall Page** (`#/blessings-wall`): Reached via the "View All Blessings" link, displaying the complete chronological blessings wall.
 
 ### Blessings and RSVP
-- White/surface section (`#blessings-rsvp`). A custom-built form with 2 tabs — "Send Blessings" and "RSVP" — connected directly to Firebase Firestore for 0-latency live updates and Google Sheets ('Wedding Admin System').
+- White/surface section (`#blessings-rsvp`). Top-aligned layout (`padding-top: var(--space-4)`) anchoring the section heading and tab switcher firmly at the top of the viewport.
+- A custom-built form with 2 tabs — "Send Blessings" and "RSVP" — connected directly to Firebase Firestore for 0-latency live updates and Google Sheets ('Wedding Admin System').
 - Both tabs include Bride Side / Groom Side selection.
 - RSVP fields: Name, Side, Attending (Joyfully accept / Regretfully decline), Guests count, and "Parking required?" (Yes/No).
+- **Centered Confirmation Card**: On submission, a burgundy-framed luxury confirmation card is rendered directly in the center of the screen without causing header layout shift.
 - **Instant Telegram Bot Integration**: Triggers real-time alerts to the wedding admin Telegram group with a native inline `🗑️ Delete from Live Wall` button.
 - On successful RSVP: Confirmation message plus a **"Share via WhatsApp"** button pre-filled with the guest's RSVP details.
 - **Confetti Burst**: Fires a celebratory burst of confetti on successful submission.

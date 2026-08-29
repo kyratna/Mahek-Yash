@@ -13,6 +13,7 @@ import FloatingControls from "./components/FloatingControls";
 import EnvelopeIntro from "./components/EnvelopeIntro";
 import PageSparkles from "./components/PageSparkles";
 import CursorSparkleTrail from "./components/CursorSparkleTrail";
+import FontPickerModal from "./components/FontPickerModal";
 
 function App({ entries, status, myBlessingKey, addLocalBlessing }) {
   // Remembered per-session so navigating to/from the Blessings Wall page
@@ -20,6 +21,7 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
   const [opened, setOpened] = useState(
     () => sessionStorage.getItem("envelopeOpened") === "true"
   );
+  const [isFontStudioOpen, setIsFontStudioOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = opened ? "" : "hidden";
@@ -43,7 +45,7 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
       {!opened && <EnvelopeIntro onOpen={handleOpen} />}
       <PageSparkles />
       <CursorSparkleTrail />
-      <Nav />
+      <Nav onOpenFontStudio={() => setIsFontStudioOpen(true)} />
       <ShreeGanesh />
       <Invitation />
       <MeetCouple />
@@ -53,7 +55,14 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
       <BlessingsRSVP onBlessingSent={addLocalBlessing} />
       <FAQ />
       <Footer />
-      <FloatingControls onReopenEnvelope={handleReopenEnvelope} />
+      <FloatingControls
+        onReopenEnvelope={handleReopenEnvelope}
+        onOpenFontStudio={() => setIsFontStudioOpen(true)}
+      />
+      <FontPickerModal
+        isOpen={isFontStudioOpen}
+        onClose={() => setIsFontStudioOpen(false)}
+      />
     </>
   );
 }

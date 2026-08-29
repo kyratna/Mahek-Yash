@@ -35,6 +35,7 @@ html {
   width: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  font-variant-numeric: lining-nums;
 }
 
 body {
@@ -48,6 +49,7 @@ body {
   font-family: var(--font-body);
   font-size: 1.15rem;
   line-height: 1.6;
+  font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

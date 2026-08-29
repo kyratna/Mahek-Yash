@@ -33,6 +33,7 @@ Design intent: warm, neutral, editorial — luxury royal Indian wedding aestheti
 | Headings (h1/h2/h3) & Accents | **Playfair Display** | Serif (`var(--font-heading)`). Weight 400/600, used for titles, `&` connector, and revealed date |
 | Body & Lineage | **Cormorant Garamond** | Classic editorial serif (`var(--font-body)`), used for translations, parentage, and body text |
 | Sanskrit shloka (Shree Ganesh) | **Tiro Devanagari Sanskrit** | Falls back to `--font-heading`, serif — see Shree Ganesh below |
+| Numeric / Date Figures | **Lining Figures (`lining-nums`)** | Applied globally (`font-variant-numeric: lining-nums`) so all digits (0–9), dates, event times, and countdown counters sit on a uniform baseline with equal cap-height proportions |
 
 Loaded via Google Fonts `<link>` in `index.html` (no npm font package).
 

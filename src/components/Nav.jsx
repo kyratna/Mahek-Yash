@@ -14,7 +14,7 @@ const LINKS = [
   { href: "#faq", label: "FAQ" },
 ];
 
-export default function Nav() {
+export default function Nav({ onOpenFontStudio }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -125,6 +125,22 @@ export default function Nav() {
             ))}
           </ul>
         </nav>
+
+        {onOpenFontStudio && (
+          <div className="nav-drawer__footer">
+            <button
+              type="button"
+              className="nav-drawer__font-btn"
+              onClick={() => {
+                setIsOpen(false);
+                onOpenFontStudio();
+              }}
+            >
+              <span className="nav-drawer__font-icon">Aa</span>
+              <span>Font Studio &amp; Proportions</span>
+            </button>
+          </div>
+        )}
       </aside>
     </>
   );

@@ -63,18 +63,89 @@ const content = {
 
   coupleVectorArt: asset("/images/bridengroom/brideNgroom_No_Bg_Vector.png"),
 
-  // Venue/address aren't shown on the event cards (see DESIGN.md) — the
-  // shared mapAddress below covers the map for all events.
+  // Time in seconds after which a flipped event card automatically flips back to the front.
+  eventCardAutoFlipSeconds: 20,
+
+  // Event cards shown on the Event Details section (3D flip cards).
+  // Front shows name, date, time; back reveals description, attire, location, and notes.
   events: [
-    { name: "Haldi", date: "December 5, 2026", time: "1:00 PM" },
-    { name: "Engagement", date: "December 5, 2026", time: "6:00 PM" }, // TODO: confirm — placeholder time
-    { name: "Baarat", date: "December 6, 2026", time: "11:30 AM" }, // TODO: confirm — placeholder time
-    { name: "Jaimaal", date: "December 6, 2026", time: "12:30 PM" },
-    { name: "Phere", date: "December 6, 2026", time: "5:00 PM" },
+    {
+      name: "Haldi",
+      date: "December 5, 2026",
+      time: "1:00 PM",
+      description: "A joyful and vibrant ceremony of turmeric blessings, love, and sunny smiles.",
+      attire: "Shades of Pink",
+      location: "Poolside Lawn",
+      note: "Get ready for color, music, and haldi fun!",
+    },
+    {
+      name: "Engagement",
+      date: "December 5, 2026",
+      time: "6:00 PM", // TODO: confirm — placeholder time
+      description: "An enchanting evening celebrating the exchange of rings and eternal promises.",
+      attire: "Cocktail / Indo-Western",
+      location: "Grand Ballroom",
+      note: "Followed by dinner, music & celebration.",
+    },
+    {
+      name: "Baarat",
+      date: "December 6, 2026",
+      time: "11:30 AM", // TODO: confirm — placeholder time
+      description: "The groom's royal dancing procession with festive dhol beats and celebration.",
+      attire: "Traditional Festive / Sherwani & Sarees",
+      location: "Resort Entrance to Mandap",
+      note: "Join the groom's baraat procession!",
+    },
+    {
+      name: "Jaimaal",
+      date: "December 6, 2026",
+      time: "12:30 PM",
+      description: "The auspicious floral garland exchange marking the union of bride and groom.",
+      attire: "Traditional Festive",
+      location: "Central Mandap",
+      note: "Shower the couple with flower petals.",
+    },
+    {
+      name: "Phere",
+      date: "December 6, 2026",
+      time: "5:00 PM",
+      description: "The seven sacred vows around the holy agni solemnizing our sacred marriage bond.",
+      attire: "Royal Indian Ethnic",
+      location: "Mandap by the Forest",
+      note: "Dinner & reception to follow.",
+    },
   ],
 
-  // Used to build the key-free Google Maps embed and the "Get Directions"
-  // button (see MapEmbed.jsx)
+  // Venue information & 'How to reach the venue?' popup details
+  venue: {
+    name: "Winsome Resort & Spa",
+    address: "Village Nandpur, Ramnagar, Jim Corbett, Uttarakhand 244715",
+    qrUrl: "https://share.google/xZAuCAlAAjEHdfEsY",
+    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Winsome+Resorts+and+Spa%2C+Jim+Corbett",
+    modalAutoCloseSeconds: 30,
+    howToReach: [
+      {
+        mode: "By Road",
+        title: "Self Drive / Cab",
+        description:
+          "Approx. 240 km (~5 to 6 hours drive) from Delhi NCR via NH9 through Hapur, Moradabad, Kashipur to Ramnagar.",
+      },
+      {
+        mode: "By Train",
+        title: "Nearest Railway Station",
+        description:
+          "Ramnagar Railway Station (RMR) is approx. 10 km (15–20 mins) from the resort. Direct trains run from Old Delhi & Anand Vihar.",
+      },
+      {
+        mode: "By Air",
+        title: "Nearest Airport",
+        description:
+          "Pantnagar Airport (PGH) is ~80 km (~2 hours drive). Alternatively, IGI Airport New Delhi is ~260 km away.",
+      },
+    ],
+  },
+
+  // Map destination address
   mapAddress: "Winsome Resorts and Spa, Jim Corbett",
 
   gallery: [

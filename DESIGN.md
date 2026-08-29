@@ -29,7 +29,7 @@ Design intent: warm, neutral, editorial — luxury royal Indian wedding aestheti
 
 | Role | Font | Notes |
 |---|---|---|
-| Couple Names | **Alex Brush** | Cursive script (`var(--font-cursive)`), used for bride & groom names on the Invitation and Nav drawer |
+| Couple Names | **Alex Brush** | Cursive script (`var(--font-cursive)`), used for bride & groom names on the Invitation, Nav drawer, and Footer |
 | Headings (h1/h2/h3) & Accents | **Playfair Display** | Serif (`var(--font-heading)`). Weight 400/600, used for titles, `&` connector, and revealed date |
 | Body & Lineage | **Cormorant Garamond** | Classic editorial serif (`var(--font-body)`), used for translations, parentage, and body text |
 | Sanskrit shloka (Shree Ganesh) | **Tiro Devanagari Sanskrit** | Falls back to `--font-heading`, serif — see Shree Ganesh below |
@@ -155,12 +155,19 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)
-- Events shown as a vertical **timeline**: a thin center line runs top to bottom, each event connects to it via a small circular marker, and event cards alternate left/right of the line (1st event left, 2nd right, 3rd left, ...)
-- Each card: event name (h3) → date (small, uppercase, muted) → time (accent color, larger) only — **no venue name or address on the cards themselves**; the shared map below covers location for all events
-- **Mobile (≤700px)**: the line moves to the left edge, every card sits full-width to its right (no more alternating), markers align to the line — a standard single-column timeline
-- Vertical spacing between items is intentionally tight (`--space-1` gap, `--space-1`/`--space-3` card padding) since cards are now short (3 lines) — this was widened back down after removing venue/address left too much dead space at the old spacing
-- Below the timeline: an embedded Google Map (key-free, built from `content.mapAddress`, currently "Winsome Resorts and Spa, Jim Corbett"), bordered, 320px tall (220px on mobile)
-- A **"Get Directions"** button sits below the map — links to `google.com/maps/dir/?api=1&destination=<mapAddress>`, opens in a new tab, drops the visitor straight into turn-by-turn navigation
+- Events shown as interactive **3D Flip Cards** arranged in a centered 2-column grid (`.events-grid`), with the 5th (last) event card placed in the center of the 3rd row.
+- **Card Front**: Centered event title (`Playfair Display`, Burgundy `#8f3350`), subtle gold divider line, event date (uppercase, muted), and event time (`Playfair Display`, Gold `#b08968`), with a "Tap for details" hint icon.
+- **Card Back**: Tapping/clicking smoothly flips the card 180° (`rotateY(180deg)`) to reveal a one-liner event description, plus metadata rows for **Attire**, **Venue**, and **Note**. An animated burgundy boundary timer stroke (`.event-flip-card__border-timer`, `#8f3350`) traces around the perimeter of the card showing the countdown until it flips back (default 20 seconds, or immediately on tap).
+- **Mobile (≤680px)**: Retains the 2-column, 3-row layout with compact sizing, typography, and margins so all 5 cards fit cleanly on mobile screens with the 5th card centered on the 3rd row.
+- **"How to reach the venue?" Button**: Sits centered below the event cards (`.event-details__venue-btn`, burgundy pill with map-pin icon).
+- **Venue & Travel Popup Modal (`VenueModal.jsx`)**:
+  - Opens on clicking "How to reach the venue?".
+  - **Auto-Close**: Closes automatically after **30 seconds** (visualized via a subtle top progress timer bar), or immediately when tapping the top-right `✕` close button, clicking the backdrop overlay, or pressing `Escape`.
+  - **Content**:
+    - Header with venue resort name & address.
+    - **QR Code** (`qrcode.react` SVG, scanning navigates to Google Maps location `https://share.google/xZAuCAlAAjEHdfEsY`).
+    - **"Get Directions" Button** (opens Google Maps turn-by-turn navigation in a new tab).
+    - **Travel Options Guide**: Detailed instructions for **By Road / Cab**, **By Train** (Ramnagar Railway Station), and **By Air** (Pantnagar / Delhi airports).
 
 ### Gallery
 - White/surface section, rebuilt as a **3D coverflow**, not a slideshow or plain grid
@@ -195,7 +202,7 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 - Hairline divider under each question
 
 ### Footer
-- Simple centered sign-off: couple's names (serif) + wedding date (muted)
+- Simple centered sign-off: couple's names (`Alex Brush` cursive in burgundy `#8f3350`, with `Playfair Display` italic gold `&`) + wedding date (`Playfair Display` serif `#2e2b28`)
 - Generous top/bottom padding (`--space-4`)
 
 ---
@@ -204,7 +211,7 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 
 - Mobile-first breakpoints, primarily at `480px`, `600px`, and `700px` — since most guests are expected to open this on a phone, mobile is treated as the primary layout, not an afterthought
 - Nav collapses to a hamburger menu ≤700px (see Nav section above)
-- Event Details collapses from an alternating left/right timeline to a single-column left-aligned timeline ≤700px (see Event Details section above)
+- Event Details maintains a centered 2-column, 3-row flip card grid (with the 5th card centered on the 3rd row) across mobile, tablet, and desktop (see Event Details section above)
 - Gallery's coverflow shrinks its stage height/perspective and widens covers slightly on narrow screens, but keeps the same fan-out mechanic (no reflow to a stacked column) at any width
 - **Meet the Couple is the one exception to "stack on mobile"** — it deliberately keeps bride/groom side-by-side at every width, shrinking sizes instead of stacking (see Meet the Couple section above)
 - Blessings switches from the circular floating cloud to a plain grid ≤700px (see Blessings section above)

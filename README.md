@@ -6,7 +6,7 @@ A React + Vite single-page luxury wedding invitation site:
 - **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, parents lineage, and monogrammed scratch-to-reveal card with live countdown
 - **Navigation Drawer**: Clean top view with floating left hamburger menu
 - **Meet the Couple (`#couple`)**: Side-by-side lineage cards with centered couple illustration
-- **Event Details (`#details`)**: Interactive timeline with Google Maps navigation
+- **Event Details (`#details`)**: 3D flip cards (2x2 + centered 5th card) with burgundy perimeter countdown timers and "How to reach the venue?" popup modal with QR code & directions
 - **3D Photo Gallery (`#gallery`)**: Perspective coverflow gallery with fullscreen lightbox
 - **Blessings & RSVP (`#blessings`, `#blessings-rsvp`)**: Google Sheets-powered live blessings wall and RSVP form with WhatsApp sharing
 - **FAQ (`#faq`)**: Interactive questions & answers accordion
@@ -67,16 +67,16 @@ The placeholder images shipped in this repo are free-to-use stock photos
 royalty-free library) just so the layout renders correctly before you add
 real photos of your own.
 
-### 4. Events & map
+### 4. Events & Venue Travel Popup
 
-Edit `content.events` — each entry just has a `name`, `date`, and `time`
-(venue/address aren't shown on the event cards by design, only on the map
-below them). Edit `content.mapAddress` for the map itself, a key-free Google
-Maps embed — no API key needed — and the "Get Directions" button below it
-(links straight to Google Maps turn-by-turn navigation for that address). If
-you want a precisely pinned location instead of an address search, go to
-Google Maps → Share → Embed a map, copy the `src` URL, and use it directly
-in `src/components/MapEmbed.jsx`.
+Edit `content.events` — each entry has `name`, `date`, `time`, `description` (one-liner), `attire`, `location`, and `note`. Front shows the name, date, and time; tapping flips the card with a 20s animated burgundy perimeter timer.
+
+Edit `content.venue` to customize:
+- `name` & `address` (resort name and full address)
+- `qrUrl` (location link generated into the QR code)
+- `directionsUrl` (Google Maps turn-by-turn navigation link)
+- `modalAutoCloseSeconds` (auto-close countdown timer for the popup, default 30s)
+- `howToReach` (travel guide cards for By Road, By Train, and By Air)
 
 ### 5. FAQ
 

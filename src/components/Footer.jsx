@@ -7,7 +7,9 @@ export default function Footer() {
   return (
     <footer id="footer" className="footer">
       <p className="footer__names">
-        {couple.partner1} &amp; {couple.partner2}
+        <span className="footer__name">{couple.partner1}</span>
+        <span className="footer__amp">&amp;</span>
+        <span className="footer__name">{couple.partner2}</span>
       </p>
       <p className="footer__date">{wedding.displayDate}</p>
     </footer>

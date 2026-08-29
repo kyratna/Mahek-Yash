@@ -101,12 +101,17 @@
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              visibility 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-sizing: border-box;
 }
 
 .nav-drawer--open {
   transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .nav-drawer__header {
@@ -232,8 +237,8 @@
 
 @media (max-width: 480px) {
   .nav-trigger {
-    top: 1rem;
-    left: 1rem;
+    top: max(1rem, env(safe-area-inset-top, 0px));
+    left: max(1rem, env(safe-area-inset-left, 0px));
   }
 
   .nav-btn {

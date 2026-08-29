@@ -1,0 +1,384 @@
+.venue-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(20, 15, 12, 0.68);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  animation: venueModalFadeIn 0.25s ease-out;
+}
+
+@keyframes venueModalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.venue-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid rgba(176, 137, 104, 0.45);
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 40px rgba(46, 43, 40, 0.28);
+  padding: 0;
+  box-sizing: border-box;
+  animation: venueModalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes venueModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Pinned Top Progress Timer Bar (30s countdown) */
+.venue-modal__timer-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--color-burgundy), var(--color-accent));
+  width: 100%;
+  transform-origin: left center;
+  animation-name: venueTimerShrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  z-index: 10;
+}
+
+@keyframes venueTimerShrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* Pinned Top-right close button */
+.venue-modal__close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.venue-modal__close-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.venue-modal__close-btn:hover {
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-color: var(--color-burgundy);
+  transform: rotate(90deg);
+}
+
+/* Scrollable Modal Body */
+.venue-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.6rem 1.4rem 1.4rem;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(176, 137, 104, 0.45) transparent;
+}
+
+/* WebKit Custom Scrollbar (contained cleanly inside the window) */
+.venue-modal__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.venue-modal__body::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0.75rem 0;
+}
+
+.venue-modal__body::-webkit-scrollbar-thumb {
+  background: rgba(176, 137, 104, 0.45);
+  border-radius: 999px;
+}
+
+.venue-modal__body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Header */
+.venue-modal__header {
+  text-align: center;
+  margin-bottom: 1.15rem;
+  padding-right: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.venue-modal__header .eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  margin-bottom: 0.2rem;
+}
+
+.venue-modal__title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--color-burgundy);
+  margin: 0 0 0.3rem;
+  line-height: 1.2;
+}
+
+.venue-modal__divider {
+  display: block;
+  position: relative;
+  width: 4rem;
+  height: 1px;
+  margin: 0.25rem auto 0.45rem;
+  background: linear-gradient(to right, transparent, var(--color-accent) 50%, transparent);
+  opacity: 0.75;
+}
+
+.venue-modal__divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
+}
+
+.venue-modal__resort-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.15rem;
+}
+
+.venue-modal__resort-addr {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* QR Code & Directions Box */
+.venue-modal__action-box {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.9rem;
+  padding: 0.95rem 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.venue-modal__qr-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  background: #ffffff;
+  padding: 0.45rem 0.45rem 0.35rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(176, 137, 104, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.venue-modal__qr-hint {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+  text-align: center;
+  max-width: 124px;
+  line-height: 1.2;
+}
+
+.venue-modal__directions-action {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.venue-modal__action-desc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.venue-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-radius: 2rem;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 12px rgba(143, 51, 80, 0.25);
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.venue-modal__btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.venue-modal__btn:hover {
+  background: #73273e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(143, 51, 80, 0.35);
+}
+
+/* Travel Guide List */
+.venue-modal__guide {
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.95rem;
+}
+
+.venue-modal__guide-heading {
+  font-family: var(--font-heading);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  margin: 0 0 0.65rem;
+}
+
+.venue-modal__guide-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.venue-modal__guide-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  background: var(--color-surface);
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(176, 137, 104, 0.2);
+}
+
+.venue-modal__guide-badge {
+  flex-shrink: 0;
+}
+
+.venue-modal__guide-mode {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+  background: rgba(176, 137, 104, 0.12);
+  padding: 0.18rem 0.45rem;
+  border-radius: 0.35rem;
+}
+
+.venue-modal__guide-body {
+  flex: 1;
+}
+
+.venue-modal__guide-title {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+
+.venue-modal__guide-text {
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 540px) {
+  .venue-modal-card {
+    max-height: 88vh;
+  }
+
+  .venue-modal__body {
+    padding: 1.35rem 0.95rem 1.15rem;
+  }
+
+  .venue-modal__header {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .venue-modal__action-box {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    padding: 0.85rem 0.75rem;
+  }
+
+  .venue-modal__directions-action {
+    align-items: center;
+  }
+
+  .venue-modal__btn {
+    width: 100%;
+    max-width: 14rem;
+  }
+
+  .venue-modal__title {
+    font-size: 1.3rem;
+  }
+}

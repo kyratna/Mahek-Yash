@@ -1,7 +1,7 @@
 .floating-controls {
   position: fixed;
-  right: var(--space-2);
-  bottom: var(--space-2);
+  right: max(var(--space-2), env(safe-area-inset-right, 0px));
+  bottom: max(var(--space-2), env(safe-area-inset-bottom, 0px));
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -11,7 +11,7 @@
 
 @media (max-width: 480px) {
   .floating-controls {
-    right: var(--space-1);
-    bottom: var(--space-1);
+    right: max(var(--space-1), env(safe-area-inset-right, 0px));
+    bottom: max(var(--space-1), env(safe-area-inset-bottom, 0px));
   }
 }

@@ -62,8 +62,7 @@ export default function SectionNav() {
     if (isAnimatingRef.current) return;
     const id = SECTION_IDS[index];
     if (!id) return;
-    const navHeight = document.querySelector(".nav")?.offsetHeight || 0;
-    const offset = id === "shree-ganesh" || id === "invitation" ? 0 : navHeight + 8;
+    const offset = 0;
     isAnimatingRef.current = true;
     smoothScrollTo(id, { offset });
     setTimeout(() => {

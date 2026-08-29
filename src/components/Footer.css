@@ -4,12 +4,49 @@
 }
 
 .footer__names {
+  font-family: var(--font-cursive);
+  font-size: 2.2rem;
+  color: var(--color-burgundy);
+  line-height: 1.2;
+  margin: 0 0 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.footer__name {
+  color: var(--color-burgundy);
+}
+
+.footer__amp {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
+  font-style: italic;
+  color: var(--color-accent);
+  font-size: 1.4rem;
+  line-height: 1;
+  margin: 0 0.15rem;
 }
 
 .footer__date {
-  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: 0.04em;
   margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .footer__names {
+    font-size: 1.85rem;
+  }
+
+  .footer__amp {
+    font-size: 1.2rem;
+  }
+
+  .footer__date {
+    font-size: 1.05rem;
+  }
 }

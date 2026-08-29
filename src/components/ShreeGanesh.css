@@ -1,9 +1,13 @@
 .shree-ganesh {
   background-color: var(--color-bg);
   position: relative;
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 .shree-ganesh__view {
+  min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100svh;
   display: flex;
   align-items: center;

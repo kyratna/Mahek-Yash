@@ -40,30 +40,62 @@ A short line shown above your names in the Invitation:
 - Grandparentage: "Grandson of" / "Shri Late Shri Niwas Gupta" / & / "Smt Late Rama Gupta"
 - Parentage: "Son of" / "Smt Renu Gupta and Shri Sandeep Kumar Gupta"
 
-## 5. Event Details
+## 5. Event Details (3D Flip Cards)
+
+Event details are presented as interactive 3D flip cards (2x2 grid with the 5th card centered). Front shows the event name, date, and time. Tapping/clicking the card flips it to reveal the event's one-liner description, attire, venue, and extra notes.
+
+- Card auto-flip back timer (in seconds, default 20): `[ 20 ]`
 
 **Haldi**
-- Time: `[ 1:00 PM ]`
 - Date: `[ December 05, 2026 ]`
+- Time: `[ 1:00 PM ]`
+- One-liner Description: `[ A joyful and vibrant ceremony of turmeric blessings, love, and sunny smiles. ]`
+- Attire / Dress Code: `[ Shades of Pink ]`
+- Venue / Location: `[ Poolside Lawn ]`
+- Additional Note: `[ Get ready for color, music, and haldi fun! ]`
 
 **Engagement**
-- Time: `[ 6:00 PM — TODO: confirm, currently a placeholder ]`
 - Date: `[ December 05, 2026 ]`
+- Time: `[ 6:00 PM — TODO: confirm, currently a placeholder ]`
+- One-liner Description: `[ An enchanting evening celebrating the exchange of rings and eternal promises. ]`
+- Attire / Dress Code: `[ Cocktail / Indo-Western ]`
+- Venue / Location: `[ Grand Ballroom ]`
+- Additional Note: `[ Followed by dinner, music & celebration. ]`
 
 **Baarat**
-- Time: `[ 11:30 AM — TODO: confirm, currently a placeholder ]`
 - Date: `[ December 06, 2026 ]`
+- Time: `[ 11:30 AM — TODO: confirm, currently a placeholder ]`
+- One-liner Description: `[ The groom's royal dancing procession with festive dhol beats and celebration. ]`
+- Attire / Dress Code: `[ Traditional Festive / Sherwani & Sarees ]`
+- Venue / Location: `[ Resort Entrance to Mandap ]`
+- Additional Note: `[ Join the groom's baraat procession! ]`
 
 **Jaimaal**
-- Time: `[ 12:30 PM ]`
 - Date: `[ December 06, 2026 ]`
+- Time: `[ 12:30 PM ]`
+- One-liner Description: `[ The auspicious floral garland exchange marking the union of bride and groom. ]`
+- Attire / Dress Code: `[ Traditional Festive ]`
+- Venue / Location: `[ Central Mandap ]`
+- Additional Note: `[ Shower the couple with flower petals. ]`
 
 **Phere**
-- Time: `[ 5:00 PM ]`
 - Date: `[ December 06, 2026 ]`
+- Time: `[ 5:00 PM ]`
+- One-liner Description: `[ The seven sacred vows around the holy agni solemnizing our sacred marriage bond. ]`
+- Attire / Dress Code: `[ Royal Indian Ethnic ]`
+- Venue / Location: `[ Mandap by the Forest ]`
+- Additional Note: `[ Dinner & reception to follow. ]`
 
-*(Sagai/Godh and Musical Cocktail were removed — the site only has these
-five events now.)*
+## 5.1 Venue & "How to Reach the Venue" Popup
+
+- Venue Resort Name: `[ Winsome Resort & Spa ]`
+- Venue Full Address: `[ Village Nandpur, Ramnagar, Jim Corbett, Uttarakhand 244715 ]`
+- Google Search / Location URL (for QR code): `[ https://share.google/xZAuCAlAAjEHdfEsY ]`
+- Google Directions URL: `[ https://www.google.com/maps/dir/?api=1&destination=Winsome+Resorts+and+Spa%2C+Jim+Corbett ]`
+- Popup auto-close timer (seconds): `[ 30 ]`
+- By Road details: `[ Approx. 240 km (~5 to 6 hours drive) from Delhi NCR via NH9 through Hapur, Moradabad, Kashipur to Ramnagar. ]`
+- By Train details: `[ Ramnagar Railway Station (RMR) is approx. 10 km (15–20 mins) from the resort. Direct trains run from Old Delhi & Anand Vihar. ]`
+- By Air details: `[ Pantnagar Airport (PGH) is ~80 km (~2 hours drive). Alternatively, IGI Airport New Delhi is ~260 km away. ]`
 
 ## 6. Blessings Section Text
 

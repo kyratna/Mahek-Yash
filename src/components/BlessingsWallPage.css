@@ -2,6 +2,9 @@
   min-height: 100svh;
   background: var(--color-bg);
   padding: var(--space-4) var(--space-2) var(--space-5);
+  overflow-x: clip;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 .blessings-wall-page__header {

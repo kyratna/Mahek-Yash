@@ -16,6 +16,7 @@
   border-radius: 1.25rem;
   background: var(--color-surface);
   padding: var(--space-4) var(--space-3);
+  overflow: hidden;
 }
 
 /* Centered on the shared boundary between the two cards — straddling the

@@ -185,15 +185,17 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 
 ### Blessings
 - Ivory/surface section (`#blessings`).
-- **3-Tab Filter Bar**: "Bride's Side", "All Wishes", and "Groom's Side" filter pills with active burgundy indicator.
-- **Curated 2x3 Grid (6 Cards)**: Displays 6 curated wish cards in a clean 2-column, 3-row layout (`--grid-gap: 0.65rem` desktop / `0.55rem` mobile).
+- **Compact 3-Tab Filter Bar**: "Bride's Side", "All Wishes", and "Groom's Side" filter pills with active burgundy indicator and streamlined 15px icons.
+- **Curated 2x3 Grid (6 Cards)**: Displays 6 curated wish cards in a clean 2-column, 3-row layout (`--grid-gap: 0.5rem` desktop / `0.45rem` mobile).
+- **Strict 3-Line Message Display**: Guaranteed 3-line max height cap with `...` (ellipsis) truncation and 2-line author name wrapping.
 - **Interactive Heart Reaction (❤️)**: Guests can click the heart button on any card to increment reactions in real-time, instantly synchronized with Firebase and Google Sheets.
-- **Full Text Lightbox**: Tapping on longer wishes opens a centered reading modal.
+- **Full Text Lightbox**: Tapping on any card opens a centered reading modal with full blessing message.
+- **"Tap Card to See Full Message" Hint**: Positioned directly above the bottom action button.
 - **"Send Blessings & RSVP" Action Button**: Positioned at the bottom of the section with comfortable breathing room, navigating smoothly to the RSVP section.
 - **Dedicated Blessings Wall Page** (`#/blessings-wall`): Reached via the "View All Blessings" link, displaying the complete chronological blessings wall.
 
 ### Blessings and RSVP
-- White/surface section (`#blessings-rsvp`). A custom-built form with 2 tabs — "Send Blessings" and "RSVP" — connected directly to Firebase Firestore for 0-latency live updates and Google Sheets.
+- White/surface section (`#blessings-rsvp`). A custom-built form with 2 tabs — "Send Blessings" and "RSVP" — connected directly to Firebase Firestore for 0-latency live updates and Google Sheets ('Wedding Admin System').
 - Both tabs include Bride Side / Groom Side selection.
 - RSVP fields: Name, Side, Attending (Joyfully accept / Regretfully decline), Guests count, and "Parking required?" (Yes/No).
 - **Instant Telegram Bot Integration**: Triggers real-time alerts to the wedding admin Telegram group with a native inline `🗑️ Delete from Live Wall` button.

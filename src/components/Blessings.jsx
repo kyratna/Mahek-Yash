@@ -357,6 +357,11 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
           </div>
         )}
 
+        {/* Tap to See Full Message Hint (Just Above Button Below) */}
+        <p className="blessings-bottom-tap-hint">
+          ✨ Tap the card to see full message
+        </p>
+
         {/* Action Link */}
         <div className="blessings-actions">
           <a className="blessings-action-btn" href="#blessings-rsvp">

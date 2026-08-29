@@ -141,7 +141,9 @@ Gallery photos are dynamically loaded from Google Drive or `src/content.js`:
 ## 10. Blessings, RSVP & Moderation Backend
 
 - **Firebase Project ID**: `yashmahekwedding` (Real-Time 0-Latency Listener)
-- **Google Apps Script Web App URL**:
+- **Google Spreadsheet**: **'Wedding Admin System'**
+- **Google Apps Script Project**: **'WeddingAdminScript'**
+- **Web App URL**:
   `https://script.google.com/macros/s/AKfycbxpqRj70zcCtJyCvzJVunfHMzmlyj1AyhAGhUw5yNDzJ8GWT7wq-plVgzgMHhrXHAG08w/exec`
 - **Telegram Moderation Bot**:
   - Connected Telegram Group: `MKY Wedd: Blessings Wall and RSVP`

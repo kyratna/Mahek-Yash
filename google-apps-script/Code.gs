@@ -407,20 +407,31 @@ function handleTelegramCallback_(callbackQuery) {
   const messageId = message.message_id;
   const fromUser = callbackQuery.from?.first_name || "Admin";
 
+  // 1. Immediately acknowledge Telegram callback within 0.2s to prevent 5s timeout!
+  try {
+    sendTelegramApi_("answerCallbackQuery", {
+      callback_query_id: callbackId,
+      text: "🗑️ Deleting from live website...",
+      show_alert: false,
+    });
+  } catch (err) {
+    Logger.log("answerCallbackQuery error: " + err);
+  }
+
   const [action, docId] = callbackData.split(":");
 
   if (action === "del_blessing" || action === "del_rsvp") {
-    // 1. Delete from Firebase Firestore immediately
+    // 2. Delete from Firebase Firestore immediately
     if (docId) {
       const collectionName = action === "del_blessing" ? "blessings" : "rsvps";
       const deleteUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/${collectionName}/${docId}?key=${FIREBASE_API_KEY}`;
       UrlFetchApp.fetch(deleteUrl, { method: "delete", muteHttpExceptions: true });
     }
 
-    // 2. Delete row from Google Sheet
+    // 3. Delete row from Google Sheet
     deleteRowFromSheetByDocId_(docId);
 
-    // 3. Edit Telegram message in-place: Strike through text and show REMOVED
+    // 4. Edit Telegram message in-place: Strike through text and show REMOVED
     const originalText = message.text || "";
     const updatedText =
       `<s>${escapeHtml_(originalText)}</s>\n\n` +
@@ -432,13 +443,6 @@ function handleTelegramCallback_(callbackQuery) {
       message_id: messageId,
       text: updatedText,
       parse_mode: "HTML",
-    });
-
-    // 4. Subtle in-app Telegram notification (no popup modal, just bottom toast)
-    sendTelegramApi_("answerCallbackQuery", {
-      callback_query_id: callbackId,
-      text: "✅ Wish removed from live website & Google Sheet",
-      show_alert: false,
     });
   }
 
@@ -531,10 +535,10 @@ function escapeHtml_(text) {
 // ==========================================================================
 
 /**
- * Instant 2-Way Synchronization:
- * 1. If row was deleted in Sheet → Deletes from Firebase instantly.
- * 2. If doc was deleted in Firebase → Deletes row from Sheet instantly.
- * 3. Syncs live heart reaction counts (❤️).
+ * Safe 2-Way Synchronization:
+ * 1. Pulls any missing Firebase blessings into the appropriate Sheet tab.
+ * 2. Synchronizes live heart reaction counts (❤️).
+ * 3. Deletion occurs ONLY when explicitly requested via Telegram 'Delete' button.
  */
 function instantBidirectionalSync() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -553,13 +557,19 @@ function instantBidirectionalSync() {
   const firestoreMap = new Map();
   firestoreDocs.forEach((doc) => {
     const docId = doc.name.split("/").pop();
-    const hearts = doc.fields?.hearts?.integerValue ? parseInt(doc.fields.hearts.integerValue, 10) : 1;
-    firestoreMap.set(docId, hearts);
+    const fields = doc.fields || {};
+    const hearts = fields.hearts?.integerValue ? parseInt(fields.hearts.integerValue, 10) : 1;
+    firestoreMap.set(docId, {
+      id: docId,
+      name: fields.name?.stringValue || "",
+      side: fields.side?.stringValue || "Bride Side",
+      message: fields.message?.stringValue || "",
+      timestamp: fields.timestamp?.timestampValue || new Date().toISOString(),
+      hearts: hearts,
+    });
   });
 
   const sheetDocIds = new Set();
-  let deletedFromSheetCount = 0;
-  let deletedFromFirebaseCount = 0;
 
   BLESSINGS_SHEETS.forEach((sheetName) => {
     const sheet = ss.getSheetByName(sheetName);
@@ -567,19 +577,15 @@ function instantBidirectionalSync() {
     const values = sheet.getDataRange().getValues();
     if (values.length <= 1) return;
 
-    for (let i = values.length - 1; i >= 1; i--) {
+    for (let i = 1; i < values.length; i++) {
       const row = values[i];
       const docId = String(row[5] || row[4] || "").trim();
 
       if (!docId) continue;
+      sheetDocIds.add(docId);
 
-      if (!firestoreMap.has(docId)) {
-        sheet.deleteRow(i + 1);
-        Logger.log(`Removed deleted Firebase doc from Sheet row ${i + 1}: ${docId}`);
-        deletedFromSheetCount++;
-      } else {
-        sheetDocIds.add(docId);
-        const liveHearts = firestoreMap.get(docId);
+      if (firestoreMap.has(docId)) {
+        const liveHearts = firestoreMap.get(docId).hearts;
         if (row[4] !== liveHearts) {
           sheet.getRange(i + 1, 5).setValue(liveHearts);
         }
@@ -587,28 +593,33 @@ function instantBidirectionalSync() {
     }
   });
 
+  // Pull any Firebase documents into the sheet if they are not already recorded
+  let addedToSheetCount = 0;
   firestoreDocs.forEach((doc) => {
-    const docPath = doc.name;
-    const docId = docPath.split("/").pop();
-
-    const createTime = doc.createTime ? new Date(doc.createTime).getTime() : 0;
-    if (Date.now() - createTime < 120000) {
-      return;
-    }
-
+    const docId = doc.name.split("/").pop();
     if (!sheetDocIds.has(docId)) {
-      const deleteUrl = `https://firestore.googleapis.com/v1/${docPath}?key=${FIREBASE_API_KEY}`;
-      const delRes = UrlFetchApp.fetch(deleteUrl, { method: "delete", muteHttpExceptions: true });
-      if (delRes.getResponseCode() === 200) {
-        Logger.log(`Deleted from Firebase because row was removed in Sheet: ${docId}`);
-        deletedFromFirebaseCount++;
+      const item = firestoreMap.get(docId);
+      if (!item) return;
+      const targetSheetName = item.side.toLowerCase().includes("groom") ? "BLESSINGS_GROOM" : "BLESSINGS_BRIDE";
+      const targetSheet = ss.getSheetByName(targetSheetName);
+      if (targetSheet) {
+        targetSheet.appendRow([
+          item.name,
+          item.side,
+          item.message,
+          item.timestamp,
+          item.hearts,
+          docId,
+        ]);
+        sheetDocIds.add(docId);
+        addedToSheetCount++;
       }
     }
   });
 
   try {
-    const msg = `Sync complete! Cleaned ${deletedFromFirebaseCount} from Firebase, ${deletedFromSheetCount} from Sheet.`;
-    ss.toast(msg, "Instant Sync ⚡", 4);
+    const msg = `Sync complete! Synced ${firestoreDocs.length} live blessings across Firebase & Sheet.`;
+    ss.toast(msg, "Safe Sync ⚡", 4);
   } catch (e) {}
 }
 

@@ -65,8 +65,10 @@ To dynamically update gallery photos from Google Drive without touching code:
 ### 1. Firebase Firestore (Live Web Tier)
 - Real-time Firestore collections (`blessings` and `rsvp`) provide instant 0-latency updates for guests and live heart reaction counts (❤️).
 
-### 2. Google Sheets (Admin Spreadsheet Tier)
-- Automatically synchronized with Firebase every 1 minute and on real-time sheet edits.
+### 2. Google Sheets ('Wedding Admin System' Tier)
+- Spreadsheet Workbook: **'Wedding Admin System'**
+- Apps Script Project: **'WeddingAdminScript'**
+- Automatically synchronized with Firebase every 1 minute and on real-time sheet edits with permanent data protection.
 - Tabs:
   - `BLESSINGS_BRIDE` & `BLESSINGS_GROOM`: `Name | Side | Message | Timestamp | Hearts (❤️) | FirebaseDocID`
   - `RSVP_BRIDE` & `RSVP_GROOM`: `Name | Side | Attending | Guests | Parking Required | Timestamp | FirebaseDocID`
@@ -74,7 +76,7 @@ To dynamically update gallery photos from Google Drive without touching code:
 
 ### 3. Telegram Bot Notifications & In-App Moderation
 - Instant Telegram group notifications for every Blessing and RSVP.
-- Native inline `🗑️ Delete from Live Wall` button: striking through the message in Telegram and removing the blessing live from Firebase and Google Sheets.
+- Native inline `🗑️ Delete from Live Wall` button: immediately answers callback queries and removes the blessing live from Firebase and Google Sheets.
 
 ---
 

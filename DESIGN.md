@@ -63,9 +63,11 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 ## 4. Layout Foundations
 
 - **Content max-width**: `1000px`, centered (`--max-width`)
-- **Section padding**: asymmetric — `--space-3` (32px) top, `--space-5` (96px) bottom, `--space-2` (16px) sides on desktop (top is intentionally tighter than bottom, so there isn't a large gap between a section's top divider and its heading); drops to `--space-2` (16px) top / `--space-4` (64px) bottom on screens ≤600px
-- **Section alternation**: every other section (Event Details, Gallery, Blessings) uses `.section--surface` — white background with a hairline top/bottom border — to break up the ivory page background. Shree Ganesh, Invitation, Meet the Couple, Blessings & RSVP, FAQ sit on the plain ivory background.
-- **Section heading**: centered, eyebrow label above an `h2`, `--space-4` margin below (`--space-3` on mobile)
+- **Full-Screen Coverage**: Every section (`.section`, `.shree-ganesh`, `.invitation`, `.footer`) occupies a full viewport screen (`min-height: 100vh; min-height: 100dvh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; scroll-snap-align: start;`).
+- **Scroll Snapping**: `scroll-snap-type: y proximity` on `html` gently aligns each section cleanly to the viewport during wheel, touch, and button navigation.
+- **Section Spacing**: Balanced internal padding (`1.75rem 1rem`) and compact component margins ensure all headings, cards, and interactive widgets fit completely within the viewport height without unnecessary scrollbar spillover.
+- **Section Alternation**: Alternating sections (Event Details, Gallery, Blessings) use `.section--surface` — white background with a hairline top/bottom border — to contrast gracefully with the ivory page sections.
+- **Section Headings**: Centered eyebrow label above an `h2`, `1.25rem` margin below.
 
 ## 5. Page Structure (top to bottom)
 
@@ -73,18 +75,17 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 1. **Shree Ganesh** (`#shree-ganesh`) — full-height sacred invocation screen with Lord Ganesh crest & shlokas
 2. **Invitation** (`#invitation`) — standalone wedding invitation, lineage, and scratch card date reveal
 3. **Meet the Couple** (`#couple`)
-4. **Event Details** (`#details`, includes map)
-5. **Gallery** (`#gallery`)
-6. **Blessings** (`#blessings`)
-7. **Blessings and RSVP** (`#blessings-rsvp`)
-8. **FAQ** (`#faq`)
-9. **Footer** (`#footer`)
+4. **Event Details** (`#details`) — 2x3 interactive flip cards grid + "How to reach the venue?" popup
+5. **Gallery** (`#gallery`) — 3D coverflow carousel
+6. **Blessings** (`#blessings`) — guest blessings display
+7. **Blessings and RSVP** (`#blessings-rsvp`) — interactive RSVP & blessing form
+8. **FAQ & Footer** (`#faq`) — frequently asked questions accordion with the footer signature (`Mahek & Yash` and wedding date) integrated at the bottom of the final page
 
-Each section is a "frame" you can jump to directly — every section above has a stable `id`, used both by the Nav links and by the section frame-nav (below).
+Each section is a full-screen "frame" you can jump to directly — every section above has a stable `id`, used both by the Nav links and by the section frame-nav (below).
 
 ### Section frame-nav (home / up / down arrows)
 
-The bottom-right floating control cluster (`FloatingControls.jsx`), top to bottom: an **Envelope button** (`HomeButton.jsx`) with an envelope icon — reopens the interactive 3D Envelope invitation intro; a pair of stacked up/down arrow buttons (`src/components/SectionNav.jsx`); then the music mute button. Clicking up/down jumps to the previous/next section's top edge using the same eased scroll as the Nav links. The current section is tracked from scroll position; the up arrow disables at the first section (Shree Ganesh), the down arrow disables at the last (Footer). A short animation lock (~750ms, matching the scroll duration) ignores further clicks mid-scroll.
+The bottom-right floating control cluster (`FloatingControls.jsx`), top to bottom: an **Envelope button** (`HomeButton.jsx`) with an envelope icon — reopens the interactive 3D Envelope invitation intro; a pair of stacked up/down arrow buttons (`src/components/SectionNav.jsx`); then the music mute button. Clicking up/down jumps to the previous/next section's top edge using the same eased scroll as the Nav links. The current section is tracked from scroll position; the up arrow disables at the first section (Shree Ganesh), the down arrow disables at the last (FAQ & Footer). A short animation lock (~750ms, matching the scroll duration) ignores further clicks mid-scroll.
 
 ---
 
@@ -156,10 +157,13 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)
-- Events shown as interactive **3D Flip Cards** arranged in a centered 2-column grid (`.events-grid`), with the 5th (last) event card placed in the center of the 3rd row.
+- Events shown as interactive **3D Flip Cards** arranged in a centered 2-column, 3-row grid (`.events-grid`, total 6 event cards):
+  - Row 1: **Haldi** (Dec 5, 12:30 PM) &amp; **Engagement &amp; Sangeet** (Dec 5, 5:00 PM)
+  - Row 2: **Godh Bharai &amp; Sagai** (Dec 5, 7:00 PM) &amp; **Baraat &amp; Ghurchari** (Dec 6, 10:30 AM)
+  - Row 3: **Jaimaal** (Dec 6, 12:30 PM) &amp; **Phere** (Dec 6, 5:00 PM)
 - **Card Front**: Centered event title (`Playfair Display`, Burgundy `#8f3350`), subtle gold divider line, event date (uppercase, muted), and event time (`Playfair Display`, Gold `#b08968`), with a "Tap for details" hint icon.
 - **Card Back**: Tapping/clicking smoothly flips the card 180° (`rotateY(180deg)`) to reveal a one-liner event description, plus metadata rows for **Attire**, **Venue**, and **Note**. An animated burgundy boundary timer stroke (`.event-flip-card__border-timer`, `#8f3350`) traces around the perimeter of the card showing the countdown until it flips back (default 20 seconds, or immediately on tap).
-- **Mobile (≤680px)**: Retains the 2-column, 3-row layout with compact sizing, typography, and margins so all 5 cards fit cleanly on mobile screens with the 5th card centered on the 3rd row.
+- **Mobile (≤680px)**: Retains the 2-column, 3-row layout with compact sizing, typography, and margins so all 6 cards fit cleanly on mobile screens.
 - **"How to reach the venue?" Button**: Sits centered below the event cards (`.event-details__venue-btn`, burgundy pill with map-pin icon).
 - **Venue & Travel Popup Modal (`VenueModal.jsx`)**:
   - Opens on clicking "How to reach the venue?".
@@ -171,31 +175,30 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
     - **Travel Options Guide**: Detailed instructions for **By Road / Cab**, **By Train** (Ramnagar Railway Station), and **By Air** (Pantnagar / Delhi airports).
 
 ### Gallery
-- White/surface section, rebuilt as a **3D coverflow**, not a slideshow or plain grid
-- Photos fan out in perspective around the active one: the centered photo sits large and flat, neighbors recede to either side (`rotateY` + `translateZ` + `scale`, distance-based), farther photos shrink and dim further. Distance-to-center wraps the "short way around" so cycling past the last photo turns whichever direction is closer rather than unwinding all the way back
-- Click a side cover to bring it to center; click the centered cover to open the existing fullscreen lightbox (dark overlay, close × and prev/next ‹ › controls, all ≥44px tap targets). Explicit prev/next chevron buttons flank the coverflow, and small dot indicators (one per photo) sit below it — no thumbnail strip
-- **Auto-advances** left to right on its own (every 4s) when left untouched; selecting a cover (click, dot, or prev/next inside the lightbox) resets that timer so it restarts counting from whatever you just picked, and it pauses entirely while the lightbox is open
-- On narrow screens the coverflow's stage height and 3D perspective shrink and covers widen slightly, but the fan-out mechanic stays the same at every width — it never collapses to a stacked column
+- White/surface section (`#gallery`), vertically distributed with the section heading anchored at the top, the photo stage in the vertical middle, and controls directly underneath.
+- **3D Coverflow Perspective**: Centered active photo sits prominent, while neighbors fan out with calculated `rotateY`, `translateZ`, and `scale`. Distance-to-center wraps the "short way around" so cycling past the last photo turns in whichever direction is closer.
+- **Burgundy Frame & Theme Matting**: Each card features a clean **2px solid Burgundy border (`var(--color-burgundy)`)** with a warm ivory/cream background fill (`#ffffff` to `#faf7f2`), perfectly matching the website aesthetic without black borders.
+- **Adaptive Image Scaling**: Large DSLR / 4K phone photos in portrait, landscape, or square orientation are scaled down with `object-fit: contain; max-width: 96%; max-height: 96%;` without clipping faces or distortion.
+- **Zero-Error Caricature Fallback**: If any image fails to load or while photos are being added, the card seamlessly renders an Indian wedding caricature artwork card (Couple, Mandap, or Sacred Hands) with a decorative caption.
+- **Navigation Controls Below Gallery View**: Pill-shaped **‹ Prev** and **Next ›** buttons with SVG chevrons alongside interactive capsule-style pagination dots sit tightly grouped directly underneath the photos.
+- **Auto-Advance**: Cycles automatically every 4.5s; user interaction or opening the fullscreen Lightbox pauses the timer.
 
 ### Blessings
-- White/surface section. Guest messages shown as individual sticky notes with **rounded corners** (`border-radius: 0.85rem`), 4 rotating pastel colors, soft drop shadow, each showing the message, then "— name" and, on its own line below, "(side)" in parentheses, then a small muted date
-- Data comes from a shared `useBlessings` hook (`src/hooks/useBlessings.js`), called **once** at the top of the app (`main.jsx`) and passed down as props — both this section and the Blessings Wall page (below) read the same fetched data rather than each fetching their own copy, so navigating between them never re-triggers the slow Apps Script round-trip. Fetches on mount, then polls every **10s** in the background so guests see new blessings from others without refreshing
-- **Layout — tiled wall, not a circular cloud**: a plain CSS grid (`.blessings-tiles`), so non-overlap is guaranteed by the browser's own grid layout rather than any position math. `grid-template-columns: repeat(auto-fill, minmax(...))` naturally lands around **2-3 tiles per row on phones, 4-5 per row at the ≥700px breakpoint** — no per-breakpoint column count is hard-coded. Tiles sit with a few of them offset a handful of pixels up/down (`nth-child` pattern) for a loosely "interlocking," floating look — nothing animates or actually moves
-- **Font size scales with message length** (`getMessageScale()` in `Blessings.jsx`): short messages render larger, long ones smaller, so each note reads well without needing a fixed truncation point; a 4-line clamp is just a backstop for unusually long messages
-- **At most 15 tiles show at once** (`TILE_CAP`) — the most recent blessings, since `entries` is already newest-first. This keeps the wall itself compact; the full list always lives on the dedicated Blessings Wall page
-- **Center hub**: a tile inserted at the midpoint of the tile order (not absolutely positioned — just where it naturally falls in the grid) and spanning the **full width of the grid row** (`grid-column: 1 / -1`), so it's always dead-center horizontally regardless of which column its position would otherwise land on. Holds two things stacked: the visitor's own just-submitted blessing this session ("mine" — tracked client-side only, resets on reload), shown with a soft gold ring rather than the usual rotation/shadow; and directly below it, a **"View All Blessings" button with a slow, permanent glow pulse**, linking to the Blessings Wall page. The button is always present at the hub position, including when there's no "mine" yet or no blessings at all
-- Clicking any note opens it enlarged in a centered lightbox (dark overlay, larger text), reusing that exact note's own color; closes via the × button or clicking outside the note
-- Empty state: "No blessings yet — be the first to leave one!" above the (button-only) hub tile, with a button linking to the Blessings & RSVP section
-- **Blessings Wall page** (`src/components/BlessingsWallPage.jsx`, route `#/blessings-wall`): a dedicated page — not a modal — reached via the "View All Blessings" button, titled "Blessings Wall" (both the `<h1>` and the browser tab title). Same tiled-grid treatment (2-3/row mobile, 4-5/row wide) but with **every** blessing, no cap, newest first. Shows a "Loading blessings…" line during the initial fetch (only relevant if this page is opened directly, e.g. a shared link — reached from elsewhere on the site it renders instantly, since the data's already loaded, see above). A "← Back to the invitation" link returns home. Routed with a minimal hash check in `main.jsx` (no router library — the site has exactly one extra route) rather than a real path, since GitHub Pages can't serve a fallback for arbitrary paths on refresh
+- Ivory/surface section (`#blessings`).
+- **3-Tab Filter Bar**: "Bride's Side", "All Wishes", and "Groom's Side" filter pills with active burgundy indicator.
+- **Curated 2x3 Grid (6 Cards)**: Displays 6 curated wish cards in a clean 2-column, 3-row layout (`--grid-gap: 0.65rem` desktop / `0.55rem` mobile).
+- **Interactive Heart Reaction (❤️)**: Guests can click the heart button on any card to increment reactions in real-time, instantly synchronized with Firebase and Google Sheets.
+- **Full Text Lightbox**: Tapping on longer wishes opens a centered reading modal.
+- **"Send Blessings & RSVP" Action Button**: Positioned at the bottom of the section with comfortable breathing room, navigating smoothly to the RSVP section.
+- **Dedicated Blessings Wall Page** (`#/blessings-wall`): Reached via the "View All Blessings" link, displaying the complete chronological blessings wall.
 
 ### Blessings and RSVP
-- White/surface section. A custom-built form (not a Google Form embed) with 2 tabs — "Send Blessings" and "RSVP" — sharing one bordered container, submitting to the same Apps Script backend as the Blessings wall
-- Both tabs include a Bride Side / Groom Side radio selection
-- RSVP fields: name, side, attending (Joyfully accept / Regretfully decline), number of guests, and **"Parking required?" (Yes/No)** — replaced an earlier free-text dietary-restrictions field
-- On successful blessing submission: the form holds on a "Thank you" message for **2 seconds** (so it's actually readable), then automatically navigates to the Blessings Wall page, where the guest's own note is already visible (see above)
-- On successful RSVP submission: inline confirmation message, plus a **"Share via WhatsApp"** button — pre-fills a `wa.me` message with the submitted name/side/attending/guests/parking so the guest can forward their RSVP directly. Opens `content.integrations.whatsappNumber`'s chat if set, otherwise opens WhatsApp's contact picker
-- **Confetti** (see §10) fires a one-shot burst on every successful submission, blessing or RSVP alike — each submission triggers its own burst independently, so back-to-back submissions each get one
-- If the Apps Script backend isn't configured (`content.integrations.appsScriptUrl` empty), both forms fail gracefully with an inline "not connected yet" message rather than erroring
+- White/surface section (`#blessings-rsvp`). A custom-built form with 2 tabs — "Send Blessings" and "RSVP" — connected directly to Firebase Firestore for 0-latency live updates and Google Sheets.
+- Both tabs include Bride Side / Groom Side selection.
+- RSVP fields: Name, Side, Attending (Joyfully accept / Regretfully decline), Guests count, and "Parking required?" (Yes/No).
+- **Instant Telegram Bot Integration**: Triggers real-time alerts to the wedding admin Telegram group with a native inline `🗑️ Delete from Live Wall` button.
+- On successful RSVP: Confirmation message plus a **"Share via WhatsApp"** button pre-filled with the guest's RSVP details.
+- **Confetti Burst**: Fires a celebratory burst of confetti on successful submission.
 
 ### FAQ
 - Ivory section, content narrowed to 40rem and centered (narrower than the 1000px page max-width, since Q&A reads better in a tighter column)

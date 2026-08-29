@@ -16,7 +16,6 @@ const SECTION_IDS = [
   "blessings",
   "blessings-rsvp",
   "faq",
-  "footer",
 ];
 
 function UpArrowIcon() {

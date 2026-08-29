@@ -93,116 +93,833 @@
   margin-bottom: var(--space-2);
 }
 
-/* The tiled "interlocking wall" — a plain CSS grid, so non-overlap is
-   guaranteed by the browser's own layout rather than any position math.
-   Column count isn't hard-coded: minmax() naturally lands around 2-3 per
-   row on phones and 4-5 per row at the wider breakpoint below. */
-.blessings-tiles {
+/* ==========================================================================
+   Blessings Section Screen Fit
+   ========================================================================== */
+.blessings-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1rem max(1.75rem, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  overflow-x: clip;
+  max-width: 100vw;
+  scroll-snap-align: start;
+}
+
+.blessings-section .section__heading {
+  margin-bottom: 0.45rem;
+}
+
+.blessings-section .section__heading h2 {
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  margin: 0.1rem 0;
+}
+
+/* ==========================================================================
+   3-Tab Filter Bar (Bride's Side / All Wishes / Groom's Side)
+   ========================================================================== */
+.blessings-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0 auto 0.55rem;
+  padding: 0.2rem 0.3rem;
+  background: rgba(250, 247, 242, 0.95);
+  border: 1px solid rgba(176, 137, 104, 0.35);
+  border-radius: 2rem;
+  max-width: 32rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.filter-icon-img {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.filter-btn:hover .filter-icon-img {
+  transform: scale(1.12);
+}
+
+.filter-btn:hover {
+  color: var(--color-burgundy);
+  background: rgba(143, 51, 80, 0.06);
+}
+
+.filter-btn.is-active {
+  background: rgba(143, 51, 80, 0.06);
+  color: var(--color-burgundy);
+  border: 1.5px solid var(--color-burgundy);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(143, 51, 80, 0.12);
+}
+
+.filter-btn.is-active .filter-icon-img {
+  filter: drop-shadow(0 1px 2px rgba(143, 51, 80, 0.25));
+  transform: scale(1.06);
+}
+
+/* ==========================================================================
+   6-Card Curated Luxury Grid (Spacious & Elegant, Matching Events Grid)
+   ========================================================================== */
+.blessings-curated-grid-6 {
+  --grid-gap: 0.65rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--space-2);
-  align-items: start;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+  max-width: 44rem;
+  width: 100%;
+  margin: 0 auto 0.65rem;
+  box-sizing: border-box;
 }
 
-@media (min-width: 700px) {
-  .blessings-tiles {
-    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-    gap: var(--space-3);
-  }
-}
-
-/* Tiles read cleanest with no rotation (unlike the loose sticky-note tilt
-   used elsewhere) — a few sit a little higher/lower than the grid line
-   instead, for a "floating, interlocking" look with nothing animating. */
-.blessings-tiles .note--tile {
-  height: 100%;
+.curated-wish-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid rgba(176, 137, 104, 0.32);
+  border-radius: 0.85rem;
+  padding: 0.75rem 1rem 0.65rem;
+  box-shadow: 0 6px 20px rgba(46, 43, 40, 0.05);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: var(--space-2);
+  min-height: 120px;
+  height: 120px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-sizing: border-box;
 }
 
-.blessings-tiles > *:not(.blessings-tile--hub):nth-child(5n + 2) {
-  transform: translateY(-8px);
+.curated-wish-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 28px rgba(143, 51, 80, 0.14);
+  transform: translateY(-3px);
 }
 
-.blessings-tiles > *:not(.blessings-tile--hub):nth-child(5n + 4) {
-  transform: translateY(8px);
+.curated-wish-card--bride {
+  border-top: 3px solid #d4af37;
 }
 
-/* Longer messages already get a smaller font (--message-scale, set inline
-   from Blessings.jsx per note) — the clamp is just a backstop so an
-   unusually long message can't blow out a tile's height. */
-.note--tile .note__message {
-  font-size: calc(1.05rem * var(--message-scale, 1));
-  margin-bottom: var(--space-1);
+.curated-wish-card--groom {
+  border-top: 3px solid var(--color-burgundy);
+}
+
+.curated-wish-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.curated-wish-card__quote-mark {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  color: rgba(176, 137, 104, 0.3);
+  line-height: 0.7;
+  pointer-events: none;
+}
+
+/* Heart Reaction Button on Each Card */
+.curated-heart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(250, 247, 242, 0.85);
+  border: 1px solid rgba(176, 137, 104, 0.25);
+  border-radius: 1rem;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 2;
+}
+
+.curated-heart-btn:hover {
+  background: #ffffff;
+  border-color: #e57373;
+  transform: scale(1.08);
+}
+
+.curated-heart-btn.is-hearted {
+  background: #fff0f3;
+  border-color: #ffccd5;
+  color: var(--color-burgundy);
+}
+
+.heart-count {
+  font-variant-numeric: lining-nums;
+  line-height: 1;
+}
+
+.curated-wish-card__message {
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  line-height: 1.45;
+  color: var(--color-text);
+  margin: 0.2rem 0 0.65rem;
+  flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.note--tile .note__author,
-.note--tile .note__side,
-.note--tile .note__date {
-  font-size: calc(0.85rem * var(--message-scale, 1));
+.curated-wish-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  border-top: 1px solid rgba(176, 137, 104, 0.16);
+  padding-top: 0.45rem;
 }
 
-/* The hub: a non-scrolling, always-present tile roughly in the middle of
-   the wall (see Blessings.jsx — it's inserted at the tile order's midpoint,
-   not positioned by coordinates) holding the visitor's own just-submitted
-   note, if any, plus the button into the full Blessings Wall page. */
-/* Spans the full grid row so it's always dead-center horizontally,
-   regardless of which column its position in the tile order happens to
-   land on (see Blessings.jsx — it's inserted at the tile order's
-   midpoint, so this also keeps it roughly centered vertically). */
-.blessings-tile--hub {
-  grid-column: 1 / -1;
+.curated-wish-card__author {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.curated-wish-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.curated-side-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.25rem;
+}
+
+.badge--bride {
+  background: rgba(212, 175, 55, 0.12);
+  color: #9e7400;
+}
+
+.badge--groom {
+  background: rgba(143, 51, 80, 0.1);
+  color: var(--color-burgundy);
+}
+
+.curated-date {
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Uniform 2x3 Grid: Placeholder Card Style
+   ========================================================================== */
+.curated-wish-card--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(250, 247, 242, 0.45);
+  border: 1.5px dashed rgba(176, 137, 104, 0.35);
+  border-left: 3px dashed rgba(176, 137, 104, 0.45);
+  border-radius: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-height: 120px;
+  height: 120px;
+  box-sizing: border-box;
+}
+
+.curated-wish-card--placeholder:hover {
+  background: rgba(250, 247, 242, 0.9);
+  border-color: var(--color-burgundy);
+  border-left-color: var(--color-burgundy);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(143, 51, 80, 0.12);
+}
+
+.curated-placeholder-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  text-align: center;
-  padding: var(--space-3) var(--space-2);
+  gap: 0.25rem;
+  padding: 0.65rem;
 }
 
-.blessings-hub__note {
+.placeholder-pen-icon {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  margin-bottom: 0.15rem;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: drop-shadow(0 1px 2px rgba(143, 51, 80, 0.15));
+}
+
+.curated-wish-card--placeholder:hover .placeholder-pen-icon {
+  transform: scale(1.15) rotate(-3deg);
+}
+
+.placeholder-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.placeholder-subtext {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   Carousel Pagination Controls
+   ========================================================================== */
+.blessings-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto 0.65rem;
+  flex-wrap: wrap;
+}
+
+.carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  padding: 0.3rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-color: var(--color-burgundy);
+}
+
+.carousel-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel-pagination-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pagination-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(176, 137, 104, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.pagination-dot.is-active {
+  width: 18px;
+  border-radius: 5px;
+  background: var(--color-burgundy);
+}
+
+.carousel-page-indicator {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Action Button (Mirroring Events Page Venue Button Style)
+   ========================================================================== */
+.blessings-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.55rem;
+  margin-bottom: 0.5rem;
+}
+
+.blessings-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border: 1px solid var(--color-burgundy);
+  border-radius: 2rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(143, 51, 80, 0.22);
+  transition: all 0.25s ease;
+  letter-spacing: 0.02em;
+}
+
+.blessings-action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.blessings-action-btn:hover {
+  background: #73273e;
+  border-color: #73273e;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(143, 51, 80, 0.32);
+}
+
+.blessings-action-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   OPTION 1: Editorial 3-Card Carousel
+   ========================================================================== */
+.blessings-carousel-view {
+  max-width: 52rem;
+  margin: 0 auto;
   width: 100%;
 }
 
-.blessings-hub__note .note--mine {
-  transform: none;
-  padding: var(--space-2);
-  box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.28), 0 8px 18px rgba(46, 43, 40, 0.16);
+.blessings-carousel-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.blessings-hub__note .note--mine:hover {
-  transform: none;
+.blessings-editorial-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid rgba(176, 137, 104, 0.35);
+  border-radius: 0.85rem;
+  padding: 1.25rem 1rem 1rem;
+  box-shadow: 0 6px 18px rgba(46, 43, 40, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
 }
 
-.blessings-hub__button {
+.blessings-editorial-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 10px 24px rgba(143, 51, 80, 0.12);
+  transform: translateY(-3px);
+}
+
+.editorial-card__quote-mark {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.65rem;
+  font-family: var(--font-heading);
+  font-size: 2.75rem;
+  color: rgba(176, 137, 104, 0.25);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.editorial-card__message {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--color-text);
+  margin: 0.5rem 0 1rem;
+  z-index: 1;
+}
+
+.editorial-card__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-top: 1px solid rgba(176, 137, 104, 0.18);
+  padding-top: 0.5rem;
+}
+
+.editorial-card__author {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  margin: 0;
+}
+
+.editorial-card__badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  background: rgba(176, 137, 104, 0.12);
+  color: var(--color-accent);
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.editorial-card__date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+}
+
+.blessings-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-nav-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-nav-btn:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: #ffffff;
+  border-color: var(--color-accent);
+}
+
+.carousel-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel-nav-indicator {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+}
+
+/* ==========================================================================
+   OPTION 2: Open Wedding Guestbook Album
+   ========================================================================== */
+.blessings-guestbook-view {
+  max-width: 48rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.guestbook-album {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #fcfbf9;
+  border: 2px solid rgba(176, 137, 104, 0.4);
+  border-radius: 1rem;
+  box-shadow: 0 14px 36px rgba(46, 43, 40, 0.12), inset 0 0 20px rgba(176, 137, 104, 0.05);
+  min-height: 280px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.guestbook-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(176, 137, 104, 0.45) 20%, rgba(176, 137, 104, 0.45) 80%, transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.guestbook-page {
+  padding: 1.5rem 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.guestbook-page--left {
+  background: rgba(250, 247, 242, 0.5);
+  border-right: 1px dashed rgba(176, 137, 104, 0.2);
+}
+
+.guestbook-page-header {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-accent);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.guestbook-entry {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.guestbook-quote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.08rem;
+  line-height: 1.45;
+  color: var(--color-text);
+  margin: 0 0 0.85rem;
+}
+
+.guestbook-signature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.guestbook-author {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+}
+
+.guestbook-badge {
+  font-size: 0.72rem;
+  color: var(--color-accent);
+}
+
+.guestbook-date {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.guestbook-prompt {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.guestbook-page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(176, 137, 104, 0.2);
+  padding-top: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.guestbook-page-btn {
+  background: none;
+  border: 0;
+  color: var(--color-burgundy);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.guestbook-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.guestbook-page-num {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   OPTION 3: Minimalist Quote Marquee + Spotlight
+   ========================================================================== */
+.blessings-banner-view {
+  max-width: 44rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.blessings-marquee-wrapper {
+  overflow: hidden;
   white-space: nowrap;
-  animation: hub-button-glow 2.4s ease-in-out infinite;
+  background: rgba(250, 247, 242, 0.85);
+  border-top: 1px solid rgba(176, 137, 104, 0.25);
+  border-bottom: 1px solid rgba(176, 137, 104, 0.25);
+  padding: 0.5rem 0;
+  margin-bottom: 1.25rem;
 }
 
-@keyframes hub-button-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.22), 0 0 14px rgba(176, 137, 104, 0.3);
+.blessings-marquee-track {
+  display: inline-block;
+  animation: marquee-scroll 32s linear infinite;
+}
+
+.marquee-item {
+  display: inline-block;
+  margin: 0 1rem;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.marquee-author {
+  color: var(--color-burgundy);
+  font-style: normal;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0%);
   }
-  50% {
-    box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.4), 0 0 26px rgba(176, 137, 104, 0.58);
+  to {
+    transform: translateX(-50%);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .blessings-hub__button {
-    animation: none;
-    box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.32), 0 0 18px rgba(176, 137, 104, 0.42);
-  }
+.blessings-spotlight-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: 1rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  box-shadow: 0 8px 24px rgba(143, 51, 80, 0.08);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
+.blessings-spotlight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(143, 51, 80, 0.15);
+}
+
+.spotlight-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: rgba(143, 51, 80, 0.08);
+  color: var(--color-burgundy);
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.spotlight-message {
+  font-family: var(--font-body);
+  font-size: 1.22rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+
+.spotlight-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.spotlight-author {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+}
+
+.spotlight-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.85rem;
+}
+
+/* ==========================================================================
+   OPTION 4: Curated 4-Card Luxury Grid
+   ========================================================================== */
+.blessings-grid-view {
+  max-width: 44rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.blessings-curated-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.95rem;
+}
+
+/* ==========================================================================
+   Sticky Wall Lightbox & Fallbacks
+   ========================================================================== */
 .note-lightbox {
   position: fixed;
   inset: 0;
@@ -220,10 +937,16 @@
   cursor: default;
   transform: none;
   padding: var(--space-4) var(--space-3) var(--space-3);
+  background: #fdfbf7;
+  border: 1px solid var(--color-accent);
+  border-radius: 1rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
 }
 
 .note-lightbox__note .note__message {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  color: var(--color-text);
 }
 
 .note-lightbox__close {
@@ -238,3 +961,654 @@
   min-width: 44px;
   min-height: 44px;
 }
+
+/* ==========================================================================
+   OPTION 3: 3D Swipeable Card Stack
+   ========================================================================== */
+.blessings-stack-view {
+  max-width: 32rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.blessings-3d-stack {
+  position: relative;
+  height: 250px;
+  margin-bottom: 1.5rem;
+  perspective: 1000px;
+}
+
+.stack-card {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface);
+  border: 1px solid rgba(176, 137, 104, 0.4);
+  border-radius: 1rem;
+  padding: 1.5rem 1.25rem 1rem;
+  box-shadow: 0 10px 28px rgba(46, 43, 40, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.stack-card--bottom {
+  transform: translateY(22px) scale(0.9);
+  opacity: 0.55;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.stack-card--middle {
+  transform: translateY(11px) scale(0.95);
+  opacity: 0.8;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.stack-card--top {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.stack-card--top:hover {
+  border-color: var(--color-burgundy);
+  box-shadow: 0 14px 36px rgba(143, 51, 80, 0.16);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.stack-card__message {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  margin: 0.5rem 0 1rem;
+}
+
+.stack-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.stack-nav-controls .carousel-nav-btn {
+  width: auto;
+  border-radius: 1.5rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   OPTION 4: Royal Farman / Scroll
+   ========================================================================== */
+.blessings-scroll-view {
+  max-width: 36rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.royal-farman {
+  position: relative;
+  margin: 0 auto 1.25rem;
+  filter: drop-shadow(0 12px 28px rgba(46, 43, 40, 0.15));
+}
+
+.royal-farman__roller {
+  height: 14px;
+  background: linear-gradient(to right, #8f3350, #b08968 20%, #d4af37 50%, #b08968 80%, #8f3350);
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.royal-farman__roller::before,
+.royal-farman__roller::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 20px;
+  height: 20px;
+  background: #d4af37;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.royal-farman__roller::before {
+  left: -8px;
+}
+
+.royal-farman__roller::after {
+  right: -8px;
+}
+
+.royal-farman__body {
+  background: #faf6ee;
+  border-left: 2px solid #d4af37;
+  border-right: 2px solid #d4af37;
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  position: relative;
+  background-image: radial-gradient(rgba(176, 137, 104, 0.08) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.royal-farman__seal {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.royal-farman__title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--color-accent);
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.royal-farman__text {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  margin: 0 0 1.25rem;
+}
+
+.royal-farman__signature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.royal-farman__author {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-burgundy);
+}
+
+.royal-farman__badge {
+  font-size: 0.82rem;
+  color: var(--color-accent);
+}
+
+.royal-farman__wax-monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #8f3350;
+  color: #d4af37;
+  border-radius: 50%;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin-top: 1rem;
+  box-shadow: 0 4px 12px rgba(143, 51, 80, 0.4), inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border: 1px dashed rgba(212, 175, 55, 0.5);
+}
+
+.farman-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+/* ==========================================================================
+   OPTION 5: Floating Wish Lanterns
+   ========================================================================== */
+.blessings-lanterns-view {
+  max-width: 48rem;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+
+.lanterns-hint {
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+}
+
+.lanterns-sky {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.floating-lantern {
+  position: relative;
+  background: rgba(253, 251, 247, 0.95);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 1.25rem 1.25rem 0.5rem 0.5rem;
+  padding: 1.25rem 0.85rem 1rem;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: lantern-float 4s ease-in-out infinite;
+}
+
+.floating-lantern--1 { animation-delay: 0s; }
+.floating-lantern--2 { animation-delay: 1s; }
+.floating-lantern--3 { animation-delay: 2s; }
+.floating-lantern--4 { animation-delay: 0.5s; }
+
+@keyframes lantern-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.floating-lantern:hover {
+  transform: translateY(-12px) scale(1.04);
+  box-shadow: 0 14px 32px rgba(143, 51, 80, 0.25), 0 0 20px rgba(212, 175, 55, 0.5);
+  border-color: var(--color-burgundy);
+}
+
+.lantern-icon {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.lantern-message {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+}
+
+.lantern-author {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  display: block;
+}
+
+/* ==========================================================================
+   OPTION 6: Live Wishes Chat Stream
+   ========================================================================== */
+.blessings-chat-view {
+  max-width: 40rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.chat-filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chat-filter-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.35rem 0.85rem;
+  border-radius: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chat-filter-btn.is-active {
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-color: var(--color-burgundy);
+}
+
+.chat-stream-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 0.5rem 0.25rem;
+  box-sizing: border-box;
+}
+
+.chat-bubble {
+  display: flex;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 0.85rem 1rem;
+  box-shadow: 0 4px 12px rgba(46, 43, 40, 0.05);
+}
+
+.chat-bubble--bride {
+  border-left: 4px solid #d4af37;
+}
+
+.chat-bubble--groom {
+  border-left: 4px solid var(--color-burgundy);
+}
+
+.chat-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(143, 51, 80, 0.1);
+  color: var(--color-burgundy);
+  font-family: var(--font-heading);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-content {
+  flex: 1;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.chat-name {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+}
+
+.chat-badge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(176, 137, 104, 0.15);
+  color: var(--color-accent);
+  border-radius: 0.25rem;
+}
+
+.chat-time {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.chat-message {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+}
+
+.chat-reactions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.reaction-btn {
+  background: rgba(250, 247, 242, 0.8);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reaction-btn:hover {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   Mobile Responsive Screen-Fit & Flexible Cards (Matching Events Section)
+   ========================================================================== */
+@media (max-width: 900px) {
+  .blessings-curated-grid-6 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .blessings-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: 100svh;
+    padding-top: var(--space-2);
+    padding-bottom: max(1.85rem, env(safe-area-inset-bottom));
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .blessings-section .section__inner {
+    width: 100%;
+    max-width: 42rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .blessings-section .section__heading {
+    margin-bottom: 0.65rem;
+  }
+
+  .blessings-section .section__heading h2 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .blessings-section .section__heading p {
+    font-size: 0.8rem;
+    margin: 0.15rem 0 0;
+  }
+
+  .blessings-filter-bar {
+    max-width: 100%;
+    margin: 0 auto 0.65rem;
+    padding: 0.2rem 0.3rem;
+    gap: 0.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .filter-btn {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.55rem;
+    gap: 0.35rem;
+    border-radius: 1rem;
+  }
+
+  .filter-icon-img {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    min-height: 19px;
+  }
+
+  /* 2x3 Grid with 148px cards giving ample bottom button breathing room */
+  .blessings-curated-grid-6 {
+    --grid-gap: 0.55rem;
+    gap: var(--grid-gap);
+    margin-bottom: 0.65rem;
+    max-width: 42rem;
+    width: 100%;
+  }
+
+  .curated-wish-card {
+    min-height: 148px;
+    height: 148px;
+    padding: 0.75rem 0.8rem 0.65rem;
+    border-radius: 0.75rem;
+  }
+
+  .curated-wish-card__top {
+    margin-bottom: 0.1rem;
+  }
+
+  .curated-wish-card__quote-mark {
+    font-size: 1.7rem;
+    line-height: 0.65;
+  }
+
+  .curated-heart-btn {
+    padding: 0.15rem 0.45rem;
+    font-size: 0.72rem;
+    gap: 0.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .curated-wish-card__message {
+    font-size: 0.84rem;
+    line-height: 1.36;
+    margin: 0.15rem 0 0.4rem;
+    -webkit-line-clamp: 3;
+    flex: 1;
+  }
+
+  .curated-wish-card__footer {
+    padding-top: 0.3rem;
+    gap: 0.3rem;
+  }
+
+  .curated-wish-card__author {
+    font-size: 0.8rem;
+  }
+
+  .curated-side-badge {
+    font-size: 0.64rem;
+    padding: 0.08rem 0.35rem;
+  }
+
+  .curated-date {
+    font-size: 0.66rem;
+  }
+
+  /* Placeholder cards on mobile */
+  .curated-wish-card--placeholder {
+    min-height: 148px;
+    height: 148px;
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.75rem 0.65rem;
+  }
+
+  .curated-placeholder-inner {
+    padding: 0.25rem;
+    gap: 0.2rem;
+  }
+
+  .placeholder-pen-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.1rem;
+  }
+
+  .placeholder-title {
+    font-size: 0.86rem;
+  }
+
+  .placeholder-subtext {
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  /* Compact 1-line carousel controls */
+  .blessings-carousel-controls {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 0 auto 0.45rem;
+  }
+
+  .carousel-btn {
+    width: auto;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.76rem;
+    border-radius: 1rem;
+  }
+
+  .carousel-pagination-dots {
+    gap: 0.3rem;
+  }
+
+  .pagination-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .pagination-dot.is-active {
+    width: 16px;
+  }
+
+  .carousel-page-indicator {
+    font-size: 0.74rem;
+  }
+
+  .blessings-actions {
+    margin-top: 0.35rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .blessings-action-btn {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .blessings-section {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+    padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+  }
+
+  .blessings-curated-grid-6 {
+    --grid-gap: 0.45rem;
+  }
+
+  .curated-wish-card,
+  .curated-wish-card--placeholder {
+    min-height: 142px;
+    height: 142px;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .filter-btn {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .curated-wish-card__message {
+    font-size: 0.78rem;
+  }
+}
+

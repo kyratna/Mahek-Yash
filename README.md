@@ -1,209 +1,110 @@
-# Our Wedding Website
+# Mahek & Yash — Luxury Wedding Invitation Website
 
-A React + Vite single-page luxury wedding invitation site:
-- **Envelope Intro**: 3D opening animation with wax seal and card emergence
-- **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest, rose-gold divine glow aura, and Sanskrit shlokas
-- **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, parents lineage, and monogrammed scratch-to-reveal card with live countdown
-- **Navigation Drawer**: Clean top view with floating left hamburger menu
-- **Meet the Couple (`#couple`)**: Side-by-side lineage cards with centered couple illustration
-- **Event Details (`#details`)**: 3D flip cards (2x2 + centered 5th card) with burgundy perimeter countdown timers and "How to reach the venue?" popup modal with QR code & directions
-- **3D Photo Gallery (`#gallery`)**: Perspective coverflow gallery with fullscreen lightbox
-- **Blessings & RSVP (`#blessings`, `#blessings-rsvp`)**: Google Sheets-powered live blessings wall and RSVP form with WhatsApp sharing
-- **FAQ (`#faq`)**: Interactive questions & answers accordion
+A high-performance, single-page luxury Indian wedding invitation built with React, Vite, and Firebase Firestore, integrated with Google Sheets, Telegram Bot moderation, and dynamic Google Drive gallery streaming.
 
-## Running it locally
+---
 
-```
+## ✨ Features & Architecture
+
+- **Interactive 3D Envelope Intro**: Realistic 3D flap rotation, card emergence, wax seal flip, and smooth fly-in animation to the invitation.
+- **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest with ambient golden rose glow and sacred Sanskrit shlokas (*Vakratunda Mahakaya...* & *Mangalam Bhagwan Vishnuh...*).
+- **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, parents lineage, and monogrammed scratch-to-reveal card with live countdown and confetti celebration.
+- **Navigation Drawer**: Distraction-free viewport with glassmorphic top-left floating menu and quick section jumping.
+- **Meet the Couple (`#couple`)**: Side-by-side lineage cards with centered couple illustration.
+- **Event Details (`#details`)**: 2-column, 3-row 3D flip cards (total 6 events) with 20s animated burgundy perimeter timer strokes, plus an interactive "How to reach the venue?" popup with QR code, GPS directions, and transit guides.
+- **Dynamic Memories Gallery (`#gallery`)**:
+  - **Live Google Drive Integration**: Upload photos directly to a Google Drive folder to update the gallery in real-time.
+  - **Zero-Error Caricature Fallback**: Automatically renders Indian wedding caricature artwork if any photo fails to load.
+  - **Adaptive Matting**: Scales down 4K/DSLR portraits, landscapes, and square photos without cropping faces.
+  - **3D Coverflow & Lightbox**: Perspective coverflow carousel with navigation buttons below and high-res lightbox.
+- **Live Blessings Wall & RSVP (`#blessings`, `#blessings-rsvp`)**:
+  - **Real-Time 0-Latency**: Powered by Firebase Firestore listeners with automatic Google Sheets bidirectional synchronization.
+  - **Live Heart Reactions (❤️)**: Interactive heart reactions synchronized across all guests.
+  - **Telegram Bot Notifications & Moderation**: Instant Telegram alerts for new blessings & RSVPs with native inline "🗑️ Delete from Live Wall" moderation buttons.
+- **FAQ & Footer (`#faq`)**: Interactive Q&A accordion and couple sign-off.
+- **Floating Controls**: Ambient background music player, envelope re-opener, and section navigation arrows.
+
+---
+
+## 🚀 Running Locally
+
+```bash
 npm install
 npm run dev
 ```
 
-Then open the URL it prints (usually http://localhost:5173).
+Open `http://localhost:5173` to view the website.
 
-## Customizing the content
+---
 
-Almost everything on the site — names, date, venue, couple profiles, FAQ
-answers, photo paths — lives in one file: **`src/content.js`**. Open it and
-replace every value marked `// TODO: replace`. No other files need to change
-for basic content edits.
+## 🛠️ Content Configuration
 
-### 1. Names & date
+All wedding details are centrally configured in **[`src/content.js`](src/content.js)**:
 
-Edit `content.couple` and `content.wedding`. Keep `dateTimeISO` in the format
-`YYYY-MM-DDTHH:MM:SS±HH:MM` (an explicit timezone offset, not `Z`) so the
-countdown timer is accurate for guests in other timezones. The date is
-revealed by a scratch card in the Invitation section — guests scratch it to reveal
-`wedding.displayDate`.
+1. **Couple Names & Date**: `couple.partner1`, `couple.partner2`, and `wedding.dateTimeISO` (e.g. `2026-12-06T17:00:00+05:30`).
+2. **Meet the Couple**: `coupleProfiles.bride` and `coupleProfiles.groom` (names, grandparentage, and parentage).
+3. **Events Details**: `events` array containing all 6 wedding ceremonies (Haldi, Engagement & Sangeet, Godh Bharai & Sagai, Baraat & Ghurchari, Jaimaal, Phere).
+4. **Venue & Directions**: `venue` (resort name, address, Google Maps QR link, turn-by-turn directions, and road/train/air travel guides).
+5. **Background Music**: `music.src` (set to `asset("/audio/background-music.mp3")`).
+6. **FAQ**: `faq` array of questions and answers.
 
-### 2. Meet the Couple
+---
 
-Edit `content.coupleProfiles.bride` and `.groom` — each has a `name`, a
-`grandparentage` block, and a `parentage` block. Each block is an object
-with a `label` (e.g. "Granddaughter of"), `person1`, and `person2` — shown
-as 4 lines: the label, `person1`, "&", `person2`. The cards themselves
-don't show a photo. There's also a small illustration, set via
-`content.coupleVectorArt` — centered on the boundary between the two
-cards, so it should be a transparent-background PNG (no frame/box of its
-own).
+## 🖼️ Dynamic Google Drive Gallery
 
-### 3. Photos
+To dynamically update gallery photos from Google Drive without touching code:
 
-Photos live in `public/images/` and are referenced by path in `content.js`:
+1. Create a folder in Google Drive and set its share settings to: **"Anyone with the link can view"**.
+2. Open your Google Sheet top menu: **`💌 Wedding Admin` → `🖼️ Set Gallery Google Drive Folder ID`** and paste your Drive folder link or ID.
+3. Every photo uploaded to that Drive folder will automatically stream to the live website gallery!
 
-```
-public/images/gallery/    → gallery
-```
+---
 
-To swap in your own photos, drop your image files into the matching folder
-and update the `src`/`photo` paths in `content.js` to point at your new
-filenames (any image format works — jpg, png, etc.). You can add, remove, or
-reorder as many gallery photos as you like by editing the `gallery` array.
+## 💌 Backend Integrations (Firebase, Google Sheets & Telegram)
 
-The Shree Ganesh section has no background photo — it's a plain ivory background
-with the Ganesh art, shlokas, and smooth scroll button.
+### 1. Firebase Firestore (Live Web Tier)
+- Real-time Firestore collections (`blessings` and `rsvp`) provide instant 0-latency updates for guests and live heart reaction counts (❤️).
 
-The placeholder images shipped in this repo are free-to-use stock photos
-(via [Lorem Picsum](https://picsum.photos), sourced from Unsplash's
-royalty-free library) just so the layout renders correctly before you add
-real photos of your own.
+### 2. Google Sheets (Admin Spreadsheet Tier)
+- Automatically synchronized with Firebase every 1 minute and on real-time sheet edits.
+- Tabs:
+  - `BLESSINGS_BRIDE` & `BLESSINGS_GROOM`: `Name | Side | Message | Timestamp | Hearts (❤️) | FirebaseDocID`
+  - `RSVP_BRIDE` & `RSVP_GROOM`: `Name | Side | Attending | Guests | Parking Required | Timestamp | FirebaseDocID`
+  - `GALLERY`: `IMAGE_URL | PHOTO_CAPTION | DRIVE_FILE_ID | DATE_ADDED`
 
-### 4. Events & Venue Travel Popup
+### 3. Telegram Bot Notifications & In-App Moderation
+- Instant Telegram group notifications for every Blessing and RSVP.
+- Native inline `🗑️ Delete from Live Wall` button: striking through the message in Telegram and removing the blessing live from Firebase and Google Sheets.
 
-Edit `content.events` — each entry has `name`, `date`, `time`, `description` (one-liner), `attire`, `location`, and `note`. Front shows the name, date, and time; tapping flips the card with a 20s animated burgundy perimeter timer.
+---
 
-Edit `content.venue` to customize:
-- `name` & `address` (resort name and full address)
-- `qrUrl` (location link generated into the QR code)
-- `directionsUrl` (Google Maps turn-by-turn navigation link)
-- `modalAutoCloseSeconds` (auto-close countdown timer for the popup, default 30s)
-- `howToReach` (travel guide cards for By Road, By Train, and By Air)
+## 📦 Production Build
 
-### 5. FAQ
-
-Edit the `content.faq` array — add, remove, or edit any question/answer
-pairs.
-
-### 6. RSVP WhatsApp button
-
-After a guest submits the RSVP form, they see a "Share via WhatsApp" button
-pre-filled with their RSVP details. Optionally set
-`content.integrations.whatsappNumber` (with country code, e.g.
-`"919876543210"`) to pre-address that button at your own number — leave it
-blank and the button opens WhatsApp's contact picker instead.
-
-### 7. Background music
-
-There's a mute/unmute button built into the floating controls in the bottom-right corner (along with the envelope intro re-opener and section up/down arrows) that controls a looping background track —
-currently set to `public/audio/background-music.mp3`. To swap it for a
-different track: unlike the stock photos, music carries real copyright risk,
-so make sure whatever you use is properly licensed or royalty-free. Some
-sources for genuinely free-to-use instrumental music:
-
-- [Pixabay Music](https://pixabay.com/music/) — free license, no
-  attribution required
-- [Free Music Archive](https://freemusicarchive.org/) — filter by CC0 /
-  public domain
-- A track you already own the rights to (e.g. purchased or licensed)
-
-Once you have a file:
-
-1. Drop it in `public/audio/` (e.g. `public/audio/background-music.mp3`)
-2. Set `content.music.src` in `src/content.js` to
-   `asset("/audio/background-music.mp3")`
-
-Leave `content.music.src` blank (the default) and the mute button doesn't
-render at all. Browsers block autoplay-with-sound until the visitor
-interacts with the page, so playback actually starts on their first
-click/tap anywhere on the site — this is standard browser behavior, not a
-bug.
-
-## Blessings & RSVP backend setup
-
-The Blessings wall (a live wall of guest messages) and the Blessings & RSVP
-form are both custom-built — no Google Form embed. They talk to a Google
-Sheet through a small Google Apps Script "Web App," which is free and uses
-only your own Google account. Until you set this up, the Blessings wall just
-shows its empty state, and the form shows a friendly "not connected yet"
-message instead of submitting.
-
-**1. Create the Sheet**
-
-Create a new Google Sheet with **four tabs** — one per side per form — each
-with a header row exactly as below (case-sensitive, this is what the script
-expects):
-
-- Tab **`BLESSINGS_BRIDE`**: `Name | Side | Message | Timestamp`
-- Tab **`BLESSINGS_GROOM`**: `Name | Side | Message | Timestamp`
-- Tab **`RSVP_BRIDE`**: `Name | Side | Attending | Guests | Parking Required | Timestamp`
-- Tab **`RSVP_GROOM`**: `Name | Side | Attending | Guests | Parking Required | Timestamp`
-
-Each submission is routed to the matching tab based on which side the guest
-selects in the form — the Blessings wall reads and merges both
-`BLESSINGS_*` tabs back together (newest first) when displaying the wall.
-
-**2. Add the script**
-
-In the Sheet, go to **Extensions → Apps Script**. Delete any starter code,
-then paste in the contents of [`google-apps-script/Code.gs`](google-apps-script/Code.gs)
-from this repo. Save the project.
-
-**3. Deploy as a Web App**
-
-Click **Deploy → New deployment**. For "Select type," choose **Web app**.
-Set:
-- Execute as: **Me**
-- Who has access: **Anyone**
-
-Click **Deploy**, authorize the permissions Google asks for (it'll warn you
-it's an unverified app — that's expected for a personal script; click
-Advanced → Go to \[project name] to proceed), then copy the **Web app URL**
-it gives you (ends in `/exec`).
-
-**4. Connect it to the site**
-
-Paste that URL into `content.integrations.appsScriptUrl` in `src/content.js`,
-then rebuild/redeploy the site. Blessings submitted through the form appear
-on the wall instantly for the sender, and the page also polls in the
-background every 10s so other visitors' blessings show up without a manual
-refresh. RSVPs land as new rows in the `RSVP_BRIDE` or `RSVP_GROOM` tab of
-your Sheet, depending on which side the guest selects.
-
-**Note:** every time you edit the script in the Apps Script editor, you need
-to create a **new deployment** (or manage/update the existing one) for the
-changes to take effect — saving alone isn't enough.
-
-## Building for production
-
-```
+```bash
 npm run build
 ```
 
-This produces a `dist/` folder of plain static files (HTML/CSS/JS) that can
-be deployed to any static host — no server or environment variables needed.
+Generates optimized static production assets in the `dist/` directory ready for deployment to GitHub Pages, Vercel, Netlify, or Firebase Hosting.
 
-- **Netlify / Vercel**: point the build command at `npm run build` and the
-  publish directory at `dist`. Both auto-detect Vite projects.
-- **GitHub Pages**: this repo is already configured for it — `vite.config.js`
-  sets `base: '/Mahek-Yash/'` to match the GitHub Pages project URL, and a
-  GitHub Actions workflow (`.github/workflows/deploy.yml`) rebuilds and
-  redeploys automatically on every push to `main`.
-- **Anywhere else**: upload the contents of `dist/` to any static file host.
+---
 
-## Project structure
+## 📁 Project Structure
 
-```
+```text
 src/
-  content.js         ← edit this for all copy/data
-  index.css           global design tokens (colors, fonts, spacing)
-  hooks/
-    useCountdown.js   countdown timer logic
-    useBlessings.js   Blessings wall fetch/poll/optimistic-update logic
+  content.js          ← Central copy and configuration
+  index.css           ← Global design tokens and layout rules
   lib/
-    smoothScroll.js   eased nav-link scrolling
-  components/         one component per section (ShreeGanesh, Invitation, EnvelopeIntro, Gallery, FAQ, ...)
+    firebase.js       ← Real-time Firestore configuration
+    smoothScroll.js   ← Eased navigation scrolling
+  hooks/
+    useBlessings.js   ← Live Firestore listener and sync hook
+    useCountdown.js   ← Live countdown timer logic
+  components/         ← Interactive section components (ShreeGanesh, Invitation, EnvelopeIntro, Gallery, Blessings, FAQ, ...)
 public/
-  images/             your photos live here
-  audio/              your background music track goes here (see above)
+  images/             ← Static vector artwork and monogram assets
+  flaticons/          ← Traditional Indian wedding motifs
+  audio/              ← Background wedding music track
 google-apps-script/
-  Code.gs             backend for the Blessings wall & RSVP form (see above)
+  Code.gs             ← Google Sheets, Google Drive gallery & Telegram bot automation
 ```

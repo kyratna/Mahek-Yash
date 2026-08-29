@@ -1,15 +1,12 @@
 import { useState } from "react";
 import content from "../content";
-import { BLESSINGS_WALL_HASH } from "../lib/routes";
+import { addBlessingToFirestore, addRSVPToFirestore, isFirebaseConfigured } from "../lib/firebase";
 import ConfettiBurst from "./ConfettiBurst";
 import "./BlessingsRSVP.css";
 
 const SIDES = ["Bride Side", "Groom Side"];
 
 function submitToSheet(appsScriptUrl, payload) {
-  // Posting with Content-Type: text/plain keeps this a CORS "simple request"
-  // so the browser doesn't send a preflight OPTIONS request — Apps Script
-  // web apps don't handle OPTIONS, so a preflight would just fail.
   return fetch(appsScriptUrl, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -37,33 +34,48 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!appsScriptUrl) {
+    if (!isFirebaseConfigured && !appsScriptUrl) {
       setStatus("not-configured");
       return;
     }
     setStatus("submitting");
     try {
-      const res = await submitToSheet(appsScriptUrl, { type: "blessing", ...form });
-      if (!res.ok) throw new Error("Request failed");
+      if (isFirebaseConfigured) {
+        const docRef = await addBlessingToFirestore({ ...form });
+        if (appsScriptUrl) {
+          submitToSheet(appsScriptUrl, {
+            type: "blessing",
+            ...form,
+            firestoreId: docRef?.id || "",
+          }).catch(() => {});
+        }
+      } else {
+        const res = await submitToSheet(appsScriptUrl, { type: "blessing", ...form });
+        if (!res.ok) throw new Error("Request failed");
+      }
       setStatus("success");
       onBlessingSent({ name: form.name, side: form.side, message: form.message });
       onCelebrate();
       setForm({ name: "", side: SIDES[0], message: "" });
-      // Hold on the success message briefly so it's actually readable, then
-      // take the guest straight to the wall to see their blessing land.
-      setTimeout(() => {
-        window.location.hash = BLESSINGS_WALL_HASH;
-      }, 2000);
-    } catch {
+    } catch (err) {
+      console.error("Blessing submission error:", err);
       setStatus("error");
     }
   };
 
   if (status === "success") {
     return (
-      <p className="form-status form-status--success">
-        Thank you for your blessing! 💛 Taking you to the wall…
-      </p>
+      <div className="form-status form-status--success">
+        <p>Thank you for your heartfelt blessing! 💖</p>
+        <button
+          type="button"
+          className="button button--secondary"
+          style={{ marginTop: "1rem" }}
+          onClick={() => setStatus("idle")}
+        >
+          Send Another Blessing
+        </button>
+      </div>
     );
   }
 
@@ -132,19 +144,31 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!appsScriptUrl) {
+    if (!isFirebaseConfigured && !appsScriptUrl) {
       setStatus("not-configured");
       return;
     }
     setStatus("submitting");
     try {
-      const res = await submitToSheet(appsScriptUrl, { type: "rsvp", ...form });
-      if (!res.ok) throw new Error("Request failed");
+      if (isFirebaseConfigured) {
+        const docRef = await addRSVPToFirestore({ ...form });
+        if (appsScriptUrl) {
+          submitToSheet(appsScriptUrl, {
+            type: "rsvp",
+            ...form,
+            firestoreId: docRef?.id || "",
+          }).catch(() => {});
+        }
+      } else {
+        const res = await submitToSheet(appsScriptUrl, { type: "rsvp", ...form });
+        if (!res.ok) throw new Error("Request failed");
+      }
       setStatus("success");
       setSubmittedData(form);
       onCelebrate();
       setForm({ name: "", side: SIDES[0], attending: "Yes", guests: 1, parkingRequired: "No" });
-    } catch {
+    } catch (err) {
+      console.error("RSVP submission error:", err);
       setStatus("error");
     }
   };

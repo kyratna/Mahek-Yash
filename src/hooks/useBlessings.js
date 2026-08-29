@@ -1,18 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import content from "../content";
+import { isFirebaseConfigured, subscribeToBlessings } from "../lib/firebase";
 
-// How often to re-check for new blessings from other guests. Apps Script
-// web apps have a generous free daily quota, so a 10s poll is safe for
-// normal guest traffic without needing a real push/websocket backend.
 const POLL_INTERVAL_MS = 10000;
 
 function signature(entry) {
   return `${entry.name}||${entry.message}`;
 }
 
-// Merges freshly-fetched server data with local state. The server copy is
-// always authoritative once it appears (it has the real timestamp), so any
-// optimistic local-only entry gets dropped in favor of its server match.
 function mergeBlessings(current, fetched) {
   const fetchedSignatures = new Set(fetched.map(signature));
   const stillPending = current.filter(
@@ -28,9 +23,28 @@ export function useBlessings() {
   const [myBlessingKey, setMyBlessingKey] = useState(null);
   const isFetching = useRef(false);
 
+  // 1. If Firebase Firestore is configured, use real-time push subscription
+  useEffect(() => {
+    if (!isFirebaseConfigured) return;
+
+    setStatus("loading");
+    const unsubscribe = subscribeToBlessings(
+      (blessings) => {
+        setEntries((current) => mergeBlessings(current, blessings));
+        setStatus("loaded");
+      },
+      () => {
+        setStatus("error");
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // 2. If Firebase is NOT configured, fallback to Google Apps Script polling
   const fetchBlessings = useCallback(
     (isFirstLoad) => {
-      if (!integrations.appsScriptUrl) return;
+      if (isFirebaseConfigured || !integrations.appsScriptUrl) return;
       if (isFetching.current) return;
       isFetching.current = true;
       if (isFirstLoad) setStatus("loading");
@@ -56,13 +70,13 @@ export function useBlessings() {
   );
 
   useEffect(() => {
+    if (isFirebaseConfigured) return;
     fetchBlessings(true);
     const intervalId = setInterval(() => fetchBlessings(false), POLL_INTERVAL_MS);
     return () => clearInterval(intervalId);
   }, [fetchBlessings]);
 
-  // Called right after a successful submission so the sender sees their own
-  // blessing immediately, without waiting for the next background poll.
+  // Called right after submission so the sender sees their own entry instantly
   const addLocalBlessing = useCallback((entry) => {
     const withTimestamp = { ...entry, timestamp: new Date().toISOString(), _local: true };
     setMyBlessingKey(signature(withTimestamp));

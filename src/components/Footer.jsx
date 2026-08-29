@@ -6,6 +6,7 @@ export default function Footer() {
 
   return (
     <footer id="footer" className="footer">
+      <div className="footer__divider" aria-hidden="true" />
       <p className="footer__names">
         <span className="footer__name">{couple.partner1}</span>
         <span className="footer__amp">&amp;</span>

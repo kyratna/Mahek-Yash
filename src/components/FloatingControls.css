@@ -9,28 +9,7 @@
   gap: var(--space-1);
 }
 
-.font-studio-trigger-btn {
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--color-burgundy);
-  border-color: rgba(143, 51, 80, 0.35);
-  box-shadow: 0 4px 14px rgba(143, 51, 80, 0.16);
-  transition: all 0.25s ease;
-}
 
-.font-studio-trigger-btn:hover {
-  background: var(--color-burgundy);
-  color: #ffffff;
-  border-color: var(--color-burgundy);
-  transform: scale(1.08);
-  box-shadow: 0 6px 18px rgba(143, 51, 80, 0.28);
-}
-
-.font-studio-icon-label {
-  line-height: 1;
-  letter-spacing: -0.05em;
-}
 
 @media (max-width: 480px) {
   .floating-controls {

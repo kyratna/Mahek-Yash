@@ -22,7 +22,7 @@ const content = {
     // accurate for every guest regardless of their own timezone.
     // Set to the Phere (main ceremony) date/time, IST (+05:30).
     dateTimeISO: "2026-12-06T17:00:00+05:30",
-    displayDate: "December 6, 2026", // human-readable, revealed by the scratch card
+    displayDate: "DECEMBER 06, 2026", // human-readable, revealed by the scratch card
   },
 
   hero: {
@@ -72,25 +72,34 @@ const content = {
     {
       name: "Haldi",
       date: "December 5, 2026",
-      time: "1:00 PM",
+      time: "12:30 PM",
       description: "A joyful and vibrant ceremony of turmeric blessings, love, and sunny smiles.",
       attire: "Shades of Pink",
       location: "Poolside Lawn",
       note: "Get ready for color, music, and haldi fun!",
     },
     {
-      name: "Engagement",
+      name: "Engagement & Sangeet",
       date: "December 5, 2026",
-      time: "6:00 PM", // TODO: confirm — placeholder time
-      description: "An enchanting evening celebrating the exchange of rings and eternal promises.",
+      time: "5:00 PM",
+      description: "An enchanting evening of music, dance performances, and celebration.",
       attire: "Cocktail / Indo-Western",
       location: "Grand Ballroom",
       note: "Followed by dinner, music & celebration.",
     },
     {
-      name: "Baarat",
+      name: "Godh Bharai & Sagai",
+      date: "December 5, 2026",
+      time: "7:00 PM onwards",
+      description: "Traditional blessings and auspicious ring ceremony with family & loved ones.",
+      attire: "Traditional Elegance / Indo-Western",
+      location: "Grand Ballroom",
+      note: "Celebration followed by music and dinner.",
+    },
+    {
+      name: "Baraat & Ghurchari",
       date: "December 6, 2026",
-      time: "11:30 AM", // TODO: confirm — placeholder time
+      time: "10:30 AM Onwards",
       description: "The groom's royal dancing procession with festive dhol beats and celebration.",
       attire: "Traditional Festive / Sherwani & Sarees",
       location: "Resort Entrance to Mandap",
@@ -158,7 +167,7 @@ const content = {
   ],
 
   blessings: {
-    heading: "Blessings",
+    heading: "Blessings Wall",
     subtext: "Sweet wishes from our family & friends",
   },
 
@@ -198,14 +207,21 @@ const content = {
     src: asset("/audio/background-music.mp3"),
   },
 
-  // The Blessings wall and the Blessings & RSVP form both talk to a Google
-  // Sheet through a Google Apps Script Web App you deploy yourself — see
-  // README.md "Blessings & RSVP backend setup" for step-by-step instructions.
-  // Leave this blank and the Blessings wall just shows its empty state, and
-  // form submissions will show a friendly error until it's configured.
   integrations: {
+    // Google Sheets integration (fallback)
     appsScriptUrl:
-      "https://script.google.com/macros/s/AKfycbwLKJNqckuWiLrTj71ygs7BN20bANPoLyVenQIb9r7gEAkBzveBnfcVXODrCTAHExYF9w/exec",
+      "https://script.google.com/macros/s/AKfycbxpqRj70zcCtJyCvzJVunfHMzmlyj1AyhAGhUw5yNDzJ8GWT7wq-plVgzgMHhrXHAG08w/exec",
+
+    // Firebase Firestore integration (Real-time, 0 latency)
+    firebase: {
+      apiKey: "AIzaSyB-H7JyM-REapOa3PftjigCqhMBjaSOu3Y",
+      authDomain: "yashmahekwedding.firebaseapp.com",
+      projectId: "yashmahekwedding",
+      storageBucket: "yashmahekwedding.firebasestorage.app",
+      messagingSenderId: "965259334403",
+      appId: "1:965259334403:web:a39a2f27c227082a7dcf36",
+    },
+
     // Optional: a phone number (with country code, e.g. "919876543210") to
     // pre-address the RSVP "Share via WhatsApp" button at. Leave blank and
     // the button opens WhatsApp's contact picker instead.

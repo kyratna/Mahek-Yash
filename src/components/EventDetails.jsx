@@ -71,12 +71,21 @@ function EventCard({ event, autoFlipSeconds = 20 }) {
           {isFlipped && (
             <svg className="event-flip-card__border-timer" aria-hidden="true">
               <rect
-                x="1.5"
-                y="1.5"
-                width="calc(100% - 3px)"
-                height="calc(100% - 3px)"
-                rx="12"
-                ry="12"
+                x="1"
+                y="1"
+                width="calc(100% - 2px)"
+                height="calc(100% - 2px)"
+                rx="13.6"
+                ry="13.6"
+                className="event-flip-card__timer-track"
+              />
+              <rect
+                x="1"
+                y="1"
+                width="calc(100% - 2px)"
+                height="calc(100% - 2px)"
+                rx="13.6"
+                ry="13.6"
                 pathLength="100"
                 className="event-flip-card__timer-path"
                 style={{ animationDuration: `${autoFlipSeconds}s` }}

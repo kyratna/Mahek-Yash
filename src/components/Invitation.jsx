@@ -5,10 +5,15 @@ import ScratchReveal from "./ScratchReveal";
 import ConfettiBurst from "./ConfettiBurst";
 import "./Invitation.css";
 
-export default function Invitation() {
+export default function Invitation({ isDateRevealed = false, onDateReveal }) {
   const { couple, wedding, hero, coupleProfiles } = content;
   const { bride, groom } = coupleProfiles;
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(isDateRevealed);
+
+  function handleReveal() {
+    setRevealed(true);
+    onDateReveal?.();
+  }
 
   return (
     <section id="invitation" className="invitation">
@@ -25,9 +30,10 @@ export default function Invitation() {
           <div className="invitation__person">
             <span className="invitation__name">{couple.partner1}</span>
             <span className="invitation__relation">{bride.parentage.label}</span>
-            <p className="invitation__parents">
-              {bride.parentage.person1} and {bride.parentage.person2}
-            </p>
+            <div className="invitation__parents">
+              <span>{bride.parentage.person1}</span>
+              <span>{bride.parentage.person2}</span>
+            </div>
           </div>
 
           <div className="invitation__and-wrap">
@@ -37,20 +43,18 @@ export default function Invitation() {
           <div className="invitation__person">
             <span className="invitation__name">{couple.partner2}</span>
             <span className="invitation__relation">{groom.parentage.label}</span>
-            <p className="invitation__parents">
-              {groom.parentage.person1} and {groom.parentage.person2}
-            </p>
+            <div className="invitation__parents">
+              <span>{groom.parentage.person1}</span>
+              <span>{groom.parentage.person2}</span>
+            </div>
           </div>
         </div>
 
-        <div className="invitation__divider" aria-hidden="true">
-          <span className="invitation__divider-line invitation__divider-line--left" />
-          <span className="invitation__divider-diamond" />
-          <span className="invitation__divider-line invitation__divider-line--right" />
-        </div>
-
         <div className="invitation__scratch">
-          <ScratchReveal onReveal={() => setRevealed(true)}>
+          <ScratchReveal
+            forceRevealed={isDateRevealed}
+            onReveal={handleReveal}
+          >
             <div className="invitation__reveal-content">
               <p className="invitation__date invitation__date--reveal">
                 {wedding.displayDate}

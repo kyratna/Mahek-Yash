@@ -7,21 +7,22 @@ A high-performance, single-page luxury Indian wedding invitation built with Reac
 ## ✨ Features & Architecture
 
 - **Interactive 3D Envelope Intro**: Realistic 3D flap rotation, card emergence, wax seal flip, and smooth fly-in animation to the invitation.
-- **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest with ambient golden rose glow and sacred Sanskrit shlokas (*Vakratunda Mahakaya...* & *Mangalam Bhagwan Vishnuh...*).
-- **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, parents lineage, and monogrammed scratch-to-reveal card with live countdown and confetti celebration.
+- **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest with ambient golden rose glow and sacred Devanagari Sanskrit shlokas (*Vakratunda Mahakaya...* across 2 rhythmic lines & *Mangalam Bhagwan Vishnuh...*).
+- **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, clean multi-line parents lineage, and monogrammed scratch-to-reveal card with live countdown, confetti celebration, and synchronized global date reveal.
 - **Navigation Drawer**: Distraction-free viewport with glassmorphic top-left floating menu and quick section jumping.
-- **Meet the Couple (`#couple`)**: Side-by-side lineage cards with centered couple illustration.
+- **Meet the Families (`#couple`)**: Traditional royal Indian wedding lineage cards with classical Sanskrit shloka (*Twameva Mata Cha Pita Twameva...*), `॥ मंगलम् ॥` (*Auspicious Beginning*) & `॥ युग्म ॥` (*Sacred Union*) symbols with burgundy-accented consonants (**म** & **य**), and luxury double borders with burgundy inner dashed accents.
 - **Event Details (`#details`)**: 2-column, 3-row 3D flip cards (total 6 events) with 20s animated burgundy perimeter timer strokes, plus an interactive "How to reach the venue?" popup with QR code, GPS directions, and transit guides.
 - **Dynamic Memories Gallery (`#gallery`)**:
   - **Live Google Drive Integration**: Upload photos directly to a Google Drive folder to update the gallery in real-time.
   - **Zero-Error Caricature Fallback**: Automatically renders Indian wedding caricature artwork if any photo fails to load.
   - **Adaptive Matting**: Scales down 4K/DSLR portraits, landscapes, and square photos without cropping faces.
-  - **3D Coverflow & Lightbox**: Perspective coverflow carousel with navigation buttons below and high-res lightbox.
+  - **3D Coverflow & Lightbox**: Perspective coverflow carousel with clean distraction-free high-res lightbox view.
 - **Live Blessings Wall & RSVP (`#blessings`, `#blessings-rsvp`)**:
   - **Real-Time 0-Latency**: Powered by Firebase Firestore listeners with automatic Google Sheets bidirectional synchronization.
   - **Live Heart Reactions (❤️)**: Interactive heart reactions synchronized across all guests.
+  - **Matching Royal Frame**: Harmonized luxury border design with burgundy inner dashed trim.
   - **Telegram Bot Notifications & Moderation**: Instant Telegram alerts for new blessings & RSVPs with native inline "🗑️ Delete from Live Wall" moderation buttons.
-- **FAQ & Footer (`#faq`)**: Interactive Q&A accordion and couple sign-off.
+- **FAQ & Footer (`#faq`)**: Interactive Q&A accordion, couple sign-off, and scratch-synced wedding date (`DECEMBER 6, 2026`).
 - **Floating Controls**: Ambient background music player, envelope re-opener, and section navigation arrows.
 
 ---

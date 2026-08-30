@@ -3,7 +3,7 @@ import content from "../content";
 import Footer from "./Footer";
 import "./FAQ.css";
 
-export default function FAQ() {
+export default function FAQ({ isDateRevealed }) {
   const { faq } = content;
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -40,7 +40,7 @@ export default function FAQ() {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer isDateRevealed={isDateRevealed} />
     </section>
   );
 }

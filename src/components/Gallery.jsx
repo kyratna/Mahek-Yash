@@ -293,27 +293,17 @@ export default function Gallery() {
                       ? activePhoto.caricatureSrc
                       : CARICATURE_PLACEHOLDERS[activeIndex % CARICATURE_PLACEHOLDERS.length].caricatureSrc
                   }
-                  alt="Wedding Illustration"
+                  alt=""
                   className="lightbox__img lightbox__img--caricature"
                 />
-                <h3 className="lightbox__caption">
-                  {activePhoto.isCaricature
-                    ? activePhoto.title
-                    : CARICATURE_PLACEHOLDERS[activeIndex % CARICATURE_PLACEHOLDERS.length].title}
-                </h3>
               </div>
             ) : (
-              <>
-                <img
-                  src={activePhoto.src}
-                  alt={activePhoto.alt}
-                  className="lightbox__img"
-                  referrerPolicy="no-referrer"
-                />
-                {activePhoto.alt && (
-                  <p className="lightbox__caption">{activePhoto.alt}</p>
-                )}
-              </>
+              <img
+                src={activePhoto.src}
+                alt=""
+                className="lightbox__img"
+                referrerPolicy="no-referrer"
+              />
             )}
           </div>
           <button

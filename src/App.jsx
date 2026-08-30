@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Nav from "./components/Nav";
 import ShreeGanesh from "./components/ShreeGanesh";
 import Invitation from "./components/Invitation";
-import MeetCouple from "./components/MeetCouple";
+import MeetFamilies from "./components/MeetFamilies";
 import EventDetails from "./components/EventDetails";
 import Gallery from "./components/Gallery";
 import Blessings from "./components/Blessings";
@@ -17,11 +17,24 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
   // Remembered per-session so navigating to/from the Blessings Wall page
   // (which remounts App via the hash route in main.jsx) doesn't replay it.
   const [opened, setOpened] = useState(
-    () => sessionStorage.getItem("envelopeOpened") === "true"
+    () =>
+      sessionStorage.getItem("envelopeOpened") === "true" ||
+      window.location.search.includes("noenvelope") ||
+      (window.location.hash.length > 1 && window.location.hash !== "#wall")
+  );
+
+  const [dateRevealed, setDateRevealed] = useState(
+    () => sessionStorage.getItem("dateRevealed") === "true"
   );
 
   useEffect(() => {
     document.body.style.overflow = opened ? "" : "hidden";
+    if (opened && window.location.hash && window.location.hash !== "#wall") {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView({ behavior: "instant" });
+      }, 50);
+    }
     return () => {
       document.body.style.overflow = "";
     };
@@ -32,8 +45,15 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
     setOpened(true);
   }
 
+  function handleDateReveal() {
+    sessionStorage.setItem("dateRevealed", "true");
+    setDateRevealed(true);
+  }
+
   function handleReopenEnvelope() {
     sessionStorage.removeItem("envelopeOpened");
+    sessionStorage.removeItem("dateRevealed");
+    setDateRevealed(false);
     setOpened(false);
   }
 
@@ -44,13 +64,13 @@ function App({ entries, status, myBlessingKey, addLocalBlessing }) {
       <CursorSparkleTrail />
       <Nav />
       <ShreeGanesh />
-      <Invitation />
-      <MeetCouple />
+      <Invitation isDateRevealed={dateRevealed} onDateReveal={handleDateReveal} />
+      <MeetFamilies />
       <EventDetails />
       <Gallery />
       <Blessings entries={entries} status={status} myBlessingKey={myBlessingKey} />
       <BlessingsRSVP onBlessingSent={addLocalBlessing} />
-      <FAQ />
+      <FAQ isDateRevealed={dateRevealed} />
       <FloatingControls onReopenEnvelope={handleReopenEnvelope} />
     </>
   );

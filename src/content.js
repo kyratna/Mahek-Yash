@@ -22,27 +22,56 @@ const content = {
     // accurate for every guest regardless of their own timezone.
     // Set to the Phere (main ceremony) date/time, IST (+05:30).
     dateTimeISO: "2026-12-06T17:00:00+05:30",
-    displayDate: "DECEMBER 06, 2026", // human-readable, revealed by the scratch card
+    displayDate: "DECEMBER 6, 2026", // human-readable, revealed by the scratch card
   },
 
   hero: {
     tagline: "With All The Blessings",
   },
 
-  // Shown in the "Meet the Couple" section — one profile card per side, no
-  // photo. A vector illustration sits centered on the boundary between the
-  // two cards (see coupleVectorArt).
+  // Shown in the "Meet the Couple" / Family section — traditional royal Indian
+  // wedding family cards with shloka, parentage, and blessings.
+  familySection: {
+    shloka: "॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥",
+    quote:
+      '"You alone are my mother and my father, my family and my friend — You alone are all of these to me."',
+    brideFamily: {
+      symbol: "॥ मंगलम् ॥",
+      symbolTranslation: "Auspicious Beginning",
+      familyTitle: "THE GUPTA FAMILY",
+      location: "Moradabad · पीतल नगरी · The City of Brass",
+      grandparents: ["Late Shri Prem Shankar Gupta", "Late Smt. Sarla Devi Gupta"],
+      invitePhrase1: "with their family and loved ones",
+      parents: ["Smt. Deepa Gupta", "Shri Rajeev Gupta"],
+      invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
+      name: "Mahek",
+      relation: "THEIR BELOVED DAUGHTER",
+    },
+    groomFamily: {
+      symbol: "॥ युग्म ॥",
+      symbolTranslation: "Sacred Union",
+      familyTitle: "THE GUPTA FAMILY",
+      location: "Moradabad · पीतल नगरी · The City of Brass",
+      grandparents: ["Late Shri Niwas Gupta", "Late Smt. Rama Gupta"],
+      invitePhrase1: "with their family and loved ones",
+      parents: ["Smt. Renu Gupta", "Shri Sandeep Kumar Gupta"],
+      invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
+      name: "Yash",
+      relation: "THEIR BELOVED SON",
+    },
+  },
+
   coupleProfiles: {
     bride: {
       name: "Mahek Gupta",
       grandparentage: {
         label: "Granddaughter of",
-        person1: "Shri Late __ Gupta",
-        person2: "Smt Late __ Gupta",
+        person1: "Late Shri Prem Shankar Gupta",
+        person2: "Late Smt. Sarla Devi Gupta",
       },
       parentage: {
         label: "Daughter of",
-        person1: "Smt Deepa Gupta",
+        person1: "Smt. Deepa Gupta",
         person2: "Shri Rajeev Gupta",
       },
     },
@@ -50,12 +79,12 @@ const content = {
       name: "Yash Gupta",
       grandparentage: {
         label: "Grandson of",
-        person1: "Shri Late Shri Niwas Gupta",
-        person2: "Smt Late Rama Gupta",
+        person1: "Late Shri Niwas Gupta",
+        person2: "Late Smt. Rama Gupta",
       },
       parentage: {
         label: "Son of",
-        person1: "Smt Renu Gupta",
+        person1: "Smt. Renu Gupta",
         person2: "Shri Sandeep Kumar Gupta",
       },
     },

@@ -63,8 +63,7 @@ export default function ShreeGanesh() {
             lines={["मंगलम् भगवान विष्णुः, मंगलम् गरुणध्वजः ।", "मंगलम् पुण्डरी काक्षः, मंगलाय तनो हरिः ॥"]}
           />
           <p className="shree-ganesh__shlok-translation">
-            Auspicious is Lord Vishnu, auspicious is He who bears the Garuda banner —
-            auspicious is the lotus-eyed One; may Hari make every undertaking blessed.
+            Lord Vishnu is auspicious, the lotus-eyed Lord who bears Garuda upon His banner is auspicious; may Lord Hari bless us with auspiciousness.
           </p>
 
           <button

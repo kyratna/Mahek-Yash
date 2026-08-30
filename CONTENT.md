@@ -30,15 +30,32 @@ A short line shown above your names in the Invitation:
 
 - Tagline: `[ With All The Blessings ]`
 
-## 4. Meet the Bride & Groom
+## 4. Family Section / Meet the Couple
 
-**Bride** — Mahek Gupta
-- Grandparentage: "Granddaughter of" / "Shri Late __ Gupta" / & / "Smt Late __ Gupta"
-- Parentage: "Daughter of" / "Smt Deepa Gupta and Shri Rajeev Gupta"
+- **Header Sanskrit Shloka**: `[ ॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥ ]`
+- **Header Translation Quote**: `[ "You alone are mother and father, You alone are kin and friend — and so we begin, with gratitude to all who have shaped us." ]`
 
-**Groom** — Yash Gupta
-- Grandparentage: "Grandson of" / "Shri Late Shri Niwas Gupta" / & / "Smt Late Rama Gupta"
-- Parentage: "Son of" / "Smt Renu Gupta and Shri Sandeep Kumar Gupta"
+**Bride's Family Card**
+- Auspicious Symbol: `[ ॥ श्री ॥ ]`
+- Family Title: `[ THE GUPTA FAMILY ]`
+- City / Origin: `[ Moradabad · पीतल नगरी · The City of Brass ]`
+- Grandparents: `[ Late Shri Prem Shankar Gupta ]` & `[ Late Smt. Sarla Devi Gupta ]`
+- Invitation Line 1: `[ with their family and loved ones ]`
+- Parents: `[ Smt. Deepa Gupta ]` & `[ Shri Rajeev Gupta ]`
+- Invitation Line 2: `[ request the pleasure of your company on the auspicious wedding of ]`
+- Name: `[ Mahek ]`
+- Relation: `[ THEIR BELOVED DAUGHTER ]`
+
+**Groom's Family Card**
+- Auspicious Symbol: `[ ॥ श्री ॥ ]`
+- Family Title: `[ THE GUPTA FAMILY ]`
+- City / Origin: `[ Moradabad · पीतल नगरी · The City of Brass ]`
+- Grandparents: `[ Late Shri Niwas Gupta ]` & `[ Late Smt. Rama Gupta ]`
+- Invitation Line 1: `[ with their family and loved ones ]`
+- Parents: `[ Smt. Renu Gupta ]` & `[ Shri Sandeep Kumar Gupta ]`
+- Invitation Line 2: `[ request the pleasure of your company on the auspicious wedding of ]`
+- Name: `[ Yash ]`
+- Relation: `[ THEIR BELOVED SON ]`
 
 ## 5. Event Details (3D Flip Cards)
 

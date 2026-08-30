@@ -1,7 +1,7 @@
 import content from "../content";
 import "./Footer.css";
 
-export default function Footer() {
+export default function Footer({ isDateRevealed = false }) {
   const { couple, wedding } = content;
 
   return (
@@ -12,7 +12,12 @@ export default function Footer() {
         <span className="footer__amp">&amp;</span>
         <span className="footer__name">{couple.partner2}</span>
       </p>
-      <p className="footer__date">{wedding.displayDate}</p>
+      <p
+        className="footer__date"
+        style={{ visibility: isDateRevealed ? "visible" : "hidden" }}
+      >
+        {wedding.displayDate}
+      </p>
     </footer>
   );
 }

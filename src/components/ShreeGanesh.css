@@ -131,10 +131,10 @@
 
 .shree-ganesh__shlok-translation {
   font-style: italic;
-  font-size: 0.85rem;
+  font-size: clamp(0.95rem, 1.6vh, 1.05rem);
   color: var(--color-text-muted);
   line-height: 1.55;
-  max-width: 28rem;
+  max-width: 32rem;
   margin: 0 auto var(--space-3);
 }
 

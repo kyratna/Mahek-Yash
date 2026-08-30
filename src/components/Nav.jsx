@@ -6,7 +6,7 @@ import "./Nav.css";
 const LINKS = [
   { href: "#shree-ganesh", label: "Shree Ganesh" },
   { href: "#invitation", label: "Invitation" },
-  { href: "#couple", label: "The Couple" },
+  { href: "#couple", label: "Meet Families" },
   { href: "#details", label: "Events" },
   { href: "#gallery", label: "Gallery" },
   { href: "#blessings", label: "Blessings Wall" },

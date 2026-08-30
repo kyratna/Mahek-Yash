@@ -37,7 +37,8 @@ export default function FitDevanagari({ lines, className, lang = "sa" }) {
         }
       });
       // Small safety margin so the line doesn't sit flush against the edge.
-      setFontSize(Math.max(10, target * 0.97));
+      // Math.round ensures crisp pixel-aligned font rendering without subpixel haziness.
+      setFontSize(Math.max(10, Math.round(target * 0.97)));
     }
 
     fit();
@@ -47,15 +48,15 @@ export default function FitDevanagari({ lines, className, lang = "sa" }) {
   }, [lines]);
 
   return (
-    <p className={className} lang={lang} ref={containerRef} style={{ fontSize }}>
+    <p className={className} lang={lang} ref={containerRef} style={{ fontSize: `${fontSize}px` }}>
       {lines.map((line, i) => (
-        <span
-          key={i}
-          ref={(el) => (lineRefs.current[i] = el)}
-          style={{ display: "inline-block", whiteSpace: "nowrap" }}
-        >
-          {line}
-          {i < lines.length - 1 && <br />}
+        <span key={i} style={{ display: "block" }}>
+          <span
+            ref={(el) => (lineRefs.current[i] = el)}
+            style={{ display: "inline-block", whiteSpace: "nowrap" }}
+          >
+            {line}
+          </span>
         </span>
       ))}
     </p>

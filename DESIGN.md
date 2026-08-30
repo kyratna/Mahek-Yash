@@ -148,12 +148,20 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - **Live Countdown**: Days, Hours, Minutes, Seconds in single row (numbers `1.35rem`, unit labels `0.70rem`).
   - Automatically triggers celebratory **Confetti Burst** on reveal.
 
-### Meet the Couple
-- Bride and groom cards sit side by side (`.couple-profiles__cards`, `grid-template-columns: 1fr 1fr`) — **no photo** in either card
-- Each card shows: name (h3), then a **grandparentage block** and a **parentage block**, each rendered as 4 lines (`Lineage` component in `MeetCouple.jsx`) — a label ("Granddaughter/Grandson of", "Daughter/Son of"), the first person's name, a small muted "&", then the second person's name. Data for this lives at `content.coupleProfiles.bride/groom.grandparentage/parentage`, each an object `{ label, person1, person2 }` rather than a single string
-- Cards have a visible boundary with rounded corners (`border`, `border-radius: 1.25rem`, white surface background) rather than sitting directly on the page background
-- **Cards stay side-by-side at every width, including mobile** — they do not stack into one column like other two-column sections. Below 700px, font sizes and padding shrink instead of reflowing to a single column
-- Vector illustration (`content.coupleVectorArt`, currently `public/images/bridengroom/brideNgroom_No_Bg_Vector.png` — a transparent-background PNG, no picture-frame/holder box around it) is **absolutely centered on the shared boundary between the two cards** (`position: absolute; left/top: 50%`, relative to `.couple-profiles__cards`), straddling the bride card's right edge and the groom card's left edge, vertically centered against the cards' height. Sized generously (~256px wide on desktop, ~160px on mobile) — large enough that it does overlap some of the lineage text on narrow screens, which reads as intentional layering rather than a bug
+### Meet the Couple / Family Section (`#couple`, `MeetCouple.jsx`)
+- **Sacred Family Shloka & Quote Header**:
+  - Sanskrit Shloka (`॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥`) rendered in `var(--color-burgundy)` in `Tiro Devanagari Sanskrit`.
+  - Editorial translation quote below in `Cormorant Garamond` italic.
+- **Two Side-by-Side Royal Indian Family Cards**:
+  - Left: Bride's Family Card (The Gupta Family, location, invite phrases, parents in burgundy bold, bride name in Alex Brush cursive, relation tagline).
+  - Right: Groom's Family Card (The Gupta Family, location, invite phrases, parents in burgundy bold, groom name in Alex Brush cursive, relation tagline).
+- **Luxury Double Border & Corner Flourishes**:
+  - Outer rounded border (`1.2px solid rgba(176, 137, 104, 0.45)` with `1.25rem` radius).
+  - Inset dashed gold inner border (`inset: 8px`).
+  - Delicate SVG corner flourish ornaments at all 4 corners (TL, TR, BL, BR) with smooth corner arc loops and decorative ticks.
+- **Center Divider with Sacred ॐ**:
+  - Vertical golden hairline divider with gold `ॐ` (Om) symbol centered between the cards on desktop.
+  - Smoothly converts to horizontal divider with centered `ॐ` when stacked on mobile screens.
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

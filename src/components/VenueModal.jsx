@@ -87,6 +87,11 @@ export default function VenueModal({ isOpen, onClose, venue }) {
             <div className="venue-modal__divider" aria-hidden="true" />
             <p className="venue-modal__resort-name">{venue.name}</p>
             <p className="venue-modal__resort-addr">{venue.address}</p>
+            {venue.phone && (
+              <p className="venue-modal__resort-phone">
+                <span>Helpdesk:</span> {venue.phone}
+              </p>
+            )}
           </div>
 
           {/* QR Code & Navigation Action */}
@@ -132,7 +137,6 @@ export default function VenueModal({ isOpen, onClose, venue }) {
                       <span className="venue-modal__guide-mode">{item.mode}</span>
                     </div>
                     <div className="venue-modal__guide-body">
-                      <strong className="venue-modal__guide-title">{item.title}</strong>
                       <p className="venue-modal__guide-text">{item.description}</p>
                     </div>
                   </div>

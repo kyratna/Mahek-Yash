@@ -56,7 +56,7 @@ export default function Nav() {
     scrollTo(href.slice(1));
   };
 
-  const handleLogoClick = () => scrollTo("hero");
+  const handleLogoClick = () => scrollTo("shree-ganesh");
 
   return (
     <>

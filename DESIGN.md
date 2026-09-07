@@ -190,6 +190,14 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 - **Zero-Error Caricature Fallback**: If any image fails to load or while photos are being added, the card seamlessly renders an Indian wedding caricature artwork card (Couple, Mandap, or Sacred Hands) with a decorative caption.
 - **Navigation Controls Below Gallery View**: Pill-shaped **‹ Prev** and **Next ›** buttons with SVG chevrons alongside interactive capsule-style pagination dots sit tightly grouped directly underneath the photos.
 - **Auto-Advance**: Cycles automatically every 4.5s; user interaction or opening the fullscreen Lightbox pauses the timer.
+- **Upload CTA Subtext**: Positioned directly above the upload button: *"Share your captured memories with us"* (`.gallery-upload-action__subtext`), set in `Cormorant Garamond` italic, `0.95rem`, `--color-text-muted`, centered.
+- **Guest Upload Action Button**: Centered burgundy pill button (`.gallery-upload-btn`) with camera icon (**`📸 Upload Photos & Videos`**).
+- **Guest Upload Modal (`GalleryUploadModal.jsx`)**:
+  - Glassmorphic backdrop (`rgba(0, 0, 0, 0.6)`) with blur.
+  - Burgundy framed container with ivory surface, gold accents, and close button.
+  - Side-by-side Ceremony selector dropdown (Haldi, Engagement & Sangeet, etc.) and Guest Name input (placeholder: `Rahul & Sunita Gupta`).
+  - File picker supporting multiple photos/videos and mobile camera capture.
+  - Live upload progress bar with animated gold striping, progress counter (`Uploading photo 2 of 5 (40%)`), and file checkmarks (`✓`).
 
 ### Blessings
 - Ivory/surface section (`#blessings`).

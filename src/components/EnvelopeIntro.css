@@ -131,6 +131,12 @@
   text-transform: uppercase;
   letter-spacing: 0.28em;
   color: rgba(250, 247, 242, 0.7);
+  transition: opacity 0.35s ease;
+}
+
+.envelope-intro--open .envelope-intro__overline {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .envelope-box {

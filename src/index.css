@@ -214,6 +214,18 @@ img {
   height: 20px;
 }
 
+@media (max-width: 768px) {
+  html {
+    scroll-snap-type: none;
+  }
+
+  .section,
+  .shree-ganesh,
+  .family-section {
+    scroll-snap-align: none;
+  }
+}
+
 @media (max-width: 600px) {
   .section {
     padding: var(--space-2) var(--space-2) var(--space-4);

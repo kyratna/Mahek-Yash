@@ -22,7 +22,7 @@ A high-performance, single-page luxury Indian wedding invitation built with Reac
   - **Live Heart Reactions (❤️)**: Interactive heart reactions synchronized across all guests.
   - **Matching Royal Frame**: Harmonized luxury border design with burgundy inner dashed trim.
   - **Telegram Bot Notifications & Moderation**: Instant Telegram alerts for new blessings & RSVPs with native inline "🗑️ Delete from Live Wall" moderation buttons.
-- **FAQ & Footer (`#faq`)**: Interactive Q&A accordion, couple sign-off, and scratch-synced wedding date (`DECEMBER 6, 2026`).
+- **FAQ & Footer (`#faq`)**: Curated 6-question accordion covering exact travel routes & distances, complimentary parking, dress codes, December weather breakdown, 1 PM check-in with mandatory Aadhaar ID requirements, hospitality coordinators, 24/7 snacks availability, official wedding hashtags (`#MahekWedsYash` & `#YashKiMahek`), and interactive action buttons for venue navigation and gallery jumps.
 - **Floating Controls**: Ambient background music player, envelope re-opener, and section navigation arrows.
 
 ---
@@ -51,13 +51,32 @@ All wedding details are centrally configured in **[`src/content.js`](src/content
 
 ---
 
-## 🖼️ Dynamic Google Drive Gallery
+## 🖼️ Dynamic Google Drive Gallery & Guest Uploads
 
-To dynamically update gallery photos from Google Drive without touching code:
+The gallery is built on a strictly separated two-tier Google Drive & Google Sheets architecture that ensures host curation integrity while welcoming guest participation:
 
-1. Create a folder in Google Drive and set its share settings to: **"Anyone with the link can view"**.
-2. Open your Google Sheet top menu: **`💌 Wedding Admin` → `🖼️ Set Gallery Google Drive Folder ID`** and paste your Drive folder link or ID.
-3. Every photo uploaded to that Drive folder will automatically stream to the live website gallery!
+### 1. Curated Host Gallery (Live Website Stream)
+- **Dedicated Folder**: `Wedding Invite Photo Gallery`
+  - Folder Link: `https://drive.google.com/drive/folders/1n0l1dZEb3eQE9qn9CZyZVhLZ9wC6fqtz?usp=sharing`
+  - Folder ID: `1n0l1dZEb3eQE9qn9CZyZVhLZ9wC6fqtz`
+- **One-Way Host Pipeline**:
+  - Hosts upload curated high-resolution wedding photos directly into the Drive folder.
+  - Automatically synchronizes to the dedicated **`GALLERY`** tab in Google Sheets, generating live `=IMAGE(...)` 60px thumbnail previews, file IDs, direct links, and timestamps.
+  - Streams directly into the website's 3D coverflow gallery.
+- **Dynamic Deletion Reflection**:
+  - Removing or trashing any photo in the Drive folder automatically clears it from the `GALLERY` sheet and instantly purges it from the live website without stale cache.
+
+### 2. Isolated Guest Uploads (`Guest Uploaded Gallery`)
+- **Dedicated Folder**: `Guest Uploaded Gallery` (created automatically as a sibling folder in Google Drive).
+- **Guest Upload Modal (`#gallery`)**:
+  - Guided by the elegant subtext: *"Share your captured memories with us"*, placed directly above the **`📸 Upload Photos & Videos`** button.
+  - Form includes Ceremony selector (Haldi, Engagement & Sangeet, Godh Bharai & Sagai, Baraat & Ghurchari, Jaimaal, Phere, Other) and Guest Name input (with example placeholder `Rahul & Sunita Gupta`).
+  - Guests can select multiple photos/videos or capture shots live using their camera.
+  - **100% Write-Only Protection**: Guests never get direct write or delete permissions to Google Drive, ensuring total security and privacy.
+  - **Real-Time Progress Tracking**: Displays live counter (`Uploading photo 2 of 5 (40%)`), animated progress bar, and per-file checkmarks (`✓`).
+- **File Naming Format**: `UploaderName_timestamp_ceremony_originalName` (e.g., `Rohan_Gupta_20260907_Haldi_photo1.jpg`).
+- **Google Sheets Logging**: Uploads are appended to the dedicated **`GUEST_UPLOADS`** sheet tab with full metadata.
+- **Consolidated Telegram Alerts**: Dispatches a consolidated Telegram alert to the host group once each batch completes.
 
 ---
 
@@ -69,14 +88,16 @@ To dynamically update gallery photos from Google Drive without touching code:
 ### 2. Google Sheets ('Wedding Admin System' Tier)
 - Spreadsheet Workbook: **'Wedding Admin System'**
 - Apps Script Project: **'WeddingAdminScript'**
+- Web App Endpoint: `https://script.google.com/macros/s/AKfycbw1uFiMAmvqL0L16zuvRrlnwO1E8ERHGyUCTLd_uySpWYbG3DU0DHxsaURlJyKqpCzAHQ/exec`
 - Automatically synchronized with Firebase every 1 minute and on real-time sheet edits with permanent data protection.
-- Tabs:
+- Dedicated Tabs:
   - `BLESSINGS_BRIDE` & `BLESSINGS_GROOM`: `Name | Side | Message | Timestamp | Hearts (❤️) | FirebaseDocID`
   - `RSVP_BRIDE` & `RSVP_GROOM`: `Name | Side | Attending | Guests | Parking Required | Timestamp | FirebaseDocID`
-  - `GALLERY`: `IMAGE_URL | PHOTO_CAPTION | DRIVE_FILE_ID | DATE_ADDED`
+  - `GALLERY`: `IMAGE_URL | PHOTO_CAPTION | DRIVE_FILE_ID | DATE_ADDED | PREVIEW` (with `=IMAGE(...)` thumbnail formula)
+  - `GUEST_UPLOADS`: `BATCH_ID | FILE_NAME | UPLOADER_NAME | CEREMONY | TOTAL_COUNT | FILE_INDEX | UPLOAD_DATE | UPLOAD_TIME | DRIVE_FILE_ID | DRIVE_FILE_URL | STATUS`
 
 ### 3. Telegram Bot Notifications & In-App Moderation
-- Instant Telegram group notifications for every Blessing and RSVP.
+- Instant Telegram group notifications for every Blessing, RSVP, and completed Guest Upload batch.
 - Native inline `🗑️ Delete from Live Wall` button: immediately answers callback queries and removes the blessing live from Firebase and Google Sheets.
 
 ---
@@ -95,19 +116,33 @@ Generates optimized static production assets in the `dist/` directory ready for 
 
 ```text
 src/
-  content.js          ← Central copy and configuration
-  index.css           ← Global design tokens and layout rules
+  content.js          ← Central copy, event details, venue & backend configuration
+  index.css           ← Global design tokens, CSS variables, and typography rules
   lib/
     firebase.js       ← Real-time Firestore configuration
     smoothScroll.js   ← Eased navigation scrolling
   hooks/
     useBlessings.js   ← Live Firestore listener and sync hook
     useCountdown.js   ← Live countdown timer logic
-  components/         ← Interactive section components (ShreeGanesh, Invitation, EnvelopeIntro, Gallery, Blessings, FAQ, ...)
+  components/         ← Interactive section components:
+    EnvelopeIntro.jsx       ← 3D envelope opening experience with wax seal
+    ShreeGanesh.jsx         ← Sacred Ganesha invocation with golden rose glow & Sanskrit shlokas
+    Invitation.jsx          ← Dedicated invitation screen with parents lineage
+    ScratchReveal.jsx       ← Monogrammed scratch-to-reveal card with live countdown
+    MeetFamilies.jsx        ← Royal Indian family lineage cards with Sanskrit shloka
+    EventsGrid.jsx          ← 2-column, 3-row 3D flip cards with perimeter countdown timer
+    VenueModal.jsx          ← Venue travel directions popup with QR code & transit options
+    Gallery.jsx             ← 3D coverflow carousel with adaptive matting & caricature fallback
+    GalleryUploadModal.jsx  ← Guest photo/video upload modal with batch progress & ceremony picker
+    Blessings.jsx           ← Curated blessings wall cards with live heart reactions (❤️)
+    BlessingsRSVP.jsx       ← Tabbed blessings submission & RSVP form
+    FAQ.jsx                 ← Interactive accordion with route, dress code & stay guides
+    FloatingControls.jsx    ← Music player, envelope re-opener & section navigation arrows
 public/
-  images/             ← Static vector artwork and monogram assets
+  images/             ← Static vector artwork, caricature fallbacks, and monogram assets
   flaticons/          ← Traditional Indian wedding motifs
   audio/              ← Background wedding music track
 google-apps-script/
-  Code.gs             ← Google Sheets, Google Drive gallery & Telegram bot automation
+  Code.gs             ← Google Sheets, Google Drive dual-gallery & Telegram bot automation
+  appsscript.json     ← Apps Script manifest and OAuth scopes
 ```

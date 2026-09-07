@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import content, { asset } from "../content";
+import GalleryUploadModal from "./GalleryUploadModal";
+import cameraIcon from "../assets/flaticons/camera-711191.png";
 import "./Gallery.css";
 
 const AUTO_ADVANCE_MS = 4500;
 const VISIBLE_RANGE = 3; // covers beyond +/-3 slots from center are hidden
 
-// Default Caricature Placeholder Card for Mahek & Yash
+// Default Caricature Placeholder Card for Mahek & Yashoratna
 const CARICATURE_PLACEHOLDERS = [
   {
     isCaricature: true,
     caricatureSrc: asset("/images/bridengroom/brideNgroom_No_Bg_Vector.png"),
-    title: "Mahek & Yash",
+    title: "Mahek & Yashoratna",
     subtitle: "A Lifetime of Love & Laughter",
     badge: "Forever Together 🌸",
-    alt: "Mahek & Yash Caricature",
+    alt: "Mahek & Yashoratna Caricature",
   },
 ];
 
@@ -59,6 +61,7 @@ export default function Gallery() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const timerRef = useRef(null);
 
   // Fetch dynamic gallery photos from Google Apps Script / Drive endpoint
@@ -72,7 +75,7 @@ export default function Gallery() {
         const res = await fetch(`${appsScriptUrl}?action=getGallery&_t=${Date.now()}`);
         if (!res.ok) return;
         const data = await res.json();
-        if (data && data.ok && Array.isArray(data.photos) && data.photos.length > 0) {
+        if (data && data.ok && Array.isArray(data.photos)) {
           const normalized = data.photos.map((p, i) => ({
             src: normalizePhotoUrl(p.src),
             alt: p.alt || `Wedding Memory ${i + 1}`,
@@ -261,6 +264,21 @@ export default function Gallery() {
               </svg>
             </button>
           </div>
+
+          {/* Upload Photos & Videos Action Button Below Tiles */}
+          <div className="gallery-upload-action">
+            <p className="gallery-upload-action__subtext">
+              Share your captured memories with us
+            </p>
+            <button
+              type="button"
+              className="gallery-upload-btn"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              <img src={cameraIcon} alt="" className="gallery-upload-btn__img" />
+              Upload Photos &amp; Videos
+            </button>
+          </div>
         </div>
       </div>
 
@@ -318,6 +336,12 @@ export default function Gallery() {
           </button>
         </div>
       )}
+
+      {/* Guest Photos & Videos Upload Modal */}
+      <GalleryUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
     </section>
   );
 }

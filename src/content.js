@@ -14,7 +14,7 @@ export const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//,
 const content = {
   couple: {
     partner1: "Mahek",
-    partner2: "Yash",
+    partner2: "Yashoratna",
   },
 
   wedding: {
@@ -32,9 +32,12 @@ const content = {
   // Shown in the "Meet the Couple" / Family section — traditional royal Indian
   // wedding family cards with shloka, parentage, and blessings.
   familySection: {
-    shloka: "॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥",
+    shloka: [
+      "॥ ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं ।",
+      "भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात् ॥",
+    ],
     quote:
-      '"You alone are my mother and my father, my family and my friend — You alone are all of these to me."',
+      '"We meditate on the transcendent glory of the Divine Sun, creator of all realms — may that divine brilliance inspire and illuminate our path."',
     brideFamily: {
       symbol: "॥ मंगलम् ॥",
       symbolTranslation: "Auspicious Beginning",
@@ -52,11 +55,11 @@ const content = {
       symbolTranslation: "Sacred Union",
       familyTitle: "THE GUPTA FAMILY",
       location: "Moradabad · पीतल नगरी · The City of Brass",
-      grandparents: ["Late Shri Niwas Gupta", "Late Smt. Rama Gupta"],
+      grandparents: ["Late Shri Shri Niwas Gupta", "Late Smt. Rama Gupta"],
       invitePhrase1: "with their family and loved ones",
       parents: ["Smt. Renu Gupta", "Shri Sandeep Kumar Gupta"],
       invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
-      name: "Yash",
+      name: "Yashoratna",
       relation: "THEIR BELOVED SON",
     },
   },
@@ -76,10 +79,10 @@ const content = {
       },
     },
     groom: {
-      name: "Yash Gupta",
+      name: "Yashoratna Gupta",
       grandparentage: {
         label: "Grandson of",
-        person1: "Late Shri Niwas Gupta",
+        person1: "Late Shri Shri Niwas Gupta",
         person2: "Late Smt. Rama Gupta",
       },
       parentage: {
@@ -157,28 +160,36 @@ const content = {
   // Venue information & 'How to reach the venue?' popup details
   venue: {
     name: "Winsome Resort & Spa",
-    address: "Village Nandpur, Ramnagar, Jim Corbett, Uttarakhand 244715",
+    phone: "+91 99714 99502 / +91 95600 02045",
+    website: "https://www.winsomeresorts.com/",
+    address:
+      "Vill. Nandpur, Choi, Gabua (Near Dabka River, Jim Corbett National Park), Ramnagar – Nainital Road, Khempur, Uttarakhand 244715",
     qrUrl: "https://share.google/xZAuCAlAAjEHdfEsY",
-    directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Winsome+Resorts+and+Spa%2C+Jim+Corbett",
-    modalAutoCloseSeconds: 30,
+    directionsUrl:
+      "https://www.google.com/maps/dir/?api=1&destination=Winsome+Resorts+and+Spa%2C+Jim+Corbett",
+    modalAutoCloseSeconds: 45,
     howToReach: [
       {
         mode: "By Road",
-        title: "Self Drive / Cab",
         description:
-          "Approx. 240 km (~5 to 6 hours drive) from Delhi NCR via NH9 through Hapur, Moradabad, Kashipur to Ramnagar.",
+          "• From Delhi: ~245 km (~4 hr 20 min) via Delhi – Moradabad – Tanda – Bajpur (or via Kashipur) – Ramnagar (Resort is ~6 km from Ramnagar town).\n" +
+          "• From Moradabad: ~81 km (~1 hr 50 min) via Moradabad – Tanda – Bajpur – Ramnagar.\n" +
+          "• From Bareilly: ~138 km (~2 hr 50 min) via Bareilly – Rampur – Suar – Bajpur – Ramnagar.\n" +
+          "• From Badaun: ~204 km (~3 hr 50 min) via Badaun – Chandausi Bypass – Moradabad – Tanda – Bajpur – Ramnagar.\n" +
+          "• From Dehradun / Haridwar: ~252 km (~4 hr 50 min) via Haridwar – Jagannathpur – Ramnagar.\n" +
+          "• From Chandigarh: ~424 km (~7 hr 45 min) via Saharanpur – Bhagwanpur – Haridwar (NH734) – Ramnagar.",
       },
       {
         mode: "By Train",
-        title: "Nearest Railway Station",
         description:
-          "Ramnagar Railway Station (RMR) is approx. 10 km (15–20 mins) from the resort. Direct trains run from Old Delhi & Anand Vihar.",
+          "• Ramnagar Railway Station (RMR): Approx. 7 km (~12–15 mins drive from resort) with direct trains from Old Delhi and Anand Vihar.\n" +
+          "• Kathgodam Railway Station: ~60 km from resort.",
       },
       {
         mode: "By Air",
-        title: "Nearest Airport",
         description:
-          "Pantnagar Airport (PGH) is ~80 km (~2 hours drive). Alternatively, IGI Airport New Delhi is ~260 km away.",
+          "• Pantnagar Airport (PGH): Approx. 150 km (~2.5 hrs drive).\n" +
+          "• IGI Airport New Delhi: ~260 km away.",
       },
     ],
   },
@@ -202,28 +213,66 @@ const content = {
 
   blessingsRsvp: {
     heading: "Blessings & RSVP",
-    subtext: "Send blessings and RSVP",
+    subtext: "Send blessings, RSVP, and share your photos",
   },
 
   faq: [
     {
-      question: "What is the dress code?",
-      answer: "PLACEHOLDER: e.g. Cocktail attire / Black tie optional.",
+      question: "How do I reach the venue?",
+      answer:
+        "Complete Address of Winsome Resort:\n" +
+        "Winsome Resort & Spa is located at Vill. Nandpur, Choi, Gabua (Near Dabka River, Jim Corbett National Park), Ramnagar – Nainital Road, Khempur, Uttarakhand 244715.\n" +
+        "Phone: +91 99714 99502 / +91 95600 02045\n\n" +
+        "Click the button below to get travel options:",
+      action: {
+        type: "venueModal",
+        label: "How to reach the venue?",
+      },
     },
     {
-      question: "Are kids welcome?",
+      question: "Is parking available at the venue?",
       answer:
-        "PLACEHOLDER: e.g. We love your little ones, but this will be an adults-only celebration.",
+        "Yes, complimentary on-site self-parking and dedicated valet assistance are available at Winsome Resort & Spa for all wedding guests throughout the celebrations.",
     },
     {
-      question: "Can I bring a plus-one?",
+      question: "What are the dress codes and themes for the events?",
       answer:
-        "PLACEHOLDER: Please refer to your invitation for the number of seats reserved in your honor.",
+        "We encourage you to dress in accordance with the ceremony themes:\n\n" +
+        "• Haldi (Dec 5, 12:30 PM): Shades of Pink\n" +
+        "• Engagement & Sangeet (Dec 5, 5:00 PM): Glam and Glitter",
     },
     {
-      question: "What about dietary restrictions?",
+      question: "What will the weather be like in Jim Corbett in December?",
       answer:
-        "PLACEHOLDER: Please note any dietary restrictions in the RSVP form below.",
+        "• Daytime: Roughly 21–24°C, comfortable and pleasant.\n" +
+        "• Afternoons: Usually sunny and pleasant, with around 9 hours of sunshine.\n" +
+        "• Mornings: Can be cool and occasionally misty or foggy.\n" +
+        "• Night & Early Morning: Roughly 8–12°C, so it can feel quite cold.\n\n" +
+        "(Tip: We recommend carrying warm shawls, jackets, or blazers for the evening and early morning outdoor celebrations).",
+    },
+    {
+      question: "What are the check-in formalities and accommodation arrangements?",
+      answer:
+        "Room accommodations have been arranged at Winsome Resort & Spa for outstation guests starting December 5 from 1:00 PM onwards.\n\n" +
+        "• Mandatory Photo ID: As per resort and Uttarakhand government regulations, all adult guests must present a valid physical or digital Aadhaar Card (or Driving License / Govt. ID) during check-in.\n\n" +
+        "• Hospitality & Assistance Contacts:\n" +
+        "  - Resort Helpdesk: +91 99714 99502 / +91 95600 02045\n" +
+        "  - Shri Sandeep Kumar Gupta (Groom Side): +91 81719 97832\n" +
+        "  - Shri Rajeev Gupta (Bride Side): +91 94128 06535\n\n" +
+        "Resort's hospitality desk will be stationed at the resort reception to assist you with room keys, luggage, and event timings throughout your stay.\n\n" +
+        "Snacks will be available throughout the event for untimely hunger pangs, late-night cravings, overnight chakhna needs, and guests arriving at different times.",
+    },
+    {
+      question: "What are the official wedding hashtags for sharing photos?",
+      answer:
+        "If you upload photos, stories, or reels anywhere on social media (Instagram, Facebook, etc.), please use our wedding hashtags:\n\n" +
+        "#MahekWedsYash\n" +
+        "#YashKiMahek\n\n" +
+        "You can also upload your candid photos and videos directly to our wedding album:",
+      action: {
+        type: "uploadModal",
+        label: "Upload Photos & Videos",
+      },
     },
   ],
 
@@ -237,16 +286,15 @@ const content = {
   },
 
   integrations: {
-    // Google Sheets integration (fallback)
+    // Google Sheets & Drive integration (Primary)
     appsScriptUrl:
-      "https://script.google.com/macros/s/AKfycbxpqRj70zcCtJyCvzJVunfHMzmlyj1AyhAGhUw5yNDzJ8GWT7wq-plVgzgMHhrXHAG08w/exec",
+      "https://script.google.com/macros/s/AKfycbw1uFiMAmvqL0L16zuvRrlnwO1E8ERHGyUCTLd_uySpWYbG3DU0DHxsaURlJyKqpCzAHQ/exec",
 
-    // Firebase Firestore integration (Real-time, 0 latency)
+    // Firebase Firestore integration (Real-time text blessings & RSVPs)
     firebase: {
       apiKey: "AIzaSyB-H7JyM-REapOa3PftjigCqhMBjaSOu3Y",
       authDomain: "yashmahekwedding.firebaseapp.com",
       projectId: "yashmahekwedding",
-      storageBucket: "yashmahekwedding.firebasestorage.app",
       messagingSenderId: "965259334403",
       appId: "1:965259334403:web:a39a2f27c227082a7dcf36",
     },

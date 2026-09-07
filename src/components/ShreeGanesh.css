@@ -212,7 +212,9 @@
 
 @media (max-width: 480px) {
   .shree-ganesh__overlay {
-    padding: var(--space-2);
+    padding: var(--space-2) 1.25rem;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 

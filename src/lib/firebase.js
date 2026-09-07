@@ -14,12 +14,11 @@ import {
 import content from "../content";
 
 // Firebase Configuration:
-// Reads from Vite environment variables (.env / .env.local) or falls back to content.js integrations
+// Used exclusively for real-time text blessings & RSVPs (Zero file storage consumption)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || content.integrations?.firebase?.apiKey || "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || content.integrations?.firebase?.authDomain || "",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || content.integrations?.firebase?.projectId || "",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || content.integrations?.firebase?.storageBucket || "",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || content.integrations?.firebase?.messagingSenderId || "",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || content.integrations?.firebase?.appId || "",
 };
@@ -105,4 +104,57 @@ export async function addRSVPToFirestore(rsvpData) {
     ...rsvpData,
     timestamp: serverTimestamp(),
   });
+}
+
+/**
+ * Upload Guest Photo/Video directly into Google Drive (via Google Apps Script)
+ * Consumes 0 bytes of Firebase Storage (100% Free-Tier Safe).
+ */
+export async function uploadGuestMedia({
+  file,
+  base64Data,
+  uploaderName,
+  ceremony,
+  initials,
+  batchId,
+  totalCount,
+  fileIndex,
+  appsScriptUrl,
+}) {
+  const targetUrl = appsScriptUrl || content.integrations?.appsScriptUrl;
+  if (!targetUrl) {
+    throw new Error("Google Apps Script URL is not configured.");
+  }
+
+  const payload = {
+    action: "uploadMedia",
+    uploaderName: uploaderName || "Guest",
+    initials: initials || "",
+    ceremony: ceremony || "General",
+    fileName: file.name,
+    mimeType: file.type || "image/jpeg",
+    fileData: base64Data,
+    batchId: batchId || "",
+    totalCount: typeof totalCount === "number" ? totalCount : 1,
+    fileIndex: typeof fileIndex === "number" ? fileIndex : 0,
+  };
+
+  const res = await fetch(targetUrl, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+  });
+
+  const text = await res.text();
+  let json = null;
+  try {
+    json = JSON.parse(text);
+  } catch (_) {}
+
+  if (json && json.ok) {
+    return { ok: true, source: "drive", ...json };
+  }
+
+  const errMsg = json?.error || "Google Drive upload failed. Please ensure Drive permissions are authorized in Apps Script.";
+  throw new Error(errMsg);
 }

@@ -24,8 +24,29 @@ const SHEET_BY_TYPE_AND_SIDE = {
 };
 
 // Google Drive Gallery Folder Configuration
-// Set your Google Drive Folder ID here or via the Sheet menu: 💌 Wedding Admin -> 🖼️ Set Gallery Google Drive Folder
-const GALLERY_DRIVE_FOLDER_ID = "YOUR_GOOGLE_DRIVE_FOLDER_ID_HERE";
+// 1. Curated folder displayed on the wedding invite gallery (Managed exclusively by hosts)
+const GALLERY_DRIVE_FOLDER_ID = "1n0l1dZEb3eQE9qn9CZyZVhLZ9wC6fqtz";
+
+// 2. Folder where guests upload photos & videos
+// Paste the exact 'Guest Uploaded Gallery' folder ID below (or leave "" to auto-detect):
+const GUEST_UPLOAD_FOLDER_ID = "";
+const GUEST_UPLOAD_FOLDER_NAME = "Guest Uploaded Gallery";
+
+// 3. Dedicated Google Sheet tab names:
+const GALLERY_SHEET_NAME = "GALLERY";
+const GUEST_UPLOADS_SHEET_NAME = "GUEST_UPLOADS";
+
+/**
+ * Derives uppercase initials from a person's name (e.g. "Rohan Gupta" -> "RG")
+ */
+function deriveInitials_(name) {
+  if (!name || !name.trim()) return "GUEST";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    return parts[0].substring(0, 4).toUpperCase();
+  }
+  return parts.map(function(p) { return p[0]; }).join("").toUpperCase().substring(0, 5);
+}
 
 /**
  * Creates custom menu in Google Sheets on open
@@ -36,14 +57,134 @@ function onOpen() {
     .addItem("⚡ Instant 2-Way Sync (Firebase ↔ Sheet)", "instantBidirectionalSync")
     .addItem("⬇️ Pull All Blessings & Hearts from Firebase", "pullAllBlessingsFromFirebaseToSheet")
     .addSeparator()
-    .addItem("🖼️ Set Gallery Google Drive Folder ID", "promptSetGalleryFolderId")
-    .addItem("🔄 Sync Drive Photos to GALLERY Sheet", "syncDriveFolderToGallerySheet")
+    .addItem("🖼️ Set 'Wedding Invite' Curated Gallery Folder ID", "promptSetGalleryFolderId")
+    .addItem("🔄 Sync Curated Photos to GALLERY Sheet", "syncDriveFolderToGallerySheet")
+    .addSeparator()
+    .addItem("📁 Set 'Guest Uploaded Gallery' Folder ID", "promptSetGuestUploadFolderId")
+    .addSeparator()
+    .addItem("🔑 Authorize Google Drive Permissions", "authorizeDrivePermissions")
     .addSeparator()
     .addItem("🚀 Activate Instant Auto-Sync Triggers", "setupInstantTriggers")
     .addSeparator()
     .addItem("🤖 Register Telegram Webhook (For Native Delete Button)", "registerTelegramWebhook")
     .addItem("🧪 Send Test Telegram Alert", "sendTestTelegramNotification")
+    .addSeparator()
+    .addItem("🧹 Clear All Test RSVPs", "clearAllRsvpsMenu")
     .addToUi();
+}
+
+/**
+ * ONE-CLICK GOOGLE DRIVE AUTHORIZATION HELPER
+ * Run this once in the Apps Script Editor toolbar to grant Google Drive permissions.
+ */
+function authorizeDrivePermissions() {
+  const curatedFolder = DriveApp.getFolderById(GALLERY_DRIVE_FOLDER_ID);
+  Logger.log("✅ Curated Gallery folder connected: " + curatedFolder.getName());
+
+  const guestFolder = getGuestUploadFolder_();
+  Logger.log("✅ Guest Uploads folder connected: " + guestFolder.getName() + " (ID: " + guestFolder.getId() + ")");
+
+  // Perform a test file creation to verify write permissions
+  const testFile = guestFolder.createFile("auth_test.txt", "OK");
+  testFile.setTrashed(true);
+  Logger.log("✅ Google Drive Write & Create permissions are fully Authorized in '" + guestFolder.getName() + "'!");
+}
+
+/**
+ * Returns the 'Guest Uploaded Gallery' Google Drive folder.
+ * Automatically searches for it under the same parent directory as 'Wedding Invite Photo Gallery'.
+ */
+function getGuestUploadFolder_() {
+  // 0. Check if configured as a constant at the top of Code.gs
+  if (typeof GUEST_UPLOAD_FOLDER_ID !== "undefined" && GUEST_UPLOAD_FOLDER_ID && GUEST_UPLOAD_FOLDER_ID.trim()) {
+    try {
+      return DriveApp.getFolderById(GUEST_UPLOAD_FOLDER_ID.trim());
+    } catch (e) {
+      Logger.log("Configured GUEST_UPLOAD_FOLDER_ID error: " + e);
+    }
+  }
+
+  // 1. Check if explicitly saved in Script Properties
+  const propId = PropertiesService.getScriptProperties().getProperty("GUEST_UPLOAD_FOLDER_ID");
+  if (propId) {
+    try {
+      return DriveApp.getFolderById(propId);
+    } catch (_) {}
+  }
+
+  // 2. Automatically find folder named 'Guest Uploaded Gallery' under the same parent directory
+  try {
+    const curatedFolderId = PropertiesService.getScriptProperties().getProperty("GALLERY_FOLDER_ID") || GALLERY_DRIVE_FOLDER_ID;
+    const curatedFolder = DriveApp.getFolderById(curatedFolderId);
+    const parents = curatedFolder.getParents();
+    while (parents.hasNext()) {
+      const parent = parents.next();
+      const subfolders = parent.getFoldersByName(GUEST_UPLOAD_FOLDER_NAME);
+      if (subfolders.hasNext()) {
+        const guestFolder = subfolders.next();
+        PropertiesService.getScriptProperties().setProperty("GUEST_UPLOAD_FOLDER_ID", guestFolder.getId());
+        Logger.log("Found 'Guest Uploaded Gallery' under parent: " + guestFolder.getId());
+        return guestFolder;
+      }
+    }
+  } catch (err) {
+    Logger.log("Auto-find guest folder under parent error: " + err);
+  }
+
+  // 3. Search anywhere in Google Drive by exact folder name
+  try {
+    const folders = DriveApp.getFoldersByName(GUEST_UPLOAD_FOLDER_NAME);
+    if (folders.hasNext()) {
+      const guestFolder = folders.next();
+      PropertiesService.getScriptProperties().setProperty("GUEST_UPLOAD_FOLDER_ID", guestFolder.getId());
+      Logger.log("Found 'Guest Uploaded Gallery' via global search: " + guestFolder.getId());
+      return guestFolder;
+    }
+  } catch (err) {
+    Logger.log("Global search guest folder error: " + err);
+  }
+
+  // 4. Fallback: if not found, create 'Guest Uploaded Gallery' next to the curated folder
+  try {
+    const curatedFolderId = PropertiesService.getScriptProperties().getProperty("GALLERY_FOLDER_ID") || GALLERY_DRIVE_FOLDER_ID;
+    const curatedFolder = DriveApp.getFolderById(curatedFolderId);
+    const parents = curatedFolder.getParents();
+    if (parents.hasNext()) {
+      const parent = parents.next();
+      const newFolder = parent.createFolder(GUEST_UPLOAD_FOLDER_NAME);
+      try {
+        newFolder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (_) {}
+      PropertiesService.getScriptProperties().setProperty("GUEST_UPLOAD_FOLDER_ID", newFolder.getId());
+      Logger.log("Created 'Guest Uploaded Gallery': " + newFolder.getId());
+      return newFolder;
+    }
+  } catch (createErr) {
+    Logger.log("Create guest folder error: " + createErr);
+  }
+
+  // 5. Ultimate fallback: curated folder
+  return DriveApp.getFolderById(GALLERY_DRIVE_FOLDER_ID);
+}
+
+/**
+ * Prompt to view or set the 'Guest Uploaded Gallery' Google Drive Folder ID
+ */
+function promptSetGuestUploadFolderId() {
+  const ui = SpreadsheetApp.getUi();
+  const current = PropertiesService.getScriptProperties().getProperty("GUEST_UPLOAD_FOLDER_ID") || "Auto-detected";
+  const res = ui.prompt(
+    "Set 'Guest Uploaded Gallery' Folder",
+    "Paste the Google Drive Folder Link or Folder ID for guest uploads:\n\nCurrent: " + current,
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (res.getSelectedButton() === ui.Button.OK) {
+    const raw = res.getResponseText().trim();
+    if (!raw) return;
+    const folderId = extractDriveFolderId_(raw);
+    PropertiesService.getScriptProperties().setProperty("GUEST_UPLOAD_FOLDER_ID", folderId);
+    ui.alert("✅ Saved! 'Guest Uploaded Gallery' folder set to:\n" + folderId);
+  }
 }
 
 /**
@@ -53,8 +194,8 @@ function promptSetGalleryFolderId() {
   const ui = SpreadsheetApp.getUi();
   const current = PropertiesService.getScriptProperties().getProperty("GALLERY_FOLDER_ID") || GALLERY_DRIVE_FOLDER_ID;
   const res = ui.prompt(
-    "Set Gallery Google Drive Folder",
-    "Paste your Google Drive Folder Link or Folder ID:\n(Make sure folder sharing is set to 'Anyone with the link can view')\n\nCurrent: " + current,
+    "Set 'Wedding Invite' Curated Gallery Google Drive Folder",
+    "Paste your Google Drive Folder Link or Folder ID for the curated invite gallery:\n(Make sure folder sharing is set to 'Anyone with the link can view')\n\nCurrent: " + current,
     ui.ButtonSet.OK_CANCEL
   );
   if (res.getSelectedButton() === ui.Button.OK) {
@@ -62,7 +203,7 @@ function promptSetGalleryFolderId() {
     if (!raw) return;
     const folderId = extractDriveFolderId_(raw);
     PropertiesService.getScriptProperties().setProperty("GALLERY_FOLDER_ID", folderId);
-    ui.alert("✅ Saved! Gallery folder set to:\n" + folderId + "\n\nSyncing photos now...");
+    ui.alert("✅ Saved! Curated gallery folder set to:\n" + folderId + "\n\nSyncing photos now...");
     syncDriveFolderToGallerySheet();
   }
 }
@@ -122,31 +263,20 @@ function syncDriveFolderToGallerySheet_Silent() {
       const mime = file.getMimeType();
       if (mime.startsWith("image/")) {
         const fileId = file.getId();
-        photos.push([
-          `https://lh3.googleusercontent.com/d/${fileId}`,
-          file.getName().replace(/\.[^/.]+$/, ""), // title without extension
-          fileId,
-          new Date(file.getDateCreated()),
-        ]);
+        photos.push({
+          src: `https://lh3.googleusercontent.com/d/${fileId}`,
+          alt: file.getName().replace(/\.[^/.]+$/, ""),
+          id: fileId,
+          created: file.getDateCreated().getTime(),
+        });
       }
     }
 
-    // Sort chronologically
-    photos.sort((a, b) => new Date(a[3]) - new Date(b[3]));
+    // Sort chronologically (oldest to newest)
+    photos.sort((a, b) => a.created - b.created);
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName("GALLERY");
-    if (!sheet) {
-      sheet = ss.insertSheet("GALLERY");
-    }
-    sheet.clear();
-    sheet.appendRow(["IMAGE_URL", "PHOTO_CAPTION", "DRIVE_FILE_ID", "DATE_ADDED"]);
-    sheet.getRange(1, 1, 1, 4).setFontWeight("bold").setBackground("#f0e6dd");
-
-    if (photos.length > 0) {
-      sheet.getRange(2, 1, photos.length, 4).setValues(photos);
-    }
-    SpreadsheetApp.flush();
+    // Synchronize dedicated Google Sheets tab
+    updateGallerySheetWithPhotos_(photos);
     return photos.length;
   } catch (err) {
     Logger.log("Silent sync error: " + err);
@@ -155,9 +285,53 @@ function syncDriveFolderToGallerySheet_Silent() {
 }
 
 /**
+ * Updates the dedicated curated Gallery sheet tab with live photos from Drive.
+ * Keeps row 1 headers intact and shows thumbnail previews via =IMAGE(...) formula.
+ */
+function updateGallerySheetWithPhotos_(photos) {
+  try {
+    const sheet = getOrCreateGallerySheet_();
+    if (!sheet) return;
+
+    const headers = ["IMAGE_URL", "PHOTO_CAPTION", "DRIVE_FILE_ID", "DATE_ADDED", "PREVIEW"];
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#f0e6dd");
+      sheet.setFrozenRows(1);
+    }
+
+    // Clear old data rows (keep row 1 header intact)
+    const lastRow = sheet.getLastRow();
+    const lastCol = Math.max(sheet.getLastColumn(), headers.length);
+    if (lastRow > 1) {
+      sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+    }
+
+    if (photos && photos.length > 0) {
+      const rows = photos.map((p) => {
+        const url = p.src || `https://lh3.googleusercontent.com/d/${p.id}`;
+        const caption = p.alt || "";
+        const fileId = p.id || "";
+        const dateStr = p.created
+          ? Utilities.formatDate(new Date(p.created), "Asia/Kolkata", "dd MMM yyyy, hh:mm a")
+          : Utilities.formatDate(new Date(), "Asia/Kolkata", "dd MMM yyyy, hh:mm a");
+        const formula = `=IMAGE("${url}")`;
+        return [url, caption, fileId, dateStr, formula];
+      });
+      sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+      sheet.setRowHeights(2, rows.length, 60);
+    }
+    SpreadsheetApp.flush();
+  } catch (err) {
+    Logger.log("updateGallerySheetWithPhotos_ error: " + err);
+  }
+}
+
+/**
  * Returns dynamic gallery photos from Google Drive in real-time
  * 1. Reads directly from Google Drive folder (live on the fly)
- * 2. Automatically updates the GALLERY sheet tab in the background
+ * 2. Automatically updates the dedicated curated GALLERY sheet tab
+ * 3. Deletions in Drive are instantly reflected!
  */
 function getGalleryPhotos_() {
   const folderId = PropertiesService.getScriptProperties().getProperty("GALLERY_FOLDER_ID") || GALLERY_DRIVE_FOLDER_ID;
@@ -182,9 +356,14 @@ function getGalleryPhotos_() {
       // Sort oldest to newest
       photos.sort((a, b) => a.created - b.created);
 
-      if (photos.length > 0) {
-        return photos;
+      // Keep Google Sheet gallery tab synchronized live
+      try {
+        updateGallerySheetWithPhotos_(photos);
+      } catch (sheetErr) {
+        Logger.log("Sheet auto-update notice: " + sheetErr);
       }
+
+      return photos;
     } catch (err) {
       Logger.log("Direct folder read error: " + err);
     }
@@ -244,6 +423,13 @@ function doGet(e) {
     return jsonResponse_({ ok: true, photos: photos });
   }
 
+  if (action === "getRsvps") {
+    const rsvps = ["RSVP_BRIDE", "RSVP_GROOM"].flatMap(readRsvpsSheet_).sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    );
+    return jsonResponse_({ rsvps });
+  }
+
   const blessings = BLESSINGS_SHEETS.flatMap(readBlessingsSheet_).sort(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
@@ -267,6 +453,24 @@ function readBlessingsSheet_(sheetName) {
     }));
 }
 
+function readRsvpsSheet_(sheetName) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) return [];
+
+  const [, ...dataRows] = sheet.getDataRange().getValues();
+  return dataRows
+    .filter((row) => row[0])
+    .map((row) => ({
+      name: row[0],
+      side: row[1],
+      attending: row[2],
+      guests: row[3],
+      parkingRequired: row[4],
+      timestamp: row[5],
+      id: row[6] || "",
+    }));
+}
+
 /**
  * Web App POST endpoint:
  * Handles both Website Submissions AND Native Telegram Callback Queries
@@ -284,7 +488,18 @@ function doPost(e) {
       return handleTelegramCallback_(payload.callback_query);
     }
 
-    // CASE 2: Website Submission (Blessing or RSVP)
+    // CASE 2: Guest Media Upload (Photo/Video to Google Drive)
+    if (payload.action === "uploadMedia") {
+      return handleMediaUpload_(payload);
+    }
+
+    // CASE 2.5: Admin Clear Test RSVPs
+    if (payload.action === "clearAllRsvps") {
+      clearAllRsvps_();
+      return jsonResponse_({ ok: true, message: "Cleared all RSVPs from sheets" });
+    }
+
+    // CASE 3: Website Submission (Blessing or RSVP)
     const data = payload;
     const sheetName = (SHEET_BY_TYPE_AND_SIDE[data.type] || {})[data.side];
     if (!sheetName) {
@@ -400,71 +615,145 @@ function sendTelegramRsvpNotification_(data) {
  * Handles native Telegram button clicks (In-app, no browser navigation)
  */
 function handleTelegramCallback_(callbackQuery) {
+  if (!callbackQuery) return HtmlService.createHtmlOutput("OK");
+
   const callbackId = callbackQuery.id;
   const callbackData = callbackQuery.data || "";
   const message = callbackQuery.message;
-  const chatId = message.chat.id;
-  const messageId = message.message_id;
   const fromUser = callbackQuery.from?.first_name || "Admin";
 
   // 1. Immediately acknowledge Telegram callback within 0.2s to prevent 5s timeout!
-  try {
-    sendTelegramApi_("answerCallbackQuery", {
-      callback_query_id: callbackId,
-      text: "🗑️ Deleting from live website...",
-      show_alert: false,
-    });
-  } catch (err) {
-    Logger.log("answerCallbackQuery error: " + err);
+  if (callbackId) {
+    try {
+      sendTelegramApi_("answerCallbackQuery", {
+        callback_query_id: callbackId,
+        text: "🗑️ Deleting from live website...",
+        show_alert: false,
+      });
+    } catch (err) {
+      Logger.log("answerCallbackQuery error: " + err);
+    }
+  }
+
+  if (!message || !message.chat) {
+    return HtmlService.createHtmlOutput("OK");
+  }
+
+  const chatId = message.chat.id;
+  const messageId = message.message_id;
+  const originalText = message.text || "";
+
+  // Guard against double clicks / already removed messages
+  if (originalText.includes("REMOVED & DELETED")) {
+    if (callbackId) {
+      try {
+        sendTelegramApi_("answerCallbackQuery", {
+          callback_query_id: callbackId,
+          text: "⚠️ This item has already been deleted.",
+          show_alert: true,
+        });
+      } catch (_) {}
+    }
+    return HtmlService.createHtmlOutput("OK");
   }
 
   const [action, docId] = callbackData.split(":");
 
   if (action === "del_blessing" || action === "del_rsvp") {
-    // 2. Delete from Firebase Firestore immediately
-    if (docId) {
-      const collectionName = action === "del_blessing" ? "blessings" : "rsvps";
-      const deleteUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/${collectionName}/${docId}?key=${FIREBASE_API_KEY}`;
-      UrlFetchApp.fetch(deleteUrl, { method: "delete", muteHttpExceptions: true });
-    }
-
-    // 3. Delete row from Google Sheet
-    deleteRowFromSheetByDocId_(docId);
-
-    // 4. Edit Telegram message in-place: Strike through text and show REMOVED
-    const originalText = message.text || "";
+    // 2. IMMEDIATELY update Telegram message in-place: Strike through text and REMOVE the delete button
+    // This gives the admin instant visual feedback (<0.5s) and prevents double-clicks!
+    const cleanOriginalText = originalText.replace(/🗑️ Delete from Live Wall/g, "").trim();
     const updatedText =
-      `<s>${escapeHtml_(originalText)}</s>\n\n` +
+      `<s>${escapeHtml_(cleanOriginalText)}</s>\n\n` +
       `❌ <b>REMOVED & DELETED by ${escapeHtml_(fromUser)}</b>\n` +
       `<i>(This wish is now deleted from Firebase and the live website)</i>`;
 
-    sendTelegramApi_("editMessageText", {
-      chat_id: chatId,
-      message_id: messageId,
-      text: updatedText,
-      parse_mode: "HTML",
-    });
-  }
+    try {
+      sendTelegramApi_("editMessageText", {
+        chat_id: chatId,
+        message_id: messageId,
+        text: updatedText,
+        parse_mode: "HTML",
+        reply_markup: { inline_keyboard: [] }, // Remove the delete button immediately
+      });
+    } catch (editErr) {
+      Logger.log("editMessageText error: " + editErr);
+    }
 
-  return jsonResponse_({ ok: true });
-}
-
-function deleteRowFromSheetByDocId_(docId) {
-  if (!docId) return;
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheets = ss.getSheets();
-
-  sheets.forEach((sheet) => {
-    const values = sheet.getDataRange().getValues();
-    for (let i = values.length - 1; i >= 1; i--) {
-      const rowDocId = values[i][5] || values[i][4] || values[i][6];
-      if (String(rowDocId).trim() === String(docId).trim()) {
-        sheet.deleteRow(i + 1);
-        Logger.log(`Deleted row ${i + 1} from sheet ${sheet.getName()}`);
-        break;
+    // 3. Delete from Firebase Firestore immediately
+    if (docId) {
+      try {
+        const collectionName = action === "del_blessing" ? "blessings" : "rsvps";
+        const deleteUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/${collectionName}/${docId}?key=${FIREBASE_API_KEY}`;
+        UrlFetchApp.fetch(deleteUrl, { method: "delete", muteHttpExceptions: true });
+      } catch (fbErr) {
+        Logger.log("Firestore delete error: " + fbErr);
       }
     }
+
+    // 4. Delete row from Google Sheet (targeted to relevant sheets only, fast)
+    try {
+      deleteRowFromSheetByDocId_(docId, action);
+    } catch (sheetErr) {
+      Logger.log("Sheet delete error: " + sheetErr);
+    }
+  }
+
+  return HtmlService.createHtmlOutput("OK");
+}
+
+function deleteRowFromSheetByDocId_(docId, action) {
+  if (!docId) return;
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Target only the relevant sheets instead of looping through the entire workbook
+  const targetSheetNames =
+    action === "del_rsvp"
+      ? ["RSVP_BRIDE", "RSVP_GROOM"]
+      : ["BLESSINGS_BRIDE", "BLESSINGS_GROOM"];
+
+  const searchId = String(docId).trim();
+
+  for (let s = 0; s < targetSheetNames.length; s++) {
+    const sheet = ss.getSheetByName(targetSheetNames[s]);
+    if (!sheet) continue;
+    const values = sheet.getDataRange().getValues();
+
+    // Col G (index 6) for RSVPs, Col F (index 5) for Blessings
+    const targetCol = action === "del_rsvp" ? 6 : 5;
+
+    for (let i = values.length - 1; i >= 1; i--) {
+      const cellVal = String(values[i][targetCol] || "").trim();
+      // Match specific docId column or any cell in the row
+      const isMatch = cellVal === searchId || values[i].some(cell => String(cell).trim() === searchId);
+      if (isMatch) {
+        sheet.deleteRow(i + 1);
+        Logger.log(`Deleted row ${i + 1} from sheet ${sheet.getName()}`);
+        return; // found and deleted, exit early!
+      }
+    }
+  }
+}
+
+function clearAllRsvps_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  ["RSVP_BRIDE", "RSVP_GROOM"].forEach((name) => {
+    const sheet = ss.getSheetByName(name);
+    if (!sheet) return;
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1) {
+      sheet.deleteRows(2, lastRow - 1);
+      Logger.log(`Cleared all RSVPs from ${name}`);
+    }
   });
+}
+
+function clearAllRsvpsMenu() {
+  const ui = SpreadsheetApp.getUi();
+  const resp = ui.alert("Clear All RSVPs", "Are you sure you want to clear all test RSVP entries from the sheets?", ui.ButtonSet.YES_NO);
+  if (resp !== ui.Button.YES) return;
+  clearAllRsvps_();
+  ui.alert("✅ All RSVPs have been cleared from RSVP_BRIDE and RSVP_GROOM.");
 }
 
 function sendTelegramApi_(method, payload) {
@@ -727,6 +1016,187 @@ function getOrCreateSheet_(name, type) {
   }
 
   return sheet;
+}
+
+function getOrCreateGallerySheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheets = ss.getSheets();
+  const targetName = (typeof GALLERY_SHEET_NAME !== "undefined" && GALLERY_SHEET_NAME) ? GALLERY_SHEET_NAME : "GALLERY";
+
+  let sheet = ss.getSheetByName(targetName) ||
+              sheets.find(function(s) { return s.getName().trim().toUpperCase() === targetName.toUpperCase(); }) ||
+              sheets.find(function(s) { return s.getName().trim().toLowerCase().indexOf("gallery") !== -1; });
+
+  if (!sheet) {
+    sheet = ss.insertSheet(targetName);
+    sheet.appendRow(["IMAGE_URL", "PHOTO_CAPTION", "DRIVE_FILE_ID", "DATE_ADDED", "PREVIEW"]);
+    sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f0e6dd");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function getOrCreateGuestUploadsSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheets = ss.getSheets();
+  const targetName = (typeof GUEST_UPLOADS_SHEET_NAME !== "undefined" && GUEST_UPLOADS_SHEET_NAME) ? GUEST_UPLOADS_SHEET_NAME : "GUEST_UPLOADS";
+
+  let sheet = ss.getSheetByName(targetName) ||
+              sheets.find(function(s) { return s.getName().trim().toUpperCase() === targetName.toUpperCase(); }) ||
+              sheets.find(function(s) { return s.getName().trim().toLowerCase().indexOf("guest") !== -1; });
+
+  if (!sheet) {
+    sheet = ss.insertSheet(targetName);
+    sheet.appendRow([
+      "Uploader Name",
+      "Photo Count",
+      "Ceremony / Event",
+      "Date",
+      "Time",
+      "Drive Folder Link",
+      "Batch ID",
+      "Timestamp"
+    ]);
+    sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackground("#e6edf5");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/**
+ * Handles incoming guest photo/video upload from website into Google Drive
+ * Saves exclusively into 'Guest Uploaded Gallery' (keeps curated invite gallery clean!)
+ * Uses uploader's full name in file naming (e.g. Rohan_Gupta_20260907_Haldi_photo1.jpg)
+ * Logs: Uploader Name, Photo Count, Ceremony, Date, Time to 'GUEST_UPLOADS' sheet & Telegram.
+ */
+function handleMediaUpload_(payload) {
+  try {
+    const folder = getGuestUploadFolder_();
+    if (!folder) {
+      return jsonResponse_({ ok: false, error: "Guest Uploaded Gallery folder could not be found or created." });
+    }
+
+    const rawData = String(payload.fileData || "");
+    const rawBase64 = rawData.indexOf(",") !== -1 ? rawData.split(",")[1] : rawData;
+    const mimeType = payload.mimeType || "image/jpeg";
+    const uploaderName = (payload.uploaderName || "Guest").trim();
+    const safeUploader = uploaderName ? uploaderName.replace(/[^a-zA-Z0-9_-]/g, "_") : "Guest";
+    const ceremony = (payload.ceremony || "General").trim();
+    const ceremonyTag = ceremony.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+    const timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyyMMdd_HHmmss");
+    const originalName = (payload.fileName || "photo.jpg").replace(/[^a-zA-Z0-9._-]/g, "_");
+    const finalFileName = safeUploader + "_" + timestampStr + "_" + ceremonyTag + "_" + originalName;
+
+    let fileId = "";
+    let driveViewUrl = "";
+
+    // 1. Create file in 'Guest Uploaded Gallery' Google Drive folder
+    try {
+      const decoded = Utilities.base64Decode(rawBase64);
+      const blob = Utilities.newBlob(decoded, mimeType, finalFileName);
+      const file = folder.createFile(blob);
+      fileId = file.getId();
+
+      try {
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (e) {
+        Logger.log("Set sharing warning: " + e);
+      }
+
+      driveViewUrl = file.getUrl();
+    } catch (driveErr) {
+      Logger.log("DriveApp error: " + driveErr);
+      return jsonResponse_({ ok: false, error: "Drive upload error: " + driveErr.toString() });
+    }
+
+    const fileIndex = typeof payload.fileIndex === "number" ? payload.fileIndex : 0;
+    const totalCount = typeof payload.totalCount === "number" ? payload.totalCount : 1;
+    const batchId = payload.batchId || "";
+    const dateStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd MMM yyyy");
+    const timeStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "hh:mm a");
+
+    // 2. Log batch to dedicated 'GUEST_UPLOADS' sheet (Logged on first file of batch or single file)
+    if (fileIndex === 0) {
+      try {
+        const uploadsSheet = getOrCreateGuestUploadsSheet_();
+        uploadsSheet.appendRow([
+          uploaderName,
+          totalCount,
+          ceremony,
+          dateStr,
+          timeStr,
+          folder.getUrl(),
+          batchId,
+          new Date(),
+        ]);
+      } catch (e) {
+        Logger.log("Guest uploads sheet update error: " + e);
+      }
+    }
+
+    // 3. Send Telegram alert to hosts (Sent on completion of the batch)
+    if (fileIndex === (totalCount - 1) || totalCount <= 1) {
+      try {
+        sendTelegramGuestBatchNotification_({
+          uploaderName: uploaderName,
+          photoCount: totalCount,
+          ceremony: ceremony,
+          dateStr: dateStr,
+          timeStr: timeStr,
+          driveFolderUrl: folder.getUrl(),
+        });
+      } catch (e) {
+        Logger.log("Telegram media notification error: " + e);
+      }
+    }
+
+    return jsonResponse_({
+      ok: true,
+      fileId: fileId,
+      fileUrl: driveViewUrl,
+    });
+  } catch (err) {
+    Logger.log("handleMediaUpload_ error: " + err);
+    return jsonResponse_({ ok: false, error: err.toString() });
+  }
+}
+
+/**
+ * Sends a Telegram notification when guest(s) upload photo(s)
+ * Includes: Uploader Name, Total Photos, Ceremony, Date, Time, and Drive folder link.
+ */
+function sendTelegramGuestBatchNotification_(data) {
+  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.indexOf("YOUR_") !== -1) return;
+
+  const sender = data.uploaderName && data.uploaderName.trim() ? data.uploaderName.trim() : "A Loving Guest";
+  const event = data.ceremony && data.ceremony.trim() ? data.ceremony.trim() : "Wedding";
+  const text =
+    "📸 <b>New Guest Photos Uploaded!</b> 📸\n\n" +
+    "👤 <b>Uploaded By:</b> " + escapeHtml_(sender) + "\n" +
+    "🔢 <b>Total Photos:</b> <b>" + data.photoCount + "</b>\n" +
+    "🎪 <b>Ceremony / Event:</b> " + escapeHtml_(event) + "\n" +
+    "📅 <b>Date:</b> " + data.dateStr + "\n" +
+    "⏰ <b>Time:</b> " + data.timeStr + "\n\n" +
+    "📁 <i>Stored safely in 'Guest Uploaded Gallery'</i>";
+
+  const keyboard = {
+    inline_keyboard: [
+      [
+        {
+          text: "📂 View in Google Drive",
+          url: data.driveFolderUrl || ("https://drive.google.com/drive/folders/" + GALLERY_DRIVE_FOLDER_ID),
+        },
+      ],
+    ],
+  };
+
+  sendTelegramApi_("sendMessage", {
+    chat_id: TELEGRAM_CHAT_ID,
+    text: text,
+    parse_mode: "HTML",
+    reply_markup: keyboard,
+  });
 }
 
 function jsonResponse_(payload) {

@@ -1,0 +1,714 @@
+/* ==========================================================================
+   Gallery Upload Modal Styles
+   ========================================================================== */
+
+.gallery-upload-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 20, 16, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: var(--space-4);
+  animation: uploadFadeIn 0.3s ease-out;
+}
+
+@keyframes uploadFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery-upload-card {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(176, 137, 104, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: uploadScaleUp 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes uploadScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.gallery-upload__close-btn {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-upload__close-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.gallery-upload__close-btn:hover {
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border-color: var(--color-burgundy);
+  transform: rotate(90deg);
+}
+
+.gallery-upload__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.6rem 1.4rem 1.4rem;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(176, 137, 104, 0.45) transparent;
+}
+
+.gallery-upload__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gallery-upload__body::-webkit-scrollbar-thumb {
+  background: rgba(176, 137, 104, 0.45);
+  border-radius: 999px;
+}
+
+/* Header */
+.gallery-upload__header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+  padding: 0 1rem;
+}
+
+.gallery-upload__header .eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-accent);
+  margin-bottom: 0.2rem;
+}
+
+.gallery-upload__title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--color-burgundy);
+  margin: 0 0 0.35rem;
+  line-height: 1.2;
+}
+
+.gallery-upload__divider {
+  display: block;
+  position: relative;
+  width: 4rem;
+  height: 1px;
+  margin: 0.35rem auto 0.5rem;
+  background: linear-gradient(to right, transparent, var(--color-accent) 50%, transparent);
+  opacity: 0.75;
+}
+
+.gallery-upload__subtitle {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Form Fields */
+.gallery-upload__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.gallery-upload__fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.gallery-upload__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.gallery-upload__label {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+}
+
+.gallery-upload__input,
+.gallery-upload__select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.85rem;
+  min-height: 42px;
+  height: 42px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 1.4px solid rgba(176, 137, 104, 0.4);
+  border-radius: 0.6rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.gallery-upload__select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238f3350' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 16px;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+.gallery-upload__input:focus,
+.gallery-upload__select:focus {
+  border-color: var(--color-burgundy);
+  box-shadow: 0 0 0 3px rgba(143, 51, 80, 0.14);
+}
+
+/* Dropzone */
+.gallery-upload__dropzone {
+  border: 2px dashed rgba(176, 137, 104, 0.45);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.gallery-upload__dropzone:hover,
+.gallery-upload__dropzone.is-dragover {
+  border-color: var(--color-burgundy);
+  background: rgba(143, 51, 80, 0.04);
+  transform: translateY(-1px);
+}
+
+.gallery-upload__dropzone-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--color-accent);
+}
+
+.gallery-upload__dropzone-title {
+  font-size: 0.86rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.gallery-upload__dropzone-title strong {
+  color: var(--color-burgundy);
+}
+
+.gallery-upload__dropzone-hint {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.gallery-upload__camera-btn-wrap {
+  margin-top: 0.4rem;
+}
+
+.gallery-upload__camera-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  background: rgba(143, 51, 80, 0.08);
+  border: 1px solid rgba(143, 51, 80, 0.25);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-upload__camera-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.gallery-upload__camera-btn:hover {
+  background: var(--color-burgundy);
+  color: #fff;
+}
+
+/* Selected Files Preview List */
+.gallery-upload__selected-wrap {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.gallery-upload__selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.4rem;
+}
+
+.gallery-upload__clear-all {
+  background: none;
+  border: 0;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.gallery-upload__clear-all:hover {
+  color: var(--color-burgundy);
+}
+
+.gallery-upload__selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-height: 8rem;
+  overflow-y: auto;
+}
+
+.gallery-upload__file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #ffffff;
+  border: 1px solid rgba(176, 137, 104, 0.25);
+  border-radius: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.74rem;
+  max-width: 100%;
+}
+
+.gallery-upload__file-chip-name {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.gallery-upload__file-chip-size {
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+}
+
+.gallery-upload__file-chip-remove {
+  background: none;
+  border: 0;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.1rem;
+}
+
+.gallery-upload__file-chip-remove:hover {
+  color: var(--color-burgundy);
+}
+
+/* Error message */
+.gallery-upload__error-msg {
+  color: #b00020;
+  font-size: 0.76rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* Submit and Buttons */
+.gallery-upload__submit-wrap {
+  margin-top: 0.2rem;
+}
+
+.gallery-upload__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.7rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.gallery-upload__btn--primary {
+  background: var(--color-burgundy);
+  color: #ffffff;
+  border: 1px solid var(--color-burgundy);
+  box-shadow: 0 4px 14px rgba(143, 51, 80, 0.28);
+}
+
+.gallery-upload__btn--primary:hover:not(:disabled) {
+  background: #73273e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(143, 51, 80, 0.38);
+}
+
+.gallery-upload__btn--primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.gallery-upload__btn--outline {
+  background: transparent;
+  color: var(--color-burgundy);
+  border: 1px solid rgba(143, 51, 80, 0.35);
+}
+
+.gallery-upload__btn--outline:hover {
+  background: rgba(143, 51, 80, 0.08);
+}
+
+.gallery-upload__btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.gallery-upload__btn-flaticon {
+  width: 1.15rem;
+  height: 1.15rem;
+  object-fit: contain;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+}
+
+/* ==========================================================================
+   PROGRESS SCREEN (Uploading In-Progress)
+   ========================================================================== */
+
+.gallery-upload__progress-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  gap: 0.85rem;
+}
+
+.gallery-upload__spinner-wrap {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-upload__spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(176, 137, 104, 0.2);
+  border-top-color: var(--color-burgundy);
+  border-right-color: var(--color-accent);
+  animation: uploadSpin 0.9s linear infinite;
+}
+
+@keyframes uploadSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gallery-upload__spinner-icon {
+  font-size: 1.5rem;
+}
+
+.gallery-upload__spinner-flaticon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(143, 51, 80, 0.25));
+}
+
+.gallery-upload__progress-heading {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--color-burgundy);
+  margin: 0;
+}
+
+/* Integrated Live Counter Progress Card */
+.gallery-upload__progress-card {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid rgba(176, 137, 104, 0.3);
+  border-radius: 0.85rem;
+  padding: 0.85rem 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.gallery-upload__progress-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.gallery-upload__counter-text {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.gallery-upload__percent-text {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-burgundy);
+}
+
+.gallery-upload__bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(176, 137, 104, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-upload__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-burgundy));
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.gallery-upload__current-file {
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+  margin: 0.45rem 0 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-upload__current-file span {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Per-File Status List */
+.gallery-upload__file-status-list {
+  width: 100%;
+  max-height: 7.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gallery-upload__file-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.65rem;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 0.45rem;
+  font-size: 0.74rem;
+}
+
+.gallery-upload__file-status-name {
+  color: var(--color-text);
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.gallery-upload__file-status-badge {
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+.gallery-upload__file-status-row.is-done .gallery-upload__file-status-badge {
+  color: #2e7d32;
+}
+
+.gallery-upload__file-status-row.is-uploading .gallery-upload__file-status-badge {
+  color: var(--color-burgundy);
+}
+
+.gallery-upload__file-status-row.is-pending .gallery-upload__file-status-badge {
+  color: var(--color-text-muted);
+}
+
+.gallery-upload__file-status-row.is-error .gallery-upload__file-status-badge {
+  color: #c62828;
+}
+
+.gallery-upload__safety-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+  background: rgba(176, 137, 104, 0.1);
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.gallery-upload__safety-notice svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--color-burgundy);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   SUCCESS & ERROR SCREENS
+   ========================================================================== */
+
+.gallery-upload__success-wrap,
+.gallery-upload__error-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.25rem 0.5rem;
+  gap: 0.75rem;
+}
+
+.gallery-upload__success-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(46, 125, 50, 0.12);
+  color: #2e7d32;
+  font-size: 1.75rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.gallery-upload__error-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(198, 40, 40, 0.12);
+  color: #c62828;
+  font-size: 1.75rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(198, 40, 40, 0.3);
+}
+
+.gallery-upload__success-heading,
+.gallery-upload__error-heading {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--color-burgundy);
+  margin: 0;
+}
+
+.gallery-upload__success-text,
+.gallery-upload__error-text {
+  font-size: 0.84rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  margin: 0;
+  max-width: 24rem;
+}
+
+.gallery-upload__success-actions,
+.gallery-upload__error-actions {
+  display: flex;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+  .gallery-upload-card {
+    max-height: 92vh;
+  }
+
+  .gallery-upload__body {
+    padding: 1.35rem 0.95rem 1.15rem;
+  }
+
+  .gallery-upload__fields-row {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-upload__title {
+    font-size: 1.25rem;
+  }
+
+  .gallery-upload__success-actions,
+  .gallery-upload__error-actions {
+    flex-direction: column;
+  }
+}

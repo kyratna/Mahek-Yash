@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import content from "../content";
 import FitDevanagari from "./FitDevanagari";
 import "./MeetFamilies.css";
@@ -139,6 +140,20 @@ export default function MeetFamilies() {
   const familyData = content.familySection || {};
   const { brideFamily, groomFamily, shloka, quote } = familyData;
 
+  const shlokaLines = useMemo(() => {
+    if (Array.isArray(shloka)) return shloka;
+    const text =
+      shloka || "॥ ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं ।\nभर्गो देवस्य धीमहि धियो यो नः प्रचोदयात् ॥";
+    if (text.includes("\n")) {
+      return text.split("\n").map((l) => l.trim()).filter(Boolean);
+    }
+    if (text.includes(",")) {
+      const parts = text.split(",");
+      return [`${parts[0].trim()},`, parts.slice(1).join(",").trim()];
+    }
+    return [text];
+  }, [shloka]);
+
   // Fallbacks if not fully populated
   const bride = brideFamily || {
     symbol: "॥ मंगलम् ॥",
@@ -163,7 +178,7 @@ export default function MeetFamilies() {
     familyTitle: "THE GUPTA FAMILY",
     location: "Moradabad · पीतल नगरी · The City of Brass",
     grandparents: [
-      content.coupleProfiles?.groom?.grandparentage?.person1 || "Late Shri Niwas Gupta",
+      content.coupleProfiles?.groom?.grandparentage?.person1 || "Late Shri Shri Niwas Gupta",
       content.coupleProfiles?.groom?.grandparentage?.person2 || "Late Smt. Rama Gupta",
     ],
     invitePhrase1: "with their family and loved ones",
@@ -172,7 +187,7 @@ export default function MeetFamilies() {
       content.coupleProfiles?.groom?.parentage?.person2 || "Shri Sandeep Kumar Gupta",
     ],
     invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
-    name: content.couple?.partner2 || "Yash",
+    name: content.couple?.partner2 || "Yashoratna",
     relation: "THEIR BELOVED SON",
   };
 
@@ -188,15 +203,11 @@ export default function MeetFamilies() {
         <div className="family-section__header">
           <FitDevanagari
             className="family-section__shloka"
-            lines={
-              Array.isArray(shloka)
-                ? shloka
-                : [shloka || "॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥"]
-            }
+            lines={shlokaLines}
           />
           <p className="family-section__quote">
             {quote ||
-              '"You alone are my mother and my father, my family and my friend — You alone are all of these to me."'}
+              '"We meditate on the transcendent glory of the Divine Sun, creator of all realms — may that divine brilliance inspire and illuminate our path."'}
           </p>
         </div>
 

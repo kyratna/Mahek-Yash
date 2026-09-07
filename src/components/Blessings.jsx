@@ -310,7 +310,7 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
                   loading="lazy"
                 />
                 <p className="placeholder-title">Your Blessing Here</p>
-                <span className="placeholder-subtext">Click to leave a warm wish for Mahek &amp; Yash</span>
+                <span className="placeholder-subtext">Click to leave a warm wish for Mahek &amp; Yashoratna</span>
               </div>
             </a>
           ))}

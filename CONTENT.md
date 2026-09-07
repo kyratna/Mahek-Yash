@@ -129,18 +129,32 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 
 ## 7. Blessings & RSVP Section Text
 
-- Subtext (currently "Send blessings and RSVP"): `[ ]`
+- Subtext: `[ Send blessings, RSVP, and share your photos ]`
 
-## 8. Gallery Photos (Dynamic Google Drive Integration)
+## 8. Gallery Photos & Guest Uploads Architecture
 
-Gallery photos are dynamically loaded from Google Drive or `src/content.js`:
+The gallery system uses a strictly separated two-tier Google Drive & Google Sheets architecture:
 
-- **Option A (Recommended — Live Google Drive Folder)**:
-  - Create a folder in Google Drive and set sharing to **"Anyone with the link can view"**.
-  - In Google Sheet menu: click **`💌 Wedding Admin` → `🖼️ Set Gallery Google Drive Folder ID`** and paste your folder link/ID.
-  - Uploading photos to your Drive folder updates the live website automatically without editing code!
-- **Option B (Static Files)**:
-  - Add image files to `public/images/gallery/` and list them in `content.gallery` inside `src/content.js`.
+### A. Curated Host Gallery (Live Website Stream)
+- **Drive Folder Name**: `Wedding Invite Photo Gallery`
+- **Folder Link**: `https://drive.google.com/drive/folders/1n0l1dZEb3eQE9qn9CZyZVhLZ9wC6fqtz?usp=sharing`
+- **Folder ID**: `1n0l1dZEb3eQE9qn9CZyZVhLZ9wC6fqtz`
+- **Google Sheets Tab**: `GALLERY` (Columns: `IMAGE_URL | PHOTO_CAPTION | DRIVE_FILE_ID | DATE_ADDED | PREVIEW`)
+- **Real-Time Sync**:
+  - Uploading photos to this Drive folder populates the `GALLERY` tab with live `=IMAGE(...)` 60px preview thumbnails and streams directly to the website gallery.
+  - Deleting a photo from the Drive folder automatically removes it from the `GALLERY` sheet and instantly purges it from the live website without stale caching.
+
+### B. Isolated Guest Uploads
+- **Drive Folder Name**: `Guest Uploaded Gallery` (Sibling folder created automatically in Drive)
+- **Website Trigger**: Centered button **`📸 Upload Photos & Videos`** under the gallery carousel.
+- **Gallery Subtext**: Positioned directly above the upload button: *"Share your captured memories with us"*.
+- **Guest Upload Modal Form**:
+  - Ceremony Selection (e.g. *Haldi*, *Engagement & Sangeet*, *Godh Bharai & Sagai*, *Baraat & Ghurchari*, *Jaimaal*, *Phere*, *Other*).
+  - Guest Name Input (e.g. placeholder: `Rahul & Sunita Gupta`).
+  - Batch upload progress bar with live file index, percentage, and checkmarks (`✓`).
+- **File Naming Format**: `UploaderName_timestamp_ceremony_originalName` (e.g., `Rohan_Gupta_20260907_Haldi_photo1.jpg`).
+- **Google Sheets Tab**: `GUEST_UPLOADS` (Columns: `BATCH_ID | FILE_NAME | UPLOADER_NAME | CEREMONY | TOTAL_COUNT | FILE_INDEX | UPLOAD_DATE | UPLOAD_TIME | DRIVE_FILE_ID | DRIVE_FILE_URL | STATUS`).
+- **Telegram Notifications**: Consolidated batch alert dispatched upon batch completion to the hosts' Telegram group.
 
 ---
 
@@ -161,7 +175,7 @@ Gallery photos are dynamically loaded from Google Drive or `src/content.js`:
 - **Google Spreadsheet**: **'Wedding Admin System'**
 - **Google Apps Script Project**: **'WeddingAdminScript'**
 - **Web App URL**:
-  `https://script.google.com/macros/s/AKfycbxpqRj70zcCtJyCvzJVunfHMzmlyj1AyhAGhUw5yNDzJ8GWT7wq-plVgzgMHhrXHAG08w/exec`
+  `https://script.google.com/macros/s/AKfycbw1uFiMAmvqL0L16zuvRrlnwO1E8ERHGyUCTLd_uySpWYbG3DU0DHxsaURlJyKqpCzAHQ/exec`
 - **Telegram Moderation Bot**:
   - Connected Telegram Group: `MKY Wedd: Blessings Wall and RSVP`
   - Real-time alerts with native `🗑️ Delete from Live Wall` button.

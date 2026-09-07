@@ -1,10 +1,72 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import content from "../content";
-import { addBlessingToFirestore, addRSVPToFirestore, isFirebaseConfigured } from "../lib/firebase";
+import { addBlessingToFirestore, addRSVPToFirestore, isFirebaseConfigured, uploadGuestMedia } from "../lib/firebase";
 import ConfettiBurst from "./ConfettiBurst";
+import cameraIcon from "../assets/flaticons/camera-711191.png";
+import rsvpIcon from "../assets/flaticons/rsvp-13430453.png";
+import blessingsIcon from "../assets/flaticons/blessings-18060799.png";
 import "./BlessingsRSVP.css";
 
 const SIDES = ["Bride Side", "Groom Side"];
+
+const CEREMONIES = [
+  "General / All Events",
+  "Haldi (Dec 5, 12:30 PM)",
+  "Engagement & Sangeet (Dec 5, 5:00 PM)",
+  "Godh Bharai & Sagai (Dec 5, 7:00 PM)",
+  "Baraat & Jaimaal (Dec 6, 10:30 AM)",
+  "Phere (Dec 6, 5:00 PM)",
+];
+
+function compressImageIfNeeded(file, maxDimension = 1800, quality = 0.86) {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith("image/") || file.type === "image/gif") {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      };
+      img.onerror = () => resolve(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 function submitToSheet(appsScriptUrl, payload) {
   return fetch(appsScriptUrl, {
@@ -15,20 +77,21 @@ function submitToSheet(appsScriptUrl, payload) {
 }
 
 function buildWhatsAppUrl(data, whatsappNumber) {
+  if (!data) return "https://wa.me/";
   const { partner1, partner2 } = content.couple;
   const lines = [
     `RSVP for ${partner1} & ${partner2}'s wedding:`,
-    `Name: ${data.name}`,
-    `Side: ${data.side}`,
+    `Name: ${data.name || ""}`,
+    `Side: ${data.side || ""}`,
     `Attending: ${data.attending === "Yes" ? "Joyfully accept" : "Regretfully decline"}`,
-    `Guests: ${data.guests}`,
-    `Parking Required: ${data.parkingRequired}`,
+    `Guests: ${data.guests || 1}`,
+    `Parking Required: ${data.parkingRequired || "No"}`,
   ];
-  const number = whatsappNumber ? whatsappNumber.replace(/\D/g, "") : "";
+  const number = whatsappNumber ? String(whatsappNumber).replace(/\D/g, "") : "";
   return `https://wa.me/${number}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
-function SendingAnimation({ message = "Delivering your blessings to Mahek & Yash..." }) {
+function SendingAnimation({ message = "Delivering your blessings to Mahek & Yashoratna..." }) {
   return (
     <div className="sending-animation" aria-live="polite">
       <div className="sending-animation__visual">
@@ -64,11 +127,11 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
   const [submittedName, setSubmittedName] = useState("");
 
   // Sync initial props if they change
-  useState(() => {
+  useEffect(() => {
     if (initialName && form.name !== initialName) {
       setForm((f) => ({ ...f, name: initialName, side: initialSide || f.side }));
     }
-  });
+  }, [initialName, initialSide]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -113,7 +176,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
   };
 
   if (status === "submitting") {
-    return <SendingAnimation message="Delivering your heartfelt blessings to Mahek & Yash…" />;
+    return <SendingAnimation message="Delivering your heartfelt blessings to Mahek & Yashoratna…" />;
   }
 
   if (status === "success") {
@@ -124,7 +187,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
         </div>
         <h3 className="form-status__title">Blessings Delivered!</h3>
         <p className="form-status__desc">
-          Thank you{submittedName ? `, ${submittedName}` : ""}! Your warm wishes and blessings have reached Mahek &amp; Yash.
+          Thank you{submittedName ? `, ${submittedName}` : ""}! Your warm wishes and blessings have reached Mahek &amp; Yashoratna.
         </p>
         <div className="form-status__actions">
           <button
@@ -156,7 +219,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
         <input
           type="text"
           required
-          placeholder="e.g. Rahul & Sunita Sharma"
+          placeholder="e.g. Rahul & Sunita Gupta"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -207,7 +270,7 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
       )}
 
       <button type="submit" className="button rsvp-submit-btn" disabled={status === "submitting"}>
-        <span className="rsvp-submit-btn__icon">✨</span> Send Blessing
+        <img src={blessingsIcon} alt="" className="rsvp-btn-flaticon" /> Send Blessings
       </button>
     </form>
   );
@@ -225,11 +288,11 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate, onSwitchToBlessi
   const [submittedData, setSubmittedData] = useState(null);
 
   // Sync initial props if they change
-  useState(() => {
+  useEffect(() => {
     if (initialName && form.name !== initialName) {
       setForm((f) => ({ ...f, name: initialName, side: initialSide || f.side }));
     }
-  });
+  }, [initialName, initialSide]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -272,7 +335,7 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate, onSwitchToBlessi
   };
 
   if (status === "submitting") {
-    return <SendingAnimation message="Sending your RSVP confirmation to Mahek & Yash…" />;
+    return <SendingAnimation message="Sending your RSVP confirmation to Mahek & Yashoratna…" />;
   }
 
   if (status === "success") {
@@ -293,14 +356,14 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate, onSwitchToBlessi
           >
             <span style={{ marginRight: "0.35rem" }}>✨</span> Send Blessings
           </button>
-          {whatsappNumber && (
+          {whatsappNumber !== false && (
             <a
               className="button form-status__btn form-status__btn--secondary"
               href={buildWhatsAppUrl(submittedData, whatsappNumber)}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Share via WhatsApp
+              <span style={{ marginRight: "0.35rem" }}>💬</span> Share via WhatsApp
             </a>
           )}
           <button
@@ -322,7 +385,7 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate, onSwitchToBlessi
         <input
           type="text"
           required
-          placeholder="e.g. Rahul Sharma"
+          placeholder="e.g. Rahul Gupta"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -397,7 +460,349 @@ function RsvpForm({ appsScriptUrl, whatsappNumber, onCelebrate, onSwitchToBlessi
       )}
 
       <button type="submit" className="button rsvp-submit-btn" disabled={status === "submitting"}>
-        <span className="rsvp-submit-btn__icon">💌</span> Send RSVP
+        <img src={rsvpIcon} alt="" className="rsvp-btn-flaticon" /> Send RSVP
+      </button>
+    </form>
+  );
+}
+
+function MediaUploadForm({
+  appsScriptUrl,
+  initialName = "",
+  initialSide = SIDES[0],
+  onCelebrate,
+  onSwitchToBlessings,
+}) {
+  const [uploaderName, setUploaderName] = useState(initialName);
+  const [ceremony, setCeremony] = useState(CEREMONIES[0]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState("idle"); // 'idle' | 'uploading' | 'success' | 'error'
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const [fileProgresses, setFileProgresses] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+
+  const handleFilesAdded = (filesList) => {
+    if (!filesList || filesList.length === 0) return;
+    const newFiles = Array.from(filesList).filter(
+      (f) => f.type.startsWith("image/") || f.type.startsWith("video/")
+    );
+    setSelectedFiles((prev) => [...prev, ...newFiles]);
+  };
+
+  const removeFile = (indexToRemove) => {
+    setSelectedFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFilesAdded(e.dataTransfer.files);
+    }
+  };
+
+  const startUpload = async (e) => {
+    e.preventDefault();
+    if (selectedFiles.length === 0) return;
+
+    const targetUrl = appsScriptUrl || content.integrations?.appsScriptUrl || content.appsScriptUrl;
+    if (!targetUrl) {
+      setErrorMessage("Apps Script integration URL is not configured.");
+      setUploadStatus("error");
+      return;
+    }
+
+    setUploadStatus("uploading");
+    setErrorMessage("");
+
+    const initialProgresses = {};
+    selectedFiles.forEach((_, idx) => {
+      initialProgresses[idx] = "pending";
+    });
+    setFileProgresses(initialProgresses);
+
+    let successCount = 0;
+    let lastErrorMsg = "";
+    const batchId = "batch_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      setCurrentFileIndex(i);
+      setFileProgresses((prev) => ({ ...prev, [i]: "uploading" }));
+
+      const file = selectedFiles[i];
+      try {
+        const base64Data = await compressImageIfNeeded(file);
+
+        await uploadGuestMedia({
+          file,
+          base64Data,
+          uploaderName: uploaderName.trim() || "Guest",
+          ceremony,
+          batchId,
+          totalCount: selectedFiles.length,
+          fileIndex: i,
+          appsScriptUrl: targetUrl,
+        });
+
+        setFileProgresses((prev) => ({ ...prev, [i]: "done" }));
+        successCount++;
+      } catch (err) {
+        console.error("Upload error for file", file.name, err);
+        lastErrorMsg = err.message || "";
+        setFileProgresses((prev) => ({ ...prev, [i]: "error" }));
+      }
+    }
+
+    if (successCount > 0) {
+      setUploadStatus("success");
+      if (onCelebrate) onCelebrate();
+    } else {
+      setUploadStatus("error");
+      setErrorMessage(lastErrorMsg || "Could not upload photos. Please check your connection and try again.");
+    }
+  };
+
+  const totalFiles = selectedFiles.length;
+  const completedFiles = Object.values(fileProgresses).filter((s) => s === "done").length;
+  const overallProgress =
+    totalFiles > 0
+      ? Math.round(((completedFiles + (uploadStatus === "uploading" ? 0.4 : 0)) / totalFiles) * 100)
+      : 0;
+  const currentFileName = selectedFiles[currentFileIndex]?.name || "";
+
+  if (uploadStatus === "uploading") {
+    return (
+      <div className="media-upload-progress">
+        <div className="gallery-upload__spinner-wrap" style={{ margin: "0 auto 0.5rem" }}>
+          <div className="gallery-upload__spinner" />
+          <span className="gallery-upload__spinner-icon">📸</span>
+        </div>
+        <h4 className="media-upload-title" style={{ textAlign: "center", color: "var(--color-burgundy)", margin: "0 0 0.65rem" }}>
+          Uploading Your Memories...
+        </h4>
+
+        <div className="gallery-upload__progress-card">
+          <div className="gallery-upload__progress-card-top">
+            <span className="gallery-upload__counter-text">
+              📸 Uploading photo {currentFileIndex + 1} of {totalFiles}
+            </span>
+            <span className="gallery-upload__percent-text">
+              {Math.min(overallProgress, 99)}%
+            </span>
+          </div>
+
+          <div className="gallery-upload__bar-track">
+            <div
+              className="gallery-upload__bar-fill"
+              style={{ width: `${Math.min(overallProgress, 99)}%` }}
+            />
+          </div>
+
+          <p className="gallery-upload__current-file">
+            <span>Current:</span> {currentFileName}
+          </p>
+        </div>
+
+        <div className="gallery-upload__file-status-list">
+          {selectedFiles.map((file, idx) => {
+            const status = fileProgresses[idx] || "pending";
+            return (
+              <div key={idx} className={`gallery-upload__file-status-row is-${status}`}>
+                <span className="gallery-upload__file-status-name">{file.name}</span>
+                <span className="gallery-upload__file-status-badge">
+                  {status === "done" && "✓ Uploaded"}
+                  {status === "uploading" && "⏳ Uploading..."}
+                  {status === "pending" && "Queued"}
+                  {status === "error" && "✕ Failed"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="gallery-upload__safety-notice">
+          <span>⚠️ Please keep this page open until all files finish uploading.</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (uploadStatus === "success") {
+    return (
+      <div className="blessings-rsvp-success">
+        <div className="success-icon" style={{ background: "rgba(46, 125, 50, 0.12)", color: "#2e7d32" }}>
+          📸
+        </div>
+        <h3 className="success-title">Memories Uploaded!</h3>
+        <p className="success-text">
+          Thank you so much! Your photos &amp; videos have been safely saved to Yashoratna &amp; Mahek&apos;s wedding album.
+        </p>
+
+        <div className="success-actions">
+          <button
+            type="button"
+            className="button button--outline"
+            onClick={() => {
+              setSelectedFiles([]);
+              setUploadStatus("idle");
+            }}
+          >
+            Upload More Photos
+          </button>
+          <button
+            type="button"
+            className="button button--secondary"
+            onClick={() => onSwitchToBlessings(uploaderName, initialSide)}
+          >
+            ✨ Send a Blessing
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={startUpload} className="rsvp-form-fields media-upload-form">
+      <label>
+        <span className="rsvp-form-fields__label-text">Your Name</span>
+        <input
+          type="text"
+          placeholder="e.g. Rahul & Sunita Gupta"
+          value={uploaderName}
+          onChange={(e) => setUploaderName(e.target.value)}
+          maxLength={60}
+        />
+      </label>
+
+      <label>
+        <span className="rsvp-form-fields__label-text">Ceremony / Event</span>
+        <select value={ceremony} onChange={(e) => setCeremony(e.target.value)}>
+          {CEREMONIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {/* Dropzone */}
+      <div
+        className={`gallery-upload__dropzone ${isDragOver ? "is-dragover" : ""}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+        }}
+        aria-label="Click or drag and drop photos here"
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          style={{ display: "none" }}
+          onChange={(e) => handleFilesAdded(e.target.files)}
+        />
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style={{ display: "none" }}
+          onChange={(e) => handleFilesAdded(e.target.files)}
+        />
+
+        <div className="gallery-upload__dropzone-icon">
+          <img src={cameraIcon} alt="" className="gallery-upload__dropzone-flaticon" />
+        </div>
+        <p className="gallery-upload__dropzone-title">
+          <strong>Click to select photos</strong> or drag &amp; drop here
+        </p>
+        <p className="gallery-upload__dropzone-hint">
+          Supports JPG, PNG, HEIC, WEBP, and MP4 videos
+        </p>
+
+        {/* Mobile Camera Button */}
+        <div className="gallery-upload__camera-btn-wrap" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="gallery-upload__camera-btn"
+            onClick={() => cameraInputRef.current?.click()}
+          >
+            <img src={cameraIcon} alt="" className="gallery-upload__camera-btn-flaticon" />
+            Take Photo
+          </button>
+        </div>
+      </div>
+
+      {/* Selected Files Preview List */}
+      {selectedFiles.length > 0 && (
+        <div className="gallery-upload__selected-wrap">
+          <div className="gallery-upload__selected-header">
+            <span>Selected Files ({selectedFiles.length})</span>
+            <button
+              type="button"
+              className="gallery-upload__clear-all"
+              onClick={() => setSelectedFiles([])}
+            >
+              Clear all
+            </button>
+          </div>
+          <div className="gallery-upload__selected-list">
+            {selectedFiles.map((file, idx) => (
+              <div key={idx} className="gallery-upload__file-chip">
+                <span className="gallery-upload__file-chip-name">{file.name}</span>
+                <span className="gallery-upload__file-chip-size">
+                  {formatFileSize(file.size)}
+                </span>
+                <button
+                  type="button"
+                  className="gallery-upload__file-chip-remove"
+                  onClick={() => removeFile(idx)}
+                  aria-label={`Remove ${file.name}`}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {errorMessage && <p className="form-status form-status--error">{errorMessage}</p>}
+
+      <button
+        type="button"
+        className="button rsvp-submit-btn"
+        onClick={(e) => {
+          if (selectedFiles.length === 0) {
+            fileInputRef.current?.click();
+          } else {
+            startUpload(e);
+          }
+        }}
+      >
+        <img src={cameraIcon} alt="" className="rsvp-btn-flaticon" />
+        {selectedFiles.length > 0
+          ? `Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? "Photo/Video" : "Photos/Videos"} →`
+          : "Select Photos & Videos to Upload"}
       </button>
     </form>
   );
@@ -423,6 +828,12 @@ export default function BlessingsRSVP({ onBlessingSent }) {
     setActiveTab("rsvp");
   };
 
+  const handleSwitchToPhotos = (name, side) => {
+    if (name) setPrefilledName(name);
+    if (side) setPrefilledSide(side);
+    setActiveTab("photos");
+  };
+
   return (
     <section id="blessings-rsvp" className="section section--surface">
       <ConfettiBurst trigger={celebrateTrigger} />
@@ -442,7 +853,7 @@ export default function BlessingsRSVP({ onBlessingSent }) {
 
           <div className="blessings-rsvp-card__content">
             {/* Segmented Royal Tabs */}
-            <div className="rsvp-tabs__list" role="tablist" aria-label="Blessings and RSVP options">
+            <div className="rsvp-tabs__list" role="tablist" aria-label="Blessings, RSVP, and Photo upload options">
               <button
                 type="button"
                 role="tab"
@@ -450,8 +861,8 @@ export default function BlessingsRSVP({ onBlessingSent }) {
                 className={`rsvp-tabs__tab ${activeTab === "blessings" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("blessings")}
               >
-                <span className="rsvp-tabs__tab-icon">✨</span>
-                <span>Send Blessings</span>
+                <img src={blessingsIcon} alt="" className="rsvp-tabs__tab-flaticon" />
+                <span>Blessings</span>
               </button>
               <button
                 type="button"
@@ -460,32 +871,54 @@ export default function BlessingsRSVP({ onBlessingSent }) {
                 className={`rsvp-tabs__tab ${activeTab === "rsvp" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("rsvp")}
               >
-                <span className="rsvp-tabs__tab-icon">💌</span>
+                <img src={rsvpIcon} alt="" className="rsvp-tabs__tab-flaticon" />
                 <span>RSVP</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === "photos"}
+                className={`rsvp-tabs__tab ${activeTab === "photos" ? "is-active" : ""}`}
+                onClick={() => setActiveTab("photos")}
+              >
+                <img src={cameraIcon} alt="" className="rsvp-tabs__tab-flaticon" />
+                <span>Upload Photos</span>
               </button>
             </div>
 
             {/* Panel Area */}
             <div className="rsvp-tabs__panel">
-              {activeTab === "blessings" ? (
+              {activeTab === "blessings" && (
                 <BlessingForm
                   key={`blessing-${prefilledName}`}
                   initialName={prefilledName}
                   initialSide={prefilledSide}
-                  appsScriptUrl={integrations?.googleSheets?.appsScriptUrl}
+                  appsScriptUrl={integrations?.appsScriptUrl || integrations?.googleSheets?.appsScriptUrl}
                   onBlessingSent={onBlessingSent}
                   onCelebrate={celebrate}
                   onSwitchToRsvp={handleSwitchToRsvp}
                 />
-              ) : (
+              )}
+              {activeTab === "rsvp" && (
                 <RsvpForm
                   key={`rsvp-${prefilledName}`}
                   initialName={prefilledName}
                   initialSide={prefilledSide}
-                  appsScriptUrl={integrations?.googleSheets?.appsScriptUrl}
-                  whatsappNumber={integrations?.whatsapp?.rsvpNumber}
+                  appsScriptUrl={integrations?.appsScriptUrl || integrations?.googleSheets?.appsScriptUrl}
+                  whatsappNumber={integrations?.whatsappNumber || integrations?.whatsapp?.rsvpNumber || ""}
                   onCelebrate={celebrate}
                   onSwitchToBlessings={handleSwitchToBlessings}
+                />
+              )}
+              {activeTab === "photos" && (
+                <MediaUploadForm
+                  key={`upload-${prefilledName}`}
+                  initialName={prefilledName}
+                  initialSide={prefilledSide}
+                  appsScriptUrl={integrations?.appsScriptUrl || integrations?.googleSheets?.appsScriptUrl}
+                  onCelebrate={celebrate}
+                  onSwitchToBlessings={handleSwitchToBlessings}
+                  onSwitchToRsvp={handleSwitchToRsvp}
                 />
               )}
             </div>

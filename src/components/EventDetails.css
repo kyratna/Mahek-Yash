@@ -14,9 +14,10 @@
 .events-grid {
   --grid-gap: clamp(0.75rem, 1.6vh, 0.95rem);
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--grid-gap);
   max-width: 42rem;
+  width: 100%;
   margin: 0 auto clamp(1rem, 2.2vh, 1.5rem);
   box-sizing: border-box;
 }
@@ -79,6 +80,9 @@
   perspective: 1000px;
   min-height: 145px;
   height: 145px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -372,12 +376,15 @@
 
   .events-grid {
     --grid-gap: 0.6rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--grid-gap);
     margin-bottom: var(--space-3);
+    width: 100%;
   }
 
   .event-flip-card {
-    min-height: 162px;
+    min-width: 0;
+    min-height: 175px;
     height: 100%;
   }
 
@@ -391,8 +398,10 @@
   }
 
   .event-flip-card__name {
-    font-size: 1.05rem;
+    font-size: clamp(0.96rem, 2.5vw, 1.05rem);
     margin-bottom: 0.15rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .event-flip-card__divider {
@@ -455,10 +464,12 @@
 @media (max-width: 380px) {
   .events-grid {
     --grid-gap: 0.45rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .event-flip-card {
-    min-height: 168px;
+    min-width: 0;
+    min-height: 178px;
     height: 100%;
   }
 

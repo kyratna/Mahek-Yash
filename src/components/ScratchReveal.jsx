@@ -13,7 +13,6 @@ export default function ScratchReveal({
   label = "Scratch to reveal",
   onReveal,
   forceRevealed = false,
-  unrevealedSizes,
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -84,10 +83,10 @@ export default function ScratchReveal({
       ctx.strokeRect(8, 8, logicalWidth - 16, logicalHeight - 16);
 
       const isCompact = logicalWidth < 380;
-      const targetLogoSize = unrevealedSizes?.logoSize ?? (isCompact ? 68 : 74);
-      const headingSize = unrevealedSizes?.headingSize ?? 17;
-      const labelSize = unrevealedSizes?.labelSize ?? 17;
-      const spacing = unrevealedSizes?.spacing ?? (isCompact ? 13 : 15);
+      const targetLogoSize = isCompact ? 68 : 74;
+      const headingSize = 17;
+      const labelSize = 17;
+      const spacing = isCompact ? 13 : 15;
 
       const logoX = (logicalWidth - targetLogoSize) / 2;
       const totalBlockHeight = targetLogoSize + spacing + headingSize + (labelSize * 1.3);
@@ -227,7 +226,7 @@ export default function ScratchReveal({
       canvas.removeEventListener("touchmove", handleMove);
       canvas.removeEventListener("touchend", handleUp);
     };
-  }, [isActuallyRevealed, logoSrc, heading, label, unrevealedSizes]);
+  }, [isActuallyRevealed, logoSrc, heading, label]);
 
   return (
     <div

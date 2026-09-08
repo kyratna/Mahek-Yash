@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import content from "../content";
 import Countdown from "./Countdown";
 import ScratchReveal from "./ScratchReveal";
-import ScratchSizeTuner from "./ScratchSizeTuner";
 import ConfettiBurst from "./ConfettiBurst";
 import "./Invitation.css";
 
@@ -10,38 +9,6 @@ export default function Invitation({ isDateRevealed = false, onDateReveal }) {
   const { couple, wedding, hero, coupleProfiles } = content;
   const { bride, groom } = coupleProfiles;
   const [revealed, setRevealed] = useState(isDateRevealed);
-
-  const [headingSize, setHeadingSize] = useState(() => {
-    const saved = localStorage.getItem("saveTheDateHeadingSize");
-    return saved ? parseInt(saved, 10) : 17;
-  });
-
-  const [labelSize, setLabelSize] = useState(() => {
-    const saved = localStorage.getItem("saveTheDateLabelSize");
-    return saved ? parseInt(saved, 10) : 17;
-  });
-
-  function handleHeadingSizeChange(size) {
-    setHeadingSize(size);
-    localStorage.setItem("saveTheDateHeadingSize", String(size));
-  }
-
-  function handleLabelSizeChange(size) {
-    setLabelSize(size);
-    localStorage.setItem("saveTheDateLabelSize", String(size));
-  }
-
-  function handleResetSizes() {
-    setHeadingSize(17);
-    setLabelSize(17);
-    localStorage.removeItem("saveTheDateHeadingSize");
-    localStorage.removeItem("saveTheDateLabelSize");
-  }
-
-  const unrevealedSizes = useMemo(
-    () => ({ headingSize, labelSize }),
-    [headingSize, labelSize]
-  );
 
   function handleReveal() {
     setRevealed(true);
@@ -87,7 +54,6 @@ export default function Invitation({ isDateRevealed = false, onDateReveal }) {
           <ScratchReveal
             forceRevealed={isDateRevealed}
             onReveal={handleReveal}
-            unrevealedSizes={unrevealedSizes}
           >
             <div className="invitation__reveal-content">
               <p className="invitation__date invitation__date--reveal">
@@ -96,16 +62,6 @@ export default function Invitation({ isDateRevealed = false, onDateReveal }) {
               <Countdown targetDate={wedding.dateTimeISO} />
             </div>
           </ScratchReveal>
-
-          {!revealed && !isDateRevealed && (
-            <ScratchSizeTuner
-              headingSize={headingSize}
-              labelSize={labelSize}
-              onHeadingSizeChange={handleHeadingSizeChange}
-              onLabelSizeChange={handleLabelSizeChange}
-              onReset={handleResetSizes}
-            />
-          )}
         </div>
       </div>
       <ConfettiBurst trigger={revealed} />

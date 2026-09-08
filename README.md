@@ -129,7 +129,6 @@ src/
     ShreeGanesh.jsx         ← Sacred Ganesha invocation with golden rose glow & Sanskrit shlokas
     Invitation.jsx          ← Dedicated invitation screen with parents lineage
     ScratchReveal.jsx       ← Monogrammed scratch-to-reveal card with live countdown
-    ScratchSizeTuner.jsx    ← Live interactive font size tuner with real-time sliders & presets
     MeetFamilies.jsx        ← Royal Indian family lineage cards with Sanskrit shloka
     EventsGrid.jsx          ← 2-column, 3-row 3D flip cards with perimeter countdown timer
     VenueModal.jsx          ← Venue travel directions popup with QR code & transit options

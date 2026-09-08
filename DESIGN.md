@@ -140,21 +140,32 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - Deep crimson paper-grain texture with fine diagonal fibers and speckles.
   - Delicate gold inner border frame.
   - **Couple's Initials Monogram Logo** (`public/images/monogram/monogramCircularWithoutBg.png`) rendered in the center (`78px` × `78px`).
-  - **"SAVE THE DATE"** title (`10px`, `Playfair Display` 600) and **"Scratch to reveal"** subtitle (`12px`, `Cormorant Garamond` italic 400) below the logo.
+  - **"SAVE THE DATE"** title (`17px`, `Playfair Display` 600 with `0.14em` letter-spacing) and **"Scratch to reveal"** subtitle (`17px`, `Cormorant Garamond` italic 400) below the logo.
   - **Scratch Physics**: Scratching clears both the paper texture and monogram logo with organic debris particle flakes falling away.
+- **Interactive Font Size Tuner (`ScratchSizeTuner.jsx`)**:
+  - Mounted directly below the scratch card on the invitation view.
+  - Luxury collapsible panel toggleable via `⚙️ Adjust Font Size` button.
+  - Independent live sliders for **SAVE THE DATE** (`10px`–`28px`) and **Scratch to reveal** (`10px`–`28px`).
+  - Quick presets: *17px Both (Default)*, *Compact (14px)*, *Standard (16px / 14px)*, *Prominent (20px / 16px)*.
+  - Live canvas re-rendering and `localStorage` persistence.
+  - Automatically hidden once the card is scratched to preserve a pristine invitation view.
 - **Revealed Card View**:
   - Framed with an elegant **burgundy border** (`1.5px solid var(--color-burgundy)`), `0.75rem` rounded corners, glassmorphic ivory background (`rgba(255, 255, 255, 0.95)`), and soft burgundy elevation shadow.
   - **Wedding Date**: `1.85rem` `Playfair Display` serif (`December 6, 2026`).
   - **Live Countdown**: Days, Hours, Minutes, Seconds in single row (numbers `1.35rem`, unit labels `0.70rem`).
   - Automatically triggers celebratory **Confetti Burst** on reveal.
 
-### Meet the Couple / Family Section (`#couple`, `MeetCouple.jsx`)
+### Meet the Couple / Family Section (`#couple`, `MeetFamilies.jsx` / `MeetCouple.jsx`)
 - **Sacred Family Shloka & Quote Header**:
   - Sanskrit Shloka (`॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥`) rendered in `var(--color-burgundy)` in `Tiro Devanagari Sanskrit`.
   - Editorial translation quote below in `Cormorant Garamond` italic.
 - **Two Side-by-Side Royal Indian Family Cards**:
-  - Left: Bride's Family Card (The Gupta Family, location, invite phrases, parents in burgundy bold, bride name in Alex Brush cursive, relation tagline).
-  - Right: Groom's Family Card (The Gupta Family, location, invite phrases, parents in burgundy bold, groom name in Alex Brush cursive, relation tagline).
+  - Left: Bride's Family Card (The Gupta Family, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, bride name in Alex Brush cursive, relation tagline).
+  - Right: Groom's Family Card (The Gupta Family, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, groom name in Alex Brush cursive, relation tagline).
+- **Typography Consistency & Standardization**:
+  - City origin standardized to `Moradabad · The City of Brass` (`पीतल नगरी` removed).
+  - Relation lines `Their beloved daughter` and `Their beloved son` rendered in `Cormorant Garamond` italic (sentence case, not uppercase).
+  - Unified typography across all 6 descriptive/connective card lines: *Auspicious Beginning*, *Moradabad · The City of Brass*, *Under the divine grace & blessings of revered grandparents*, *with their family and loved ones*, *request the pleasure of your company on the auspicious wedding of*, and *Their beloved daughter/son* — all using `font-family: var(--font-body)` (*Cormorant Garamond*), `font-style: italic`, and synchronized clamp sizing `clamp(0.9rem, 1.6vh, 1rem)`.
 - **Luxury Double Border & Corner Flourishes**:
   - Outer rounded border (`1.2px solid rgba(176, 137, 104, 0.45)` with `1.25rem` radius).
   - Inset dashed gold inner border (`inset: 8px`).

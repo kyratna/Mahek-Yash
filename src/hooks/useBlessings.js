@@ -4,16 +4,43 @@ import { isFirebaseConfigured, subscribeToBlessings } from "../lib/firebase";
 
 const POLL_INTERVAL_MS = 10000;
 
-function signature(entry) {
-  return `${entry.name}||${entry.message}`;
+export function normalizeSignature(entry) {
+  if (!entry) return "";
+  const name = (entry.name || "").trim().toLowerCase();
+  const message = (entry.message || "").trim().toLowerCase();
+  return `${name}||${message}`;
 }
 
 function mergeBlessings(current, fetched) {
-  const fetchedSignatures = new Set(fetched.map(signature));
-  const stillPending = current.filter(
-    (entry) => entry._local && !fetchedSignatures.has(signature(entry))
-  );
-  return [...stillPending, ...fetched];
+  const fetchedIds = new Set(fetched.map((f) => f.id).filter(Boolean));
+  const fetchedSignatures = new Set(fetched.map(normalizeSignature));
+
+  // Keep local optimistic entries ONLY if they haven't arrived from server yet
+  const stillPending = current.filter((entry) => {
+    if (!entry._local) return false;
+    if (entry.id && fetchedIds.has(entry.id)) return false;
+    if (fetchedSignatures.has(normalizeSignature(entry))) return false;
+    return true;
+  });
+
+  // Deduplicate fetched entries by ID and signature
+  const seenIds = new Set();
+  const seenSigs = new Set();
+  const uniqueFetched = [];
+
+  for (const item of fetched) {
+    if (item.id) {
+      if (seenIds.has(item.id)) continue;
+      seenIds.add(item.id);
+    }
+    const sig = normalizeSignature(item);
+    if (seenSigs.has(sig)) continue;
+    seenSigs.add(sig);
+
+    uniqueFetched.push(item);
+  }
+
+  return [...stillPending, ...uniqueFetched];
 }
 
 export function useBlessings() {
@@ -78,9 +105,29 @@ export function useBlessings() {
 
   // Called right after submission so the sender sees their own entry instantly
   const addLocalBlessing = useCallback((entry) => {
-    const withTimestamp = { ...entry, timestamp: new Date().toISOString(), _local: true };
-    setMyBlessingKey(signature(withTimestamp));
-    setEntries((current) => [withTimestamp, ...current]);
+    const trimmedName = (entry.name || "").trim();
+    const trimmedMessage = (entry.message || "").trim();
+    const withTimestamp = {
+      ...entry,
+      name: trimmedName,
+      message: trimmedMessage,
+      timestamp: entry.timestamp || new Date().toISOString(),
+      _local: true,
+    };
+    const sig = normalizeSignature(withTimestamp);
+    setMyBlessingKey(sig);
+
+    setEntries((current) => {
+      // Check if this blessing already exists in the list (e.g. from real-time Firestore push)
+      const alreadyExists = current.some((e) => {
+        if (entry.id && e.id && entry.id === e.id) return true;
+        return normalizeSignature(e) === sig;
+      });
+      if (alreadyExists) {
+        return current;
+      }
+      return [withTimestamp, ...current];
+    });
   }, []);
 
   return { entries, status, myBlessingKey, addLocalBlessing };

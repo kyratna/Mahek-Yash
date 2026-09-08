@@ -11,7 +11,10 @@ export const NOTE_COLORS = ["note--blush", "note--sage", "note--butter", "note--
 const ITEMS_PER_PAGE = 6;
 
 export function signature(entry) {
-  return `${entry.name}||${entry.message}`;
+  if (!entry) return "";
+  const name = (entry.name || "").trim().toLowerCase();
+  const message = (entry.message || "").trim().toLowerCase();
+  return `${name}||${message}`;
 }
 
 export function formatDate(timestamp) {
@@ -115,14 +118,35 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
     }
   });
 
-  // Real entries only, sorted chronologically descending (most recent first)
+  // Real entries only, sorted chronologically descending (most recent first), deduplicated
   const combinedList = useMemo(() => {
     const list = Array.isArray(entries) ? [...entries] : [];
-    return list.sort((a, b) => {
+
+    // Sort descending by timestamp
+    list.sort((a, b) => {
       const timeA = new Date(a.timestamp || 0).getTime();
       const timeB = new Date(b.timestamp || 0).getTime();
       return timeB - timeA; // Descending: Most recent first
     });
+
+    // Deduplicate by ID and by signature
+    const seenIds = new Set();
+    const seenSignatures = new Set();
+    const unique = [];
+
+    for (const item of list) {
+      if (item.id) {
+        if (seenIds.has(item.id)) continue;
+        seenIds.add(item.id);
+      }
+      const sig = signature(item);
+      if (seenSignatures.has(sig)) continue;
+      seenSignatures.add(sig);
+
+      unique.push(item);
+    }
+
+    return unique;
   }, [entries]);
 
   // Counts for filter pills
@@ -200,8 +224,9 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
           <p>{blessings.subtext}</p>
         </div>
 
-        {/* 3-Tab Filter Bar: Bride's Side | All Wishes | Groom's Side */}
-        <div className="blessings-filter-bar" role="tablist" aria-label="Filter blessings">
+        <div className="blessings-center-group">
+          {/* 3-Tab Filter Bar: Bride's Side | All Wishes | Groom's Side */}
+          <div className="blessings-filter-bar" role="tablist" aria-label="Filter blessings">
           <button
             type="button"
             role="tab"
@@ -309,8 +334,7 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
                   height="38"
                   loading="lazy"
                 />
-                <p className="placeholder-title">Your Blessing Here</p>
-                <span className="placeholder-subtext">Click to leave a warm wish for Mahek &amp; Yashoratna</span>
+                <p className="placeholder-title">Click to leave warm wish</p>
               </div>
             </a>
           ))}
@@ -356,21 +380,24 @@ export default function Blessings({ entries = [], status, myBlessingKey }) {
             </button>
           </div>
         )}
+        </div>
 
-        {/* Tap to See Full Message Hint (Just Above Button Below) */}
-        <p className="blessings-bottom-tap-hint">
-          ✨ Tap the card to see full message
-        </p>
+        <div className="blessings-bottom-group">
+          {/* Tap to See Full Message Hint (Just Above Button Below) */}
+          <p className="blessings-bottom-tap-hint">
+            ✨ Tap the card to see full message
+          </p>
 
-        {/* Action Link */}
-        <div className="blessings-actions">
-          <a className="blessings-action-btn" href="#blessings-rsvp">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
-            Send Blessings &amp; RSVP
-          </a>
+          {/* Action Link */}
+          <div className="blessings-actions">
+            <a className="blessings-action-btn" href="#blessings-rsvp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              Send Blessings &amp; RSVP
+            </a>
+          </div>
         </div>
       </div>
 

@@ -10,7 +10,7 @@ A high-performance, single-page luxury Indian wedding invitation built with Reac
 - **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest with ambient golden rose glow and sacred Devanagari Sanskrit shlokas (*Vakratunda Mahakaya...* across 2 rhythmic lines & *Mangalam Bhagwan Vishnuh...*).
 - **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, clean multi-line parents lineage, and monogrammed scratch-to-reveal card with live countdown, confetti celebration, and synchronized global date reveal.
 - **Navigation Drawer**: Distraction-free viewport with glassmorphic top-left floating menu and quick section jumping.
-- **Meet the Families (`#couple`)**: Traditional royal Indian wedding lineage cards with classical Sanskrit shloka (*Twameva Mata Cha Pita Twameva...*), `॥ मंगलम् ॥` (*Auspicious Beginning*) & `॥ युग्म ॥` (*Sacred Union*) symbols with burgundy-accented consonants (**म** & **य**), and luxury double borders with burgundy inner dashed accents.
+- **Meet the Families (`#couple`)**: Traditional royal Indian wedding lineage cards with classical Sanskrit shloka (*Twameva Mata Cha Pita Twameva...*), `॥ मंगलम् ॥` (*Auspicious Beginning*) & `॥ युग्म ॥` (*Sacred Union*) symbols with burgundy-accented consonants (**म** & **य**), unified Cormorant Garamond italic typography across all contextual lines, and luxury double borders with burgundy inner dashed accents.
 - **Event Details (`#details`)**: 2-column, 3-row 3D flip cards (total 6 events) with 20s animated burgundy perimeter timer strokes, plus an interactive "How to reach the venue?" popup with QR code, GPS directions, and transit guides.
 - **Dynamic Memories Gallery (`#gallery`)**:
   - **Live Google Drive Integration**: Upload photos directly to a Google Drive folder to update the gallery in real-time.
@@ -22,7 +22,7 @@ A high-performance, single-page luxury Indian wedding invitation built with Reac
   - **Live Heart Reactions (❤️)**: Interactive heart reactions synchronized across all guests.
   - **Matching Royal Frame**: Harmonized luxury border design with burgundy inner dashed trim.
   - **Telegram Bot Notifications & Moderation**: Instant Telegram alerts for new blessings & RSVPs with native inline "🗑️ Delete from Live Wall" moderation buttons.
-- **FAQ & Footer (`#faq`)**: Curated 6-question accordion covering exact travel routes & distances, complimentary parking, dress codes, December weather breakdown, 1 PM check-in with mandatory Aadhaar ID requirements, hospitality coordinators, 24/7 snacks availability, official wedding hashtags (`#MahekWedsYash` & `#YashKiMahek`), and interactive action buttons for venue navigation and gallery jumps.
+- **FAQ & Footer (`#faq`)**: Curated 6-question accordion covering exact travel routes & distances, complimentary parking, dress codes, December weather breakdown, 12:00 PM check-in on Dec 5 & 10:00 AM check-out on Dec 7 with mandatory Aadhaar ID requirements, hospitality coordinators, 24/7 snacks availability, official wedding hashtags (`#MahekWedsYash` & `#YashKiMahek`), and interactive action buttons for venue navigation and gallery jumps.
 - **Floating Controls**: Ambient background music player, envelope re-opener, and section navigation arrows.
 
 ---
@@ -129,6 +129,7 @@ src/
     ShreeGanesh.jsx         ← Sacred Ganesha invocation with golden rose glow & Sanskrit shlokas
     Invitation.jsx          ← Dedicated invitation screen with parents lineage
     ScratchReveal.jsx       ← Monogrammed scratch-to-reveal card with live countdown
+    ScratchSizeTuner.jsx    ← Live interactive font size tuner with real-time sliders & presets
     MeetFamilies.jsx        ← Royal Indian family lineage cards with Sanskrit shloka
     EventsGrid.jsx          ← 2-column, 3-row 3D flip cards with perimeter countdown timer
     VenueModal.jsx          ← Venue travel directions popup with QR code & transit options

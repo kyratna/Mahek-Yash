@@ -3,9 +3,26 @@ import content from "../content";
 import VenueModal from "./VenueModal";
 import "./EventDetails.css";
 
+function parseEventTime(timeStr = "") {
+  const match = timeStr.match(/^(.*?)\s+(onwards)$/i);
+  if (match) {
+    return {
+      timeMain: match[1],
+      hasOnwards: true,
+      onwardsText: match[2].toLowerCase(),
+    };
+  }
+  return {
+    timeMain: timeStr,
+    hasOnwards: false,
+    onwardsText: "",
+  };
+}
+
 function EventCard({ event, autoFlipSeconds = 20 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const timerRef = useRef(null);
+  const { timeMain, hasOnwards, onwardsText } = parseEventTime(event.time);
 
   useEffect(() => {
     if (isFlipped) {
@@ -96,32 +113,25 @@ function EventCard({ event, autoFlipSeconds = 20 }) {
 
           <div className="event-flip-card__back-header">
             <h4 className="event-flip-card__back-name">{event.name}</h4>
-            <span className="event-flip-card__back-time">{event.time}</span>
+            <div className="event-flip-card__back-time-wrap">
+              <span className="event-flip-card__back-time">{timeMain}</span>
+              {hasOnwards && (
+                <span className="event-flip-card__back-onwards">{onwardsText}</span>
+              )}
+            </div>
           </div>
           <div className="event-flip-card__divider event-flip-card__divider--back" aria-hidden="true" />
           {event.description && (
             <p className="event-flip-card__desc">{event.description}</p>
           )}
-          <div className="event-flip-card__details">
-            {event.attire && (
+          {event.attire && (
+            <div className="event-flip-card__details">
               <div className="event-flip-card__detail-row">
                 <span className="event-flip-card__detail-label">Attire</span>
                 <span className="event-flip-card__detail-val">{event.attire}</span>
               </div>
-            )}
-            {event.location && (
-              <div className="event-flip-card__detail-row">
-                <span className="event-flip-card__detail-label">Venue</span>
-                <span className="event-flip-card__detail-val">{event.location}</span>
-              </div>
-            )}
-            {event.note && (
-              <div className="event-flip-card__detail-row">
-                <span className="event-flip-card__detail-label">Note</span>
-                <span className="event-flip-card__detail-val">{event.note}</span>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

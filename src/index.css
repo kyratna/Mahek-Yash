@@ -184,12 +184,12 @@ img {
 }
 
 .icon-button {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 12px rgba(46, 43, 40, 0.18);
+  box-shadow: 0 3px 10px rgba(46, 43, 40, 0.16);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,8 +210,8 @@ img {
 }
 
 .icon-button svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
 }
 
 @media (max-width: 768px) {

@@ -145,8 +145,9 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
     const startTime = Date.now();
 
     try {
+      let docRef = null;
       if (isFirebaseConfigured) {
-        const docRef = await addBlessingToFirestore({ ...form });
+        docRef = await addBlessingToFirestore({ ...form });
         if (appsScriptUrl) {
           submitToSheet(appsScriptUrl, {
             type: "blessing",
@@ -164,9 +165,17 @@ function BlessingForm({ appsScriptUrl, onBlessingSent, onCelebrate, onSwitchToRs
       const remaining = Math.max(0, 1400 - elapsed);
       await new Promise((r) => setTimeout(r, remaining));
 
-      setSubmittedName(nameToSave);
+      const trimmedName = nameToSave.trim();
+      const trimmedMessage = form.message.trim();
+
+      setSubmittedName(trimmedName);
       setStatus("success");
-      onBlessingSent({ name: form.name, side: form.side, message: form.message });
+      onBlessingSent({
+        id: docRef?.id,
+        name: trimmedName,
+        side: sideToSave,
+        message: trimmedMessage,
+      });
       onCelebrate();
       setForm({ name: "", side: sideToSave, message: "" });
     } catch (err) {
@@ -642,32 +651,26 @@ function MediaUploadForm({
 
   if (uploadStatus === "success") {
     return (
-      <div className="blessings-rsvp-success">
-        <div className="success-icon" style={{ background: "rgba(46, 125, 50, 0.12)", color: "#2e7d32" }}>
-          📸
+      <div className="form-status form-status--success">
+        <div className="form-status__seal">
+          <span className="form-status__seal-icon">📸</span>
         </div>
-        <h3 className="success-title">Memories Uploaded!</h3>
-        <p className="success-text">
-          Thank you so much! Your photos &amp; videos have been safely saved to Yashoratna &amp; Mahek&apos;s wedding album.
+        <h3 className="form-status__title">Memories Uploaded!</h3>
+        <p className="form-status__desc">
+          Thank you{uploaderName ? `, ${uploaderName.trim()}` : ""}! Your photos &amp; videos have been safely saved to Yashoratna &amp; Mahek&apos;s wedding album.
         </p>
 
-        <div className="success-actions">
+        <div className="form-status__actions">
           <button
             type="button"
-            className="button button--outline"
+            className="button form-status__btn form-status__btn--primary"
             onClick={() => {
               setSelectedFiles([]);
               setUploadStatus("idle");
             }}
           >
+            <img src={cameraIcon} alt="" className="rsvp-btn-flaticon" style={{ marginRight: "0.35rem" }} />
             Upload More Photos
-          </button>
-          <button
-            type="button"
-            className="button button--secondary"
-            onClick={() => onSwitchToBlessings(uploaderName, initialSide)}
-          >
-            ✨ Send a Blessing
           </button>
         </div>
       </div>
@@ -700,7 +703,7 @@ function MediaUploadForm({
 
       {/* Dropzone */}
       <div
-        className={`gallery-upload__dropzone ${isDragOver ? "is-dragover" : ""}`}
+        className={`gallery-upload__dropzone ${isDragOver ? "is-dragover" : ""} ${selectedFiles.length > 0 ? "is-compact" : ""}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -733,23 +736,35 @@ function MediaUploadForm({
           <img src={cameraIcon} alt="" className="gallery-upload__dropzone-flaticon" />
         </div>
         <p className="gallery-upload__dropzone-title">
-          <strong>Click to select photos</strong> or drag &amp; drop here
+          {selectedFiles.length > 0 ? (
+            <>
+              <strong>+ Add more photos</strong> or drag &amp; drop
+            </>
+          ) : (
+            <>
+              <strong>Click to select photos</strong> or drag &amp; drop here
+            </>
+          )}
         </p>
-        <p className="gallery-upload__dropzone-hint">
-          Supports JPG, PNG, HEIC, WEBP, and MP4 videos
-        </p>
+        {selectedFiles.length === 0 && (
+          <p className="gallery-upload__dropzone-hint">
+            Supports JPG, PNG, HEIC, WEBP, and MP4 videos
+          </p>
+        )}
 
-        {/* Mobile Camera Button */}
-        <div className="gallery-upload__camera-btn-wrap" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            className="gallery-upload__camera-btn"
-            onClick={() => cameraInputRef.current?.click()}
-          >
-            <img src={cameraIcon} alt="" className="gallery-upload__camera-btn-flaticon" />
-            Take Photo
-          </button>
-        </div>
+        {/* Mobile Camera Button - only when no files selected */}
+        {selectedFiles.length === 0 && (
+          <div className="gallery-upload__camera-btn-wrap" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="gallery-upload__camera-btn"
+              onClick={() => cameraInputRef.current?.click()}
+            >
+              <img src={cameraIcon} alt="" className="gallery-upload__camera-btn-flaticon" />
+              Take Photo
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Selected Files Preview List */}

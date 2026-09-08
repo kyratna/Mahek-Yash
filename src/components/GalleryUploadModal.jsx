@@ -379,7 +379,7 @@ export default function GalleryUploadModal({ isOpen, onClose, onUploadSuccess })
 
               {/* Drag and Drop Zone */}
               <div
-                className={`gallery-upload__dropzone ${isDragOver ? "is-dragover" : ""}`}
+                className={`gallery-upload__dropzone ${isDragOver ? "is-dragover" : ""} ${selectedFiles.length > 0 ? "is-compact" : ""}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -412,23 +412,35 @@ export default function GalleryUploadModal({ isOpen, onClose, onUploadSuccess })
                   <img src={cameraIcon} alt="" className="gallery-upload__dropzone-flaticon" />
                 </div>
                 <p className="gallery-upload__dropzone-title">
-                  <strong>Click to select photos</strong> or drag &amp; drop here
+                  {selectedFiles.length > 0 ? (
+                    <>
+                      <strong>+ Add more photos</strong> or drag &amp; drop
+                    </>
+                  ) : (
+                    <>
+                      <strong>Click to select photos</strong> or drag &amp; drop here
+                    </>
+                  )}
                 </p>
-                <p className="gallery-upload__dropzone-hint">
-                  Supports JPG, PNG, HEIC, WEBP, and MP4 videos (Select multiple)
-                </p>
+                {selectedFiles.length === 0 && (
+                  <p className="gallery-upload__dropzone-hint">
+                    Supports JPG, PNG, HEIC, WEBP, and MP4 videos (Select multiple)
+                  </p>
+                )}
 
                 {/* Mobile Camera Quick Action */}
-                <div className="gallery-upload__camera-btn-wrap" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    type="button"
-                    className="gallery-upload__camera-btn"
-                    onClick={() => cameraInputRef.current?.click()}
-                  >
-                    <img src={cameraIcon} alt="" className="gallery-upload__camera-btn-flaticon" />
-                    Take Photo
-                  </button>
-                </div>
+                {selectedFiles.length === 0 && (
+                  <div className="gallery-upload__camera-btn-wrap" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      className="gallery-upload__camera-btn"
+                      onClick={() => cameraInputRef.current?.click()}
+                    >
+                      <img src={cameraIcon} alt="" className="gallery-upload__camera-btn-flaticon" />
+                      Take Photo
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Selected Files Preview List */}

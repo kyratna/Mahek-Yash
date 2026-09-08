@@ -83,10 +83,11 @@ export default function ScratchReveal({
       ctx.lineWidth = 1;
       ctx.strokeRect(8, 8, logicalWidth - 16, logicalHeight - 16);
 
-      const targetLogoSize = unrevealedSizes?.logoSize ?? 78;
-      const headingSize = unrevealedSizes?.headingSize ?? 10;
-      const labelSize = unrevealedSizes?.labelSize ?? 12;
-      const spacing = unrevealedSizes?.spacing ?? 21;
+      const isCompact = logicalWidth < 380;
+      const targetLogoSize = unrevealedSizes?.logoSize ?? (isCompact ? 68 : 74);
+      const headingSize = unrevealedSizes?.headingSize ?? 17;
+      const labelSize = unrevealedSizes?.labelSize ?? 17;
+      const spacing = unrevealedSizes?.spacing ?? (isCompact ? 13 : 15);
 
       const logoX = (logicalWidth - targetLogoSize) / 2;
       const totalBlockHeight = targetLogoSize + spacing + headingSize + (labelSize * 1.3);
@@ -106,14 +107,24 @@ export default function ScratchReveal({
       ctx.fillStyle = "#faf1ea";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
+      if ("letterSpacing" in ctx) {
+        ctx.letterSpacing = "0.14em";
+      }
       ctx.font = `600 ${headingSize}px "Playfair Display", Georgia, serif`;
-      const headingY = logoY + targetLogoSize + spacing;
+      const headingY = logoY + targetLogoSize + spacing + headingSize / 2;
       ctx.fillText(heading, logicalWidth / 2, headingY);
 
       // Subtitle: "Scratch to reveal"
       ctx.fillStyle = "rgba(250, 241, 234, 0.85)";
+      if ("letterSpacing" in ctx) {
+        ctx.letterSpacing = "0.04em";
+      }
       ctx.font = `italic 400 ${labelSize}px "Cormorant Garamond", Georgia, serif`;
-      ctx.fillText(label, logicalWidth / 2, headingY + headingSize * 0.7 + labelSize * 0.7);
+      const subtitleY = headingY + headingSize / 2 + labelSize / 2 + 7;
+      ctx.fillText(label, logicalWidth / 2, subtitleY);
+      if ("letterSpacing" in ctx) {
+        ctx.letterSpacing = "0px";
+      }
     }
 
     function resize() {

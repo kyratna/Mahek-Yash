@@ -42,25 +42,25 @@ const content = {
       symbol: "॥ मंगलम् ॥",
       symbolTranslation: "Auspicious Beginning",
       familyTitle: "THE GUPTA FAMILY",
-      location: "Moradabad · पीतल नगरी · The City of Brass",
+      location: "Moradabad · The City of Brass",
       grandparents: ["Late Shri Prem Shankar Gupta", "Late Smt. Sarla Devi Gupta"],
       invitePhrase1: "with their family and loved ones",
       parents: ["Smt. Deepa Gupta", "Shri Rajeev Gupta"],
       invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
       name: "Mahek",
-      relation: "THEIR BELOVED DAUGHTER",
+      relation: "Their beloved daughter",
     },
     groomFamily: {
       symbol: "॥ युग्म ॥",
       symbolTranslation: "Sacred Union",
       familyTitle: "THE GUPTA FAMILY",
-      location: "Moradabad · पीतल नगरी · The City of Brass",
+      location: "Moradabad · The City of Brass",
       grandparents: ["Late Shri Shri Niwas Gupta", "Late Smt. Rama Gupta"],
       invitePhrase1: "with their family and loved ones",
       parents: ["Smt. Renu Gupta", "Shri Sandeep Kumar Gupta"],
       invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
       name: "Yashoratna",
-      relation: "THEIR BELOVED SON",
+      relation: "Their beloved son",
     },
   },
 
@@ -115,7 +115,7 @@ const content = {
       date: "December 5, 2026",
       time: "5:00 PM",
       description: "An enchanting evening of music, dance performances, and celebration.",
-      attire: "Cocktail / Indo-Western",
+      attire: "Glam and Glitter",
       location: "Grand Ballroom",
       note: "Followed by dinner, music & celebration.",
     },
@@ -124,7 +124,7 @@ const content = {
       date: "December 5, 2026",
       time: "7:00 PM onwards",
       description: "Traditional blessings and auspicious ring ceremony with family & loved ones.",
-      attire: "Traditional Elegance / Indo-Western",
+      attire: "Glam and Glitter",
       location: "Grand Ballroom",
       note: "Celebration followed by music and dinner.",
     },
@@ -133,7 +133,7 @@ const content = {
       date: "December 6, 2026",
       time: "10:30 AM Onwards",
       description: "The groom's royal dancing procession with festive dhol beats and celebration.",
-      attire: "Traditional Festive / Sherwani & Sarees",
+      attire: "Traditional Festive and Elegance",
       location: "Resort Entrance to Mandap",
       note: "Join the groom's baraat procession!",
     },
@@ -142,7 +142,7 @@ const content = {
       date: "December 6, 2026",
       time: "12:30 PM",
       description: "The auspicious floral garland exchange marking the union of bride and groom.",
-      attire: "Traditional Festive",
+      attire: "Traditional Festive and Elegance",
       location: "Central Mandap",
       note: "Shower the couple with flower petals.",
     },
@@ -151,7 +151,7 @@ const content = {
       date: "December 6, 2026",
       time: "5:00 PM",
       description: "The seven sacred vows around the holy agni solemnizing our sacred marriage bond.",
-      attire: "Royal Indian Ethnic",
+      attire: "Traditional Festive and Elegance",
       location: "Mandap by the Forest",
       note: "Dinner & reception to follow.",
     },
@@ -237,9 +237,10 @@ const content = {
     {
       question: "What are the dress codes and themes for the events?",
       answer:
-        "We encourage you to dress in accordance with the ceremony themes:\n\n" +
+        "We encourage you to dress in accordance with the ceremony themes:\n" +
         "• Haldi (Dec 5, 12:30 PM): Shades of Pink\n" +
-        "• Engagement & Sangeet (Dec 5, 5:00 PM): Glam and Glitter",
+        "• Engagement & Sangeet (Dec 5, 5:00 PM): Glam and Glitter\n" +
+        "• Wedding Day (Dec 6): Traditional Festive and Elegance",
     },
     {
       question: "What will the weather be like in Jim Corbett in December?",
@@ -253,7 +254,9 @@ const content = {
     {
       question: "What are the check-in formalities and accommodation arrangements?",
       answer:
-        "Room accommodations have been arranged at Winsome Resort & Spa for outstation guests starting December 5 from 1:00 PM onwards.\n\n" +
+        "Room accommodations have been arranged at Winsome Resort & Spa for outstation guests.\n\n" +
+        "• Check-in Time: 12:00 PM on Dec 5\n" +
+        "• Check-out Time: 10:00 AM on Dec 7\n\n" +
         "• Mandatory Photo ID: As per resort and Uttarakhand government regulations, all adult guests must present a valid physical or digital Aadhaar Card (or Driving License / Govt. ID) during check-in.\n\n" +
         "• Hospitality & Assistance Contacts:\n" +
         "  - Resort Helpdesk: +91 99714 99502 / +91 95600 02045\n" +

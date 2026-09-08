@@ -38,24 +38,24 @@ A short line shown above your names in the Invitation:
 **Bride's Family Card**
 - Auspicious Symbol: `[ ॥ श्री ॥ ]`
 - Family Title: `[ THE GUPTA FAMILY ]`
-- City / Origin: `[ Moradabad · पीतल नगरी · The City of Brass ]`
+- City / Origin: `[ Moradabad · The City of Brass ]`
 - Grandparents: `[ Late Shri Prem Shankar Gupta ]` & `[ Late Smt. Sarla Devi Gupta ]`
 - Invitation Line 1: `[ with their family and loved ones ]`
 - Parents: `[ Smt. Deepa Gupta ]` & `[ Shri Rajeev Gupta ]`
 - Invitation Line 2: `[ request the pleasure of your company on the auspicious wedding of ]`
 - Name: `[ Mahek ]`
-- Relation: `[ THEIR BELOVED DAUGHTER ]`
+- Relation: `[ Their beloved daughter ]`
 
 **Groom's Family Card**
 - Auspicious Symbol: `[ ॥ श्री ॥ ]`
 - Family Title: `[ THE GUPTA FAMILY ]`
-- City / Origin: `[ Moradabad · पीतल नगरी · The City of Brass ]`
+- City / Origin: `[ Moradabad · The City of Brass ]`
 - Grandparents: `[ Late Shri Niwas Gupta ]` & `[ Late Smt. Rama Gupta ]`
 - Invitation Line 1: `[ with their family and loved ones ]`
 - Parents: `[ Smt. Renu Gupta ]` & `[ Shri Sandeep Kumar Gupta ]`
 - Invitation Line 2: `[ request the pleasure of your company on the auspicious wedding of ]`
 - Name: `[ Yash ]`
-- Relation: `[ THEIR BELOVED SON ]`
+- Relation: `[ Their beloved son ]`
 
 ## 5. Event Details (3D Flip Cards)
 
@@ -75,7 +75,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 - Date: `[ December 05, 2026 ]`
 - Time: `[ 5:00 PM ]`
 - One-liner Description: `[ An enchanting evening of music, dance performances, and celebration. ]`
-- Attire / Dress Code: `[ Cocktail / Indo-Western ]`
+- Attire / Dress Code: `[ Glam and Glitter ]`
 - Venue / Location: `[ Grand Ballroom ]`
 - Additional Note: `[ Followed by dinner, music & celebration. ]`
 
@@ -83,7 +83,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 - Date: `[ December 05, 2026 ]`
 - Time: `[ 7:00 PM onwards ]`
 - One-liner Description: `[ Traditional blessings and auspicious ring ceremony with family & loved ones. ]`
-- Attire / Dress Code: `[ Traditional Elegance / Indo-Western ]`
+- Attire / Dress Code: `[ Glam and Glitter ]`
 - Venue / Location: `[ Grand Ballroom ]`
 - Additional Note: `[ Celebration followed by music and dinner. ]`
 
@@ -91,7 +91,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 - Date: `[ December 06, 2026 ]`
 - Time: `[ 10:30 AM Onwards ]`
 - One-liner Description: `[ The groom's royal dancing procession with festive dhol beats and celebration. ]`
-- Attire / Dress Code: `[ Traditional Festive / Sherwani & Sarees ]`
+- Attire / Dress Code: `[ Traditional Festive and Elegance ]`
 - Venue / Location: `[ Resort Entrance to Mandap ]`
 - Additional Note: `[ Join the groom's baraat procession! ]`
 
@@ -99,7 +99,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 - Date: `[ December 06, 2026 ]`
 - Time: `[ 12:30 PM ]`
 - One-liner Description: `[ The auspicious floral garland exchange marking the union of bride and groom. ]`
-- Attire / Dress Code: `[ Traditional Festive ]`
+- Attire / Dress Code: `[ Traditional Festive and Elegance ]`
 - Venue / Location: `[ Central Mandap ]`
 - Additional Note: `[ Shower the couple with flower petals. ]`
 
@@ -107,7 +107,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 - Date: `[ December 06, 2026 ]`
 - Time: `[ 5:00 PM ]`
 - One-liner Description: `[ The seven sacred vows around the holy agni solemnizing our sacred marriage bond. ]`
-- Attire / Dress Code: `[ Royal Indian Ethnic ]`
+- Attire / Dress Code: `[ Traditional Festive and Elegance ]`
 - Venue / Location: `[ Mandap by the Forest ]`
 - Additional Note: `[ Dinner & reception to follow. ]`
 
@@ -160,12 +160,35 @@ The gallery system uses a strictly separated two-tier Google Drive & Google Shee
 
 ## 9. FAQ
 
-- **What is the dress code?**
-  `Dress code of Haldi Ceremony - 'Shades of Pink'. Other events are open for all traditional and formal attire.`
-- **What are parking arrangements?**
-  `Valet and self-parking are available at the resort venue.`
-- **Where to reach after coming to the venue?**
-  `Please proceed to the main resort reception desk as soon as you arrive for check-in and welcome assistance.`
+- **How do I reach the venue?**
+  Complete Address: Winsome Resort & Spa, Vill. Nandpur, Choi, Gabua (Near Dabka River, Jim Corbett National Park), Ramnagar – Nainital Road, Khempur, Uttarakhand 244715.
+  Phone: +91 99714 99502 / +91 95600 02045.
+  (Includes interactive button to open the "How to reach the venue?" travel guide modal).
+- **Is parking available at the venue?**
+  Yes, complimentary on-site self-parking and dedicated valet assistance are available at Winsome Resort & Spa for all wedding guests throughout the celebrations.
+- **What are the dress codes and themes for the events?**
+  - Haldi (Dec 5, 12:30 PM): Shades of Pink
+  - Engagement & Sangeet (Dec 5, 5:00 PM): Glam and Glitter
+  - Wedding Day (Dec 6): Traditional Festive and Elegance
+- **What will the weather be like in Jim Corbett in December?**
+  - Daytime: Roughly 21–24°C, comfortable and pleasant.
+  - Afternoons: Usually sunny and pleasant, with around 9 hours of sunshine.
+  - Mornings: Can be cool and occasionally misty or foggy.
+  - Night & Early Morning: Roughly 8–12°C, so it can feel quite cold.
+  (Tip: We recommend carrying warm shawls, jackets, or blazers for the evening and early morning outdoor celebrations).
+- **What are the check-in formalities and accommodation arrangements?**
+  Room accommodations have been arranged at Winsome Resort & Spa for outstation guests:
+  - Check-in Time: 12:00 PM on Dec 5
+  - Check-out Time: 10:00 AM on Dec 7
+  - Mandatory Photo ID: As per resort and Uttarakhand government regulations, all adult guests must present a valid physical or digital Aadhaar Card (or Driving License / Govt. ID) during check-in.
+  - Hospitality & Assistance Contacts:
+    - Resort Helpdesk: +91 99714 99502 / +91 95600 02045
+    - Shri Sandeep Kumar Gupta (Groom Side): +91 81719 97832
+    - Shri Rajeev Gupta (Bride Side): +91 94128 06535
+  Resort hospitality desk will be stationed at the reception to assist with room keys, luggage, and event timings. Snacks will be available throughout the event for untimely hunger pangs, late-night cravings, overnight chakhna needs, and guests arriving at different times.
+- **What are the official wedding hashtags for sharing photos?**
+  #MahekWedsYash & #YashKiMahek
+  (Includes interactive button to open the "Upload Photos & Videos" modal).
 
 ---
 

@@ -158,7 +158,7 @@ export default function MeetFamilies() {
   const bride = brideFamily || {
     symbol: "॥ मंगलम् ॥",
     familyTitle: "THE GUPTA FAMILY",
-    location: "Moradabad · पीतल नगरी · The City of Brass",
+    location: "Moradabad · The City of Brass",
     grandparents: [
       content.coupleProfiles?.bride?.grandparentage?.person1 || "Late Shri Prem Shankar Gupta",
       content.coupleProfiles?.bride?.grandparentage?.person2 || "Late Smt. Sarla Devi Gupta",
@@ -170,13 +170,13 @@ export default function MeetFamilies() {
     ],
     invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
     name: content.couple?.partner1 || "Mahek",
-    relation: "THEIR BELOVED DAUGHTER",
+    relation: "Their beloved daughter",
   };
 
   const groom = groomFamily || {
     symbol: "॥ युग्म ॥",
     familyTitle: "THE GUPTA FAMILY",
-    location: "Moradabad · पीतल नगरी · The City of Brass",
+    location: "Moradabad · The City of Brass",
     grandparents: [
       content.coupleProfiles?.groom?.grandparentage?.person1 || "Late Shri Shri Niwas Gupta",
       content.coupleProfiles?.groom?.grandparentage?.person2 || "Late Smt. Rama Gupta",
@@ -188,7 +188,7 @@ export default function MeetFamilies() {
     ],
     invitePhrase2: "request the pleasure of your company on the auspicious wedding of",
     name: content.couple?.partner2 || "Yashoratna",
-    relation: "THEIR BELOVED SON",
+    relation: "Their beloved son",
   };
 
   return (

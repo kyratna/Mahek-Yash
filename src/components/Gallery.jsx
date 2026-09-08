@@ -4,18 +4,18 @@ import GalleryUploadModal from "./GalleryUploadModal";
 import cameraIcon from "../assets/flaticons/camera-711191.png";
 import "./Gallery.css";
 
-const AUTO_ADVANCE_MS = 4500;
 const VISIBLE_RANGE = 3; // covers beyond +/-3 slots from center are hidden
+const IDLE_RESET_DELAY_MS = 8000; // Reset to center logo card after 8s of inactivity
 
-// Default Caricature Placeholder Card for Mahek & Yashoratna
+// Default Generated Tile with MY Logo for Mahek & Yashoratna
 const CARICATURE_PLACEHOLDERS = [
   {
     isCaricature: true,
-    caricatureSrc: asset("/images/bridengroom/brideNgroom_No_Bg_Vector.png"),
+    caricatureSrc: asset("/images/monogram/monogramWithoutBg.png"),
     title: "Mahek & Yashoratna",
-    subtitle: "A Lifetime of Love & Laughter",
+    subtitle: "A Lifetime of Love and Happiness",
     badge: "Forever Together 🌸",
-    alt: "Mahek & Yashoratna Caricature",
+    alt: "Mahek & Yashoratna Monogram Logo",
   },
 ];
 
@@ -59,10 +59,35 @@ export default function Gallery() {
     return defaultGallery;
   });
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Always position the logo card in the center count of the photos array:
+  // e.g. 5 total -> 3rd (index 2); 6 photos -> 4th item (index 3 out of 7 total)
+  const photos = (() => {
+    const realPhotos = rawPhotos.filter((p) => p && p.src && !p.isCaricature);
+    const mid = Math.floor(realPhotos.length / 2);
+    return [
+      ...realPhotos.slice(0, mid),
+      ...CARICATURE_PLACEHOLDERS,
+      ...realPhotos.slice(mid),
+    ];
+  })();
+
+  const logoIndex = Math.max(0, photos.findIndex((p) => p.isCaricature));
+  const logoIndexRef = useRef(logoIndex);
+  logoIndexRef.current = logoIndex;
+
+  const [activeIndex, setActiveIndex] = useState(() => logoIndex);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const timerRef = useRef(null);
+  const touchStartXRef = useRef(null);
+
+  // Keep activeIndex on the logo card if dynamic photos change the logo position initially
+  const prevLogoIndexRef = useRef(logoIndex);
+  useEffect(() => {
+    if (prevLogoIndexRef.current !== logoIndex) {
+      setActiveIndex((current) => (current === prevLogoIndexRef.current ? logoIndex : current));
+      prevLogoIndexRef.current = logoIndex;
+    }
+  }, [logoIndex]);
 
   // Fetch dynamic gallery photos from Google Apps Script / Drive endpoint
   useEffect(() => {
@@ -100,41 +125,59 @@ export default function Gallery() {
     };
   }, []);
 
-  // Always keep the caricature artwork placeholders in the gallery along with real photos
-  const photos = (() => {
-    const realPhotos = rawPhotos.filter((p) => p && p.src && !p.isCaricature);
-    return [
-      ...realPhotos,
-      ...CARICATURE_PLACEHOLDERS,
-    ];
-  })();
-
-  // Auto-advance
+  // Return to center logo card after an idle period of inactivity
   useEffect(() => {
-    if (photos.length <= 1 || lightboxOpen) return;
-    timerRef.current = setInterval(() => {
-      setActiveIndex((i) => (i + 1) % photos.length);
-    }, AUTO_ADVANCE_MS);
-    return () => clearInterval(timerRef.current);
-  }, [activeIndex, lightboxOpen, photos.length]);
+    if (activeIndex === logoIndexRef.current || lightboxOpen) return;
+
+    const idleTimer = setTimeout(() => {
+      setActiveIndex(logoIndexRef.current);
+    }, IDLE_RESET_DELAY_MS);
+
+    return () => {
+      clearTimeout(idleTimer);
+    };
+  }, [activeIndex, lightboxOpen]);
 
   const selectTile = (index) => setActiveIndex(index);
   const openLightbox = () => setLightboxOpen(true);
   const closeLightbox = () => setLightboxOpen(false);
+
   const showPrev = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     setActiveIndex((i) => (i - 1 + photos.length) % photos.length);
   };
+
   const showNext = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     setActiveIndex((i) => (i + 1) % photos.length);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches && e.touches[0]) {
+      touchStartXRef.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartXRef.current === null) return;
+    if (e.changedTouches && e.changedTouches[0]) {
+      const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) {
+          showNext();
+        } else {
+          showPrev();
+        }
+      }
+    }
+    touchStartXRef.current = null;
   };
 
   const handleImageError = (photoSrc, index) => {
     setFailedImages((prev) => ({ ...prev, [photoSrc || `photo-${index}`]: true }));
   };
 
-  const activePhoto = photos[activeIndex] || photos[0] || CARICATURE_PLACEHOLDERS[0];
+  const activePhoto = photos[activeIndex] || photos[logoIndex] || CARICATURE_PLACEHOLDERS[0];
   const activeIsFailed = activePhoto?.src && failedImages[activePhoto.src];
 
   return (
@@ -146,7 +189,11 @@ export default function Gallery() {
         </div>
 
         <div className="gallery-stage-wrapper">
-          <div className="coverflow">
+          <div
+            className="coverflow"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="coverflow__stage">
               {photos.map((photo, index) => {
                 const offset = wrappedOffset(index, activeIndex, photos.length);
@@ -157,7 +204,7 @@ export default function Gallery() {
                 const isCaricature = photo.isCaricature || isFailed;
                 const caricatureData = photo.isCaricature
                   ? photo
-                  : CARICATURE_PLACEHOLDERS[index % CARICATURE_PLACEHOLDERS.length];
+                  : CARICATURE_PLACEHOLDERS[0];
 
                 return (
                   <div
@@ -171,7 +218,7 @@ export default function Gallery() {
                     }}
                     onClick={() => (isActive ? openLightbox() : selectTile(index))}
                     role="button"
-                    tabIndex={0}
+                    tabIndex={hidden ? -1 : 0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         isActive ? openLightbox() : selectTile(index);
@@ -180,7 +227,7 @@ export default function Gallery() {
                     aria-label={isActive ? `View ${photo.alt || caricatureData.title} enlarged` : `Show ${photo.alt || caricatureData.title}`}
                   >
                     {isCaricature ? (
-                      /* Caricature Placeholder Frame (Zero Image Errors) */
+                      /* Monogram Logo Card */
                       <div className="coverflow__caricature-card">
                         <div className="coverflow__caricature-icon-wrap">
                           <img
@@ -195,7 +242,7 @@ export default function Gallery() {
                       </div>
                     ) : (
                       <>
-                        {/* Blurred Ambient Backdrop for Adaptive Matting */}
+                        {/* Ambient Backdrop */}
                         <div
                           className="coverflow__cover-bg"
                           style={{ backgroundImage: `url("${photo.src}")` }}
@@ -309,11 +356,20 @@ export default function Gallery() {
                   src={
                     activePhoto.isCaricature
                       ? activePhoto.caricatureSrc
-                      : CARICATURE_PLACEHOLDERS[activeIndex % CARICATURE_PLACEHOLDERS.length].caricatureSrc
+                      : CARICATURE_PLACEHOLDERS[0].caricatureSrc
                   }
-                  alt=""
+                  alt={activePhoto.alt || "Mahek & Yashoratna Monogram Logo"}
                   className="lightbox__img lightbox__img--caricature"
                 />
+                <h3 className="coverflow__caricature-title" style={{ fontSize: "1.5rem", marginTop: "0.35rem" }}>
+                  {activePhoto.title || CARICATURE_PLACEHOLDERS[0].title}
+                </h3>
+                <p className="coverflow__caricature-subtitle" style={{ fontSize: "0.95rem" }}>
+                  {activePhoto.subtitle || CARICATURE_PLACEHOLDERS[0].subtitle}
+                </p>
+                <span className="coverflow__caricature-badge" style={{ marginTop: "0.5rem" }}>
+                  {activePhoto.badge || CARICATURE_PLACEHOLDERS[0].badge}
+                </span>
               </div>
             ) : (
               <img

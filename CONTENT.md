@@ -12,7 +12,7 @@ how the site *looks*, use `DESIGN.md` instead.
 ## 1. The Couple (shown in the Invitation & Nav Drawer)
 
 - Partner 1's first name: `[ Mahek ]`
-- Partner 2's first name: `[ Yash ]`
+- Partner 2's first name: `[ Yashoratna ]`
 
 *(Rendered in Alex Brush cursive on the Invitation and the floating Nav Drawer.)*
 
@@ -54,7 +54,7 @@ A short line shown above your names in the Invitation:
 - Invitation Line 1: `[ with their family and loved ones ]`
 - Parents: `[ Smt. Renu Gupta ]` & `[ Shri Sandeep Kumar Gupta ]`
 - Invitation Line 2: `[ request the pleasure of your company on the auspicious wedding of ]`
-- Name: `[ Yash ]`
+- Name: `[ Yashoratna ]`
 - Relation: `[ Their beloved son ]`
 
 ## 5. Event Details (3D Flip Cards)

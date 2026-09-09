@@ -1,4 +1,4 @@
-# Mahek & Yash — Luxury Wedding Invitation Website
+# Mahek & Yashoratna — Luxury Wedding Invitation Website
 
 A high-performance, single-page luxury Indian wedding invitation built with React, Vite, and Firebase Firestore, integrated with Google Sheets, Telegram Bot moderation, and dynamic Google Drive gallery streaming.
 
@@ -9,7 +9,7 @@ A high-performance, single-page luxury Indian wedding invitation built with Reac
 - **Interactive 3D Envelope Intro**: Realistic 3D flap rotation, card emergence, wax seal flip, and smooth fly-in animation to the invitation.
 - **Sacred Invocation (`#shree-ganesh`)**: Lord Ganesha crest with ambient golden rose glow and sacred Devanagari Sanskrit shlokas (*Vakratunda Mahakaya...* across 2 rhythmic lines & *Mangalam Bhagwan Vishnuh...*).
 - **Wedding Invitation (`#invitation`)**: Dedicated invitation screen, clean multi-line parents lineage, and monogrammed scratch-to-reveal card with live countdown, confetti celebration, and synchronized global date reveal.
-- **Navigation Drawer**: Distraction-free viewport with glassmorphic top-left floating menu and quick section jumping.
+- **Navigation Drawer**: Distraction-free viewport with glassmorphic top-left floating menu, tailored 240px width, two-line stacked couple header (*Mahek &* / *Yashoratna*), and smooth section jumping.
 - **Meet the Families (`#couple`)**: Traditional royal Indian wedding lineage cards with classical Sanskrit shloka (*Twameva Mata Cha Pita Twameva...*), `॥ मंगलम् ॥` (*Auspicious Beginning*) & `॥ युग्म ॥` (*Sacred Union*) symbols rendered in pure HTML typography with the couple's Hindi initials (**मं** & **यु**) highlighted in royal burgundy and framing elements in ceremonial gold, unified Cormorant Garamond italic typography across all contextual lines, and luxury double borders with burgundy inner dashed accents.
 - **Event Details (`#details`)**: 2-column, 3-row 3D flip cards (total 6 events) with 20s animated burgundy perimeter timer strokes, plus an interactive "How to reach the venue?" popup with QR code, GPS directions, and transit guides.
 - **Dynamic Memories Gallery (`#gallery`)**:

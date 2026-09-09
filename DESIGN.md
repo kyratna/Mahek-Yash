@@ -101,8 +101,8 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 - **Top bar is completely hidden** across all pages for a clean, distraction-free aesthetic.
 - **Floating Hamburger Button**: Appears smoothly at the top-left of the viewport (`top: 1.25rem; left: 1.25rem; position: fixed`) starting from the 2nd screen (`#invitation`) onwards when scrolled past Shree Ganesh. Styled as a glassmorphic circular icon button with gold border.
 - **Slide-out Navigation Drawer**:
-  - Drawer slides in smoothly from the left (`max-width: 320px`, glassmorphic ivory background with blur).
-  - Header displays the circular monogram logo, couple title (**Mahek** *[Alex Brush]* **&** *[Playfair gold italic]* **Yash** *[Alex Brush]*), and a circular close button.
+  - Compact, tailored width (`min(240px, 80vw)` on desktop, `min(230px, 80vw)` on mobile) with glassmorphic surface styling and soft drop shadow.
+  - Header displays the circular monogram logo (`38px`), couple title formatted across two stacked lines in Alex Brush cursive (**Mahek &** on line 1 with styled gold italic ampersand, and **Yashoratna** on line 2 in royal burgundy), and a circular close button (`30px`).
   - Links list with gold chevron indicators:
     1. **Shree Ganesh** (`#shree-ganesh`)
     2. **Invitation** (`#invitation`)

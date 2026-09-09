@@ -170,11 +170,12 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - Card top padding streamlined to `clamp(0.9rem, 1.8vh, 1.35rem)` (mobile `1.15rem–1.25rem`), eliminating awkward empty space above `॥ मंगलम् ॥` and `॥ युग्म ॥`.
   - Section header margin tightened to `clamp(0.75rem, 1.5vh, 1.15rem)` and cursive name scaled to `clamp(2.6rem, 4.6vh, 3.4rem)`.
   - Added bottom clearance margin (`clamp(1.5rem, 3.5vh, 2.5rem)`) to `.family-cards-container`, guaranteeing ~100px+ of comfortable breathing space below the cards on laptop and desktop screens.
-- **Cross-Platform Sanskrit Symbol Typography with Couple Initials (`॥ मंगलम् ॥` & `॥ युग्म ॥`)**:
+- **Cross-Platform Sanskrit Symbol Typography with Two-Layer Initial Highlights (`॥ मंगलम् ॥` & `॥ युग्म ॥`)**:
   - Implemented in semantic HTML (`.family-card__symbol-title`) using `Tiro Devanagari Sanskrit` (`clamp(1.45rem, 2.8vh, 1.85rem)`).
-  - The couple's Hindi initials—**`मं`** (for **M**ahek, `.family-card__symbol-initial`) and **`यु`** (for **Y**ash, `.family-card__symbol-initial`)—are highlighted in bold royal burgundy (`#8f3350`).
-  - The remaining letters (**`गलम्`** and **`ग्म`**, `.family-card__symbol-rest`) and the framing ceremonial dandas (`॥`, `.family-card__symbol-danda`) are rendered in muted gold (`#b08968`).
-  - Structured as complete Unicode syllabic clusters (`मं` and `यु`) in sibling HTML inline spans, preserving continuous *shirorekha* headline connection while completely eliminating orphaned combining marks, dotted circle artifacts (`◌`), and SVG clipPath slicing issues on iOS Safari / iPhone.
+  - Uses a **Two-Layer Ghost-Matched Overlay Architecture** (`.family-card__symbol-layered`):
+    - **Base Layer** (`.family-card__symbol-base`): Contains the entire, unsegmented Sanskrit word (`मंगलम्` / `युग्म`) in antique gold (`#b08968`), ensuring complete typographic context, unbroken shirorekha, and standard text selection / clipboard copying (`॥ मंगलम् ॥` and `॥ युग्म ॥`).
+    - **Overlay Layer** (`.family-card__symbol-overlay`, `aria-hidden="true"`): Absolutely positioned (`inset: 0`, `pointer-events: none`, `user-select: none`). Contains strictly the highlighted Hindi initial consonant—**`म`** (for **M**ahek, `.family-card__symbol-initial`) and **`य`** (for **Y**ash, `.family-card__symbol-initial`)—in bold royal burgundy (`#8f3350`), followed by an invisible ghost span (`.family-card__symbol-ghost`, `visibility: hidden; opacity: 0; color: transparent`) containing the rest of the word (`ंगलम्` / `ुग्म`).
+    - **Zero Metric Drift & Continuous Shirorekha**: The invisible ghost ensures both layers share identical ascenders, descenders, and font bounding boxes, perfectly aligning the burgundy consonant over the base while letting the antique gold diacritics (*anusvara* `ं` and *u-matra* `ु`), subsequent letters (`गलम्` and `ग्म`), and double dandas (`॥`) shine through seamlessly without dotted circles (`◌`) or stair-step displacement across all mobile and desktop devices.
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

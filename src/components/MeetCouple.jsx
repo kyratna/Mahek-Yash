@@ -3,15 +3,25 @@ import content from "../content";
 import FitDevanagari from "./FitDevanagari";
 import "./MeetFamilies.css";
 
+function LayeredSymbol({ word, initial }) {
+  const ghost = word.startsWith(initial) ? word.slice(initial.length) : "";
+  return (
+    <span className="family-card__symbol-layered">
+      <span className="family-card__symbol-base">{word}</span>
+      <span className="family-card__symbol-overlay" aria-hidden="true">
+        <span className="family-card__symbol-initial">{initial}</span>
+        <span className="family-card__symbol-ghost">{ghost}</span>
+      </span>
+    </span>
+  );
+}
+
 function SymbolHeader({ text, side }) {
   if (text?.includes("मंगलम्") || side === "bride") {
     return (
       <div className="family-card__symbol-title" lang="sa">
         <span className="family-card__symbol-danda">॥</span>
-        <span className="family-card__symbol-word">
-          <span className="family-card__symbol-initial">मं</span>
-          <span className="family-card__symbol-rest">गलम्</span>
-        </span>
+        <LayeredSymbol word="मंगलम्" initial="म" />
         <span className="family-card__symbol-danda">॥</span>
       </div>
     );
@@ -21,10 +31,7 @@ function SymbolHeader({ text, side }) {
     return (
       <div className="family-card__symbol-title" lang="sa">
         <span className="family-card__symbol-danda">॥</span>
-        <span className="family-card__symbol-word">
-          <span className="family-card__symbol-initial">यु</span>
-          <span className="family-card__symbol-rest">ग्म</span>
-        </span>
+        <LayeredSymbol word="युग्म" initial="य" />
         <span className="family-card__symbol-danda">॥</span>
       </div>
     );
@@ -32,7 +39,7 @@ function SymbolHeader({ text, side }) {
 
   return (
     <div className="family-card__symbol-title" lang="sa">
-      <span className="family-card__symbol-word">{text || "॥ श्री ॥"}</span>
+      <span className="family-card__symbol-base">{text || "॥ श्री ॥"}</span>
     </div>
   );
 }

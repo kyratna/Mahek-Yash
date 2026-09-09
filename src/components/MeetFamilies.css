@@ -179,14 +179,42 @@
   opacity: 0.9;
 }
 
-.family-card__symbol-word {
-  display: inline-flex;
-  align-items: baseline;
+.family-card__symbol-layered {
+  position: relative;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.family-card__symbol-base {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.family-card__symbol-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  line-height: inherit;
+  white-space: nowrap;
 }
 
 .family-card__symbol-initial {
   color: var(--color-burgundy);
   font-weight: 600;
+}
+
+.family-card__symbol-ghost {
+  visibility: hidden;
+  opacity: 0;
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+.family-card__symbol-word {
+  display: inline-flex;
+  align-items: baseline;
 }
 
 .family-card__symbol-rest {

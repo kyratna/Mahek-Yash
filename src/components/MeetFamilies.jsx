@@ -8,7 +8,10 @@ function SymbolHeader({ text, side }) {
     return (
       <div className="family-card__symbol-title" lang="sa">
         <span className="family-card__symbol-danda">॥</span>
-        <span className="family-card__symbol-word">मंगलम्</span>
+        <span className="family-card__symbol-word">
+          <span className="family-card__symbol-initial">मं</span>
+          <span className="family-card__symbol-rest">गलम्</span>
+        </span>
         <span className="family-card__symbol-danda">॥</span>
       </div>
     );
@@ -18,7 +21,10 @@ function SymbolHeader({ text, side }) {
     return (
       <div className="family-card__symbol-title" lang="sa">
         <span className="family-card__symbol-danda">॥</span>
-        <span className="family-card__symbol-word">युग्म</span>
+        <span className="family-card__symbol-word">
+          <span className="family-card__symbol-initial">यु</span>
+          <span className="family-card__symbol-rest">ग्म</span>
+        </span>
         <span className="family-card__symbol-danda">॥</span>
       </div>
     );

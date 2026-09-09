@@ -63,8 +63,8 @@ A single scale used everywhere via CSS variables — no ad-hoc pixel values:
 ## 4. Layout Foundations
 
 - **Content max-width**: `1000px`, centered (`--max-width`)
-- **Full-Screen Coverage**: Every section (`.section`, `.shree-ganesh`, `.invitation`, `.footer`) occupies a full viewport screen (`min-height: 100vh; min-height: 100dvh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; scroll-snap-align: start;`).
-- **Scroll Snapping**: `scroll-snap-type: y proximity` on `html` gently aligns each section cleanly to the viewport during wheel, touch, and button navigation.
+- **Full-Screen Coverage**: Every section (`.section`, `.shree-ganesh`, `.invitation`, `.footer`) occupies a full viewport screen (`min-height: 100vh; min-height: 100dvh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box;`).
+- **Smooth Free Scrolling**: Natural, fluid browser scrolling across all screen sizes without CSS scroll-snapping jitter or forced shifts, with section jumps handled cleanly via the floating SectionNav controls (`SectionNav.jsx`) and drawer nav (`Nav.jsx`).
 - **Section Spacing**: Balanced internal padding (`1.75rem 1rem`) and compact component margins ensure all headings, cards, and interactive widgets fit completely within the viewport height without unnecessary scrollbar spillover.
 - **Section Alternation**: Alternating sections (Event Details, Gallery, Blessings) use `.section--surface` — white background with a hairline top/bottom border — to contrast gracefully with the ivory page sections.
 - **Section Headings**: Centered eyebrow label above an `h2`, `1.25rem` margin below.
@@ -170,10 +170,11 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - Card top padding streamlined to `clamp(0.9rem, 1.8vh, 1.35rem)` (mobile `1.15rem–1.25rem`), eliminating awkward empty space above `॥ मंगलम् ॥` and `॥ युग्म ॥`.
   - Section header margin tightened to `clamp(0.75rem, 1.5vh, 1.15rem)` and cursive name scaled to `clamp(2.6rem, 4.6vh, 3.4rem)`.
   - Added bottom clearance margin (`clamp(1.5rem, 3.5vh, 2.5rem)`) to `.family-cards-container`, guaranteeing ~100px+ of comfortable breathing space below the cards on laptop and desktop screens.
-- **Cross-Platform Sanskrit Symbol Typography (`॥ मंगलम् ॥` & `॥ युग्म ॥`)**:
+- **Cross-Platform Sanskrit Symbol Typography with Couple Initials (`॥ मंगलम् ॥` & `॥ युग्म ॥`)**:
   - Implemented in semantic HTML (`.family-card__symbol-title`) using `Tiro Devanagari Sanskrit` (`clamp(1.45rem, 2.8vh, 1.85rem)`).
-  - The sacred words (`मंगलम्` & `युग्म`) are styled in royal burgundy (`var(--color-burgundy)`) framed by ceremonial gold dandas (`॥`, `var(--color-accent)`).
-  - Replaces fragile SVG `<clipPath>` text overlays that caused WebKit font corruption, misaligned ghosted layers, and dotted circle combining mark artifacts (`◌`) on iOS Safari / iPhone.
+  - The couple's Hindi initials—**`मं`** (for **M**ahek, `.family-card__symbol-initial`) and **`यु`** (for **Y**ash, `.family-card__symbol-initial`)—are highlighted in bold royal burgundy (`#8f3350`).
+  - The remaining letters (**`गलम्`** and **`ग्म`**, `.family-card__symbol-rest`) and the framing ceremonial dandas (`॥`, `.family-card__symbol-danda`) are rendered in muted gold (`#b08968`).
+  - Structured as complete Unicode syllabic clusters (`मं` and `यु`) in sibling HTML inline spans, preserving continuous *shirorekha* headline connection while completely eliminating orphaned combining marks, dotted circle artifacts (`◌`), and SVG clipPath slicing issues on iOS Safari / iPhone.
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

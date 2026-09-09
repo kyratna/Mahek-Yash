@@ -14,7 +14,6 @@
   box-sizing: border-box;
   overflow-x: clip;
   max-width: 100vw;
-  scroll-snap-align: start;
 }
 
 #gallery .section__inner {

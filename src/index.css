@@ -36,7 +36,6 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-variant-numeric: lining-nums;
-  scroll-snap-type: y proximity;
 }
 
 body {
@@ -118,7 +117,6 @@ img {
   max-width: 100vw;
   width: 100%;
   box-sizing: border-box;
-  scroll-snap-align: start;
 }
 
 .section--surface {
@@ -214,17 +212,6 @@ img {
   height: 17px;
 }
 
-@media (max-width: 768px) {
-  html {
-    scroll-snap-type: none;
-  }
-
-  .section,
-  .shree-ganesh,
-  .family-section {
-    scroll-snap-align: none;
-  }
-}
 
 @media (max-width: 600px) {
   .section {

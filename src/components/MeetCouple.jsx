@@ -6,65 +6,29 @@ import "./MeetFamilies.css";
 function SymbolHeader({ text, side }) {
   if (text?.includes("मंगलम्") || side === "bride") {
     return (
-      <svg
-        className="family-card__symbol-svg"
-        viewBox="0 10 185 45"
-        aria-label="॥ मंगलम् ॥"
-        role="img"
-      >
-        <defs>
-          <clipPath id="m-consonant-clip">
-            <rect x="42.2" y="19" width="23.8" height="30" />
-          </clipPath>
-        </defs>
-        <text x="5" y="45" className="family-card__symbol-svg-text" fill="var(--color-accent)">
-          ॥ मंगलम् ॥
-        </text>
-        <text
-          x="5"
-          y="45"
-          className="family-card__symbol-svg-text"
-          fill="var(--color-burgundy)"
-          clipPath="url(#m-consonant-clip)"
-          aria-hidden="true"
-        >
-          ॥ मंगलम् ॥
-        </text>
-      </svg>
+      <div className="family-card__symbol-title" lang="sa">
+        <span className="family-card__symbol-danda">॥</span>
+        <span className="family-card__symbol-word">मंगलम्</span>
+        <span className="family-card__symbol-danda">॥</span>
+      </div>
     );
   }
 
   if (text?.includes("युग्म") || side === "groom") {
     return (
-      <svg
-        className="family-card__symbol-svg"
-        viewBox="0 10 150 45"
-        aria-label="॥ युग्म ॥"
-        role="img"
-      >
-        <defs>
-          <clipPath id="y-consonant-clip">
-            <rect x="42.2" y="18" width="22.8" height="27" />
-          </clipPath>
-        </defs>
-        <text x="5" y="45" className="family-card__symbol-svg-text" fill="var(--color-accent)">
-          ॥ युग्म ॥
-        </text>
-        <text
-          x="5"
-          y="45"
-          className="family-card__symbol-svg-text"
-          fill="var(--color-burgundy)"
-          clipPath="url(#y-consonant-clip)"
-          aria-hidden="true"
-        >
-          ॥ युग्म ॥
-        </text>
-      </svg>
+      <div className="family-card__symbol-title" lang="sa">
+        <span className="family-card__symbol-danda">॥</span>
+        <span className="family-card__symbol-word">युग्म</span>
+        <span className="family-card__symbol-danda">॥</span>
+      </div>
     );
   }
 
-  return <span>{text || "॥ श्री ॥"}</span>;
+  return (
+    <div className="family-card__symbol-title" lang="sa">
+      <span className="family-card__symbol-word">{text || "॥ श्री ॥"}</span>
+    </div>
+  );
 }
 
 function FamilyCard({ family, side }) {

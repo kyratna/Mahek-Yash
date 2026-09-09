@@ -153,22 +153,36 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.2rem;
-  line-height: 1;
+  margin-bottom: 0.15rem;
+  line-height: 1.2;
 }
 
-.family-card__symbol-svg {
-  height: clamp(1.8rem, 3.2vh, 2.3rem);
-  width: auto;
-  overflow: visible;
-  display: block;
-}
-
-.family-card__symbol-svg-text {
+.family-card__symbol-title {
   font-family: "Tiro Devanagari Sanskrit", var(--font-heading), serif;
-  font-size: 36px;
-  letter-spacing: 0.04em;
+  font-size: clamp(1.45rem, 2.8vh, 1.85rem);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+}
+
+.family-card__symbol-danda {
+  color: var(--color-accent);
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.family-card__symbol-word {
+  color: var(--color-burgundy);
+  font-weight: 500;
 }
 
 .family-card__symbol-translation {
@@ -441,7 +455,12 @@
   }
 
   .family-card__symbol {
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .family-card__symbol-title {
+    font-size: 1.55rem;
+    gap: 0.35rem;
   }
 
   .family-card__title {

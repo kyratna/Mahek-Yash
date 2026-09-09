@@ -170,6 +170,10 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - Card top padding streamlined to `clamp(0.9rem, 1.8vh, 1.35rem)` (mobile `1.15rem–1.25rem`), eliminating awkward empty space above `॥ मंगलम् ॥` and `॥ युग्म ॥`.
   - Section header margin tightened to `clamp(0.75rem, 1.5vh, 1.15rem)` and cursive name scaled to `clamp(2.6rem, 4.6vh, 3.4rem)`.
   - Added bottom clearance margin (`clamp(1.5rem, 3.5vh, 2.5rem)`) to `.family-cards-container`, guaranteeing ~100px+ of comfortable breathing space below the cards on laptop and desktop screens.
+- **Cross-Platform Sanskrit Symbol Typography (`॥ मंगलम् ॥` & `॥ युग्म ॥`)**:
+  - Implemented in semantic HTML (`.family-card__symbol-title`) using `Tiro Devanagari Sanskrit` (`clamp(1.45rem, 2.8vh, 1.85rem)`).
+  - The sacred words (`मंगलम्` & `युग्म`) are styled in royal burgundy (`var(--color-burgundy)`) framed by ceremonial gold dandas (`॥`, `var(--color-accent)`).
+  - Replaces fragile SVG `<clipPath>` text overlays that caused WebKit font corruption, misaligned ghosted layers, and dotted circle combining mark artifacts (`◌`) on iOS Safari / iPhone.
 
 ### Event Details
 - White/surface section (visually distinct from the ivory sections around it)

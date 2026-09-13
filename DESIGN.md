@@ -94,8 +94,8 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 ### Envelope Intro
 - Full-viewport scene (`EnvelopeIntro.jsx`, `position: fixed`, `z-index: 1000`) shown once per browser session before any content is interactive; page scroll is locked (`body { overflow: hidden }`, toggled in `App.jsx` off of `opened` state) while it's up. Persisted via `sessionStorage`, so it doesn't replay when navigating to/from the Blessings Wall page.
 - Opens with realistic 3D flap rotation (`rotateX(150deg)`), card emergence, 180° flip to the monogrammed back face, and smooth fly-in animation to the invitation.
-- **Envelope Specifications**: Width `min(18rem, 80vw)` (`288px`), Height `14rem` (`224px`), Lord Ganesh crest `165px`, Monogram wax seal `72px`.
-- **Revealed Card Specifications**: Inset `20px`, Height `150px`, Top offset `-34px`, Names: **Playfair Display** `1.4rem` in deep wine burgundy (`#6b1d33`), Divider spacing `10px`, Venue: `0.6rem` uppercase across two lines (*Winsome Resorts and Spa* / *Jim Corbett*) in crisp black (`#000000`), Back face monogram seal `62%`.
+- **Envelope Specifications**: Width `min(19rem, 84vw)` (`304px`), Height `14rem` (`224px`), Lord Ganesh crest `165px`, Monogram wax seal `72px`.
+- **Revealed Card Specifications**: Inset `10px`, Width `284px`, Height `144px`, Top offset `-32px`, Names: **Alex Brush cursive** (`--font-cursive`) `1.55rem` in deep wine burgundy (`#6b1d33`) tightly grouped across 3 lines (*Bride Name* / *&* in styled italic / *Groom Name* with `line-height: 0.88`), Divider spacing `3px`, Venue: `0.48rem` uppercase across two lines (*Winsome Resorts and Spa* / *Jim Corbett*) in crisp black (`#000000`), generous top & bottom edge padding (`0.65rem`), Back face monogram seal `54%`. Aspect ratio ~1.97:1 landscape rectangle.
 
 ### Navigation Drawer (Nav)
 - **Top bar is completely hidden** across all pages for a clean, distraction-free aesthetic.
@@ -129,9 +129,9 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
 - **Header**: Tagline (`hero.tagline`, "With All The Blessings").
 - **Body**:
   - Invitation phrase: *"We cordially invite you on the auspicious union of"*
-  - Bride block: **Mahek** (`4.2rem` Alex Brush cursive) &rarr; *"Daughter of"* (`1.1rem` Cormorant Garamond italic) &rarr; *"Smt Deepa Gupta and Shri Rajeev Gupta"* (`0.9rem` Cormorant Garamond 500).
+  - Bride block: **Mahek** (`4.2rem` Alex Brush cursive in royal burgundy).
   - Center connector: **`&`** (`2.4rem` Playfair Display italic in gold accent `#b08968`).
-  - Groom block: **Yash** (`4.2rem` Alex Brush cursive) &rarr; *"Son of"* (`1.1rem` Cormorant Garamond italic) &rarr; *"Smt Renu Gupta and Shri Sandeep Kumar Gupta"* (`0.9rem` Cormorant Garamond 500).
+  - Groom block: **Yashoratna** (`4.2rem` Alex Brush cursive in royal burgundy).
 - **Divider**: Thin gold lines with centered diamond marker.
 - **Scratch-to-Reveal Card**: Covers the wedding date and live countdown.
 
@@ -153,12 +153,13 @@ The bottom-right floating control cluster (`FloatingControls.jsx`), top to botto
   - Sanskrit Shloka (`॥ त्वमेव माता च पिता त्वमेव, त्वमेव बन्धुश्च सखा त्वमेव ॥`) rendered in `var(--color-burgundy)` in `Tiro Devanagari Sanskrit`.
   - Editorial translation quote below in `Cormorant Garamond` italic.
 - **Two Side-by-Side Royal Indian Family Cards**:
-  - Left: Bride's Family Card (The Gupta Family, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, bride name in Alex Brush cursive, relation tagline).
-  - Right: Groom's Family Card (The Gupta Family, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, groom name in Alex Brush cursive, relation tagline).
+  - Left: Bride's Family Card (The Gupta Family in royal burgundy `var(--color-burgundy)`, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, bride name in Alex Brush cursive, relation tagline in muted text).
+  - Right: Groom's Family Card (The Gupta Family in royal burgundy `var(--color-burgundy)`, location `Moradabad · The City of Brass`, invite phrases, parents in burgundy bold, groom name in Alex Brush cursive, relation tagline in muted text).
 - **Typography Consistency & Standardization**:
   - City origin standardized to `Moradabad · The City of Brass` (`पीतल नगरी` removed).
-  - Relation lines `Their beloved daughter` and `Their beloved son` rendered in `Cormorant Garamond` italic (sentence case, not uppercase).
-  - Unified typography across all 6 descriptive/connective card lines: *Auspicious Beginning*, *Moradabad · The City of Brass*, *Under the divine grace & blessings of revered grandparents*, *with their family and loved ones*, *request the pleasure of your company on the auspicious wedding of*, and *Their beloved daughter/son* — all using `font-family: var(--font-body)` (*Cormorant Garamond*), `font-style: italic`, and synchronized clamp sizing `clamp(0.9rem, 1.6vh, 1rem)`.
+  - Family titles (`THE GUPTA FAMILY`) colored in royal burgundy (`var(--color-burgundy)` / `#8f3350`), matching parents' names, couple cursive names, and Hindi initial accents.
+  - Relation lines `Their beloved daughter` and `Their beloved son` styled in `var(--color-text-muted)` matching `with their family and loved ones` in `Cormorant Garamond` italic.
+  - Unified typography across all 6 descriptive/connective card lines: *Auspicious Beginning*, *Moradabad · The City of Brass*, *Under the divine grace & blessings of revered grandparents*, *with their family and loved ones*, *request the pleasure of your company on the auspicious wedding of*, and *Their beloved daughter/son* — all using `font-family: var(--font-body)` (*Cormorant Garamond*), `font-style: italic`, synchronized clamp sizing `clamp(0.9rem, 1.6vh, 1rem)`, and unified muted color palette.
 - **Luxury Double Border & Corner Flourishes**:
   - Outer rounded border (`1.2px solid rgba(176, 137, 104, 0.45)` with `1.25rem` radius).
   - Inset dashed gold inner border (`inset: 8px`).

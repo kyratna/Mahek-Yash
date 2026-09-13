@@ -6,8 +6,7 @@ import ConfettiBurst from "./ConfettiBurst";
 import "./Invitation.css";
 
 export default function Invitation({ isDateRevealed = false, onDateReveal }) {
-  const { couple, wedding, hero, coupleProfiles } = content;
-  const { bride, groom } = coupleProfiles;
+  const { couple, wedding, hero } = content;
   const [revealed, setRevealed] = useState(isDateRevealed);
 
   function handleReveal() {
@@ -29,11 +28,6 @@ export default function Invitation({ isDateRevealed = false, onDateReveal }) {
 
           <div className="invitation__person">
             <span className="invitation__name">{couple.partner1}</span>
-            <span className="invitation__relation">{bride.parentage.label}</span>
-            <div className="invitation__parents">
-              <span>{bride.parentage.person1}</span>
-              <span>{bride.parentage.person2}</span>
-            </div>
           </div>
 
           <div className="invitation__and-wrap">
@@ -42,11 +36,6 @@ export default function Invitation({ isDateRevealed = false, onDateReveal }) {
 
           <div className="invitation__person">
             <span className="invitation__name">{couple.partner2}</span>
-            <span className="invitation__relation">{groom.parentage.label}</span>
-            <div className="invitation__parents">
-              <span>{groom.parentage.person1}</span>
-              <span>{groom.parentage.person2}</span>
-            </div>
           </div>
         </div>
 

@@ -122,7 +122,7 @@ const content = {
     {
       name: "Godh Bharai & Sagai",
       date: "December 5, 2026",
-      time: "7:00 PM onwards",
+      time: "7:00 PM",
       description: "Traditional blessings and auspicious ring ceremony with family & loved ones.",
       attire: "Glam and Glitter",
       location: "Grand Ballroom",
@@ -131,7 +131,7 @@ const content = {
     {
       name: "Baraat & Ghurchari",
       date: "December 6, 2026",
-      time: "10:30 AM Onwards",
+      time: "10:30 AM",
       description: "The groom's royal dancing procession with festive dhol beats and celebration.",
       attire: "Traditional Festive and Elegance",
       location: "Resort Entrance to Mandap",

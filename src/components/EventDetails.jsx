@@ -3,26 +3,24 @@ import content from "../content";
 import VenueModal from "./VenueModal";
 import "./EventDetails.css";
 
-function parseEventTime(timeStr = "") {
-  const match = timeStr.match(/^(.*?)\s+(onwards)$/i);
+function formatEventTime(timeStr = "") {
+  return timeStr.replace(/\s+onwards/i, "").trim();
+}
+
+function formatShortDate(dateStr = "") {
+  if (!dateStr) return "";
+  const match = dateStr.match(/(?:December|Dec)\s+(\d+)/i);
   if (match) {
-    return {
-      timeMain: match[1],
-      hasOnwards: true,
-      onwardsText: match[2].toLowerCase(),
-    };
+    return `Dec ${match[1]}`;
   }
-  return {
-    timeMain: timeStr,
-    hasOnwards: false,
-    onwardsText: "",
-  };
+  return dateStr;
 }
 
 function EventCard({ event, autoFlipSeconds = 20 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const timerRef = useRef(null);
-  const { timeMain, hasOnwards, onwardsText } = parseEventTime(event.time);
+  const displayTime = formatEventTime(event.time);
+  const shortDate = formatShortDate(event.date);
 
   useEffect(() => {
     if (isFlipped) {
@@ -53,7 +51,7 @@ function EventCard({ event, autoFlipSeconds = 20 }) {
       role="button"
       tabIndex={0}
       aria-expanded={isFlipped}
-      aria-label={`${event.name}, ${event.date} at ${event.time}. Click to ${
+      aria-label={`${event.name}, ${event.date} at ${displayTime}. Click to ${
         isFlipped ? "see front" : "see more details"
       }`}
     >
@@ -63,7 +61,7 @@ function EventCard({ event, autoFlipSeconds = 20 }) {
           <h3 className="event-flip-card__name">{event.name}</h3>
           <div className="event-flip-card__divider" aria-hidden="true" />
           <p className="event-flip-card__date">{event.date}</p>
-          <p className="event-flip-card__time">{event.time}</p>
+          <p className="event-flip-card__time">{displayTime}</p>
           <span className="event-flip-card__hint">
             <svg
               viewBox="0 0 24 24"
@@ -114,10 +112,8 @@ function EventCard({ event, autoFlipSeconds = 20 }) {
           <div className="event-flip-card__back-header">
             <h4 className="event-flip-card__back-name">{event.name}</h4>
             <div className="event-flip-card__back-time-wrap">
-              <span className="event-flip-card__back-time">{timeMain}</span>
-              {hasOnwards && (
-                <span className="event-flip-card__back-onwards">{onwardsText}</span>
-              )}
+              <span className="event-flip-card__back-date">{shortDate}</span>
+              <span className="event-flip-card__back-time">{displayTime}</span>
             </div>
           </div>
           <div className="event-flip-card__divider event-flip-card__divider--back" aria-hidden="true" />

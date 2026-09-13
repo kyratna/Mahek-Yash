@@ -49,23 +49,23 @@
      reference photos are the same ornament on two different cardstocks. */
   --card-front-frame: #000000;
   --card-back-frame: #d9b96a;
-  --env-width: min(18rem, 80vw);
+  --env-width: min(19rem, 84vw);
   --env-height: 14rem;
   --env-ganesh-size: 165px;
   --env-seal-size: 72px;
   --env-margin-top: 20px;
-  --card-inset: 20px;
-  --card-height: 150px;
-  --card-top-offset: -34px;
-  --card-names-font: var(--font-heading);
-  --card-names-size: 1.4rem;
+  --card-inset: 10px;
+  --card-height: 144px;
+  --card-top-offset: -32px;
+  --card-names-font: var(--font-cursive);
+  --card-names-size: 1.55rem;
   --card-names-color: #6b1d33;
   --card-text-color: #000000;
   --card-frame-color: #000000;
-  --card-divider-margin: 10px 0;
-  --card-venue-size: 0.6rem;
-  --card-eyebrow-size: 0.55rem;
-  --card-back-seal-size: 62%;
+  --card-divider-margin: 3px 0;
+  --card-venue-size: 0.48rem;
+  --card-eyebrow-size: 0.46rem;
+  --card-back-seal-size: 54%;
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -480,8 +480,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0 var(--space-2);
+  gap: 0.25rem;
+  padding: 0.65rem var(--space-2);
   text-align: center;
 }
 
@@ -585,19 +585,39 @@
 }
 
 .envelope-box__card-names {
-  font-family: var(--card-names-font, var(--font-heading));
-  font-size: var(--card-names-size, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--card-names-font, var(--font-cursive));
+  font-size: var(--card-names-size, 1.45rem);
+  font-weight: 400;
   color: var(--card-names-color, var(--color-text));
-  line-height: 1.15;
+  line-height: 0.88;
+  margin: 0.1rem 0;
+}
+
+.envelope-box__card-name {
+  display: block;
+  letter-spacing: 0.01em;
+}
+
+.envelope-box__card-amp {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 0.78rem;
+  line-height: 1;
+  margin: -0.15rem 0 -0.12rem;
+  opacity: 0.85;
 }
 
 .envelope-box__card-divider {
   display: block;
   position: relative;
-  width: 3.6rem;
+  width: 2.8rem;
   height: 1px;
   background: linear-gradient(to right, transparent, #000000 50%, transparent);
-  margin: var(--card-divider-margin, 10px 0);
+  margin: var(--card-divider-margin, 3px 0);
   opacity: 0.85;
 }
 

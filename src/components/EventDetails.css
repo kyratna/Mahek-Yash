@@ -78,8 +78,8 @@
   background-color: transparent;
   -webkit-perspective: 1000px;
   perspective: 1000px;
-  min-height: 145px;
-  height: 145px;
+  min-height: 150px;
+  height: 150px;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
@@ -306,6 +306,17 @@
   flex-shrink: 0;
 }
 
+.event-flip-card__back-date {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-burgundy);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+  margin-bottom: 0.12rem;
+}
+
 .event-flip-card__back-time {
   font-family: var(--font-body);
   font-size: 0.94rem;
@@ -313,16 +324,6 @@
   font-weight: 600;
   line-height: 1.15;
   white-space: nowrap;
-}
-
-.event-flip-card__back-onwards {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--color-accent);
-  font-weight: 500;
-  line-height: 1.15;
-  text-align: right;
-  letter-spacing: 0.02em;
 }
 
 .event-flip-card__desc {
@@ -428,12 +429,13 @@
     line-height: 1.15;
   }
 
-  .event-flip-card__back-time {
-    font-size: 0.88rem;
+  .event-flip-card__back-date {
+    font-size: 0.78rem;
+    margin-bottom: 0.1rem;
   }
 
-  .event-flip-card__back-onwards {
-    font-size: 0.74rem;
+  .event-flip-card__back-time {
+    font-size: 0.88rem;
   }
 
   .event-flip-card__desc {
@@ -493,12 +495,13 @@
     font-size: 1.02rem;
   }
 
-  .event-flip-card__back-time {
-    font-size: 0.82rem;
+  .event-flip-card__back-date {
+    font-size: 0.72rem;
+    margin-bottom: 0.08rem;
   }
 
-  .event-flip-card__back-onwards {
-    font-size: 0.68rem;
+  .event-flip-card__back-time {
+    font-size: 0.82rem;
   }
 
   .event-flip-card__desc {

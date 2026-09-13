@@ -60,7 +60,7 @@ export default function ShreeGanesh() {
           <span className="shree-ganesh__shlok-divider" aria-hidden="true" />
           <FitDevanagari
             className="shree-ganesh__shlok"
-            lines={["मंगलम् भगवान विष्णुः, मंगलम् गरुणध्वजः ।", "मंगलम् पुण्डरी काक्षः, मंगलाय तनो हरिः ॥"]}
+            lines={["मंगलम् भगवान विष्णुः मंगलम् गरुणध्वजः ।", "मंगलम् पुण्डरी काक्षः मंगलाय तनो हरिः ॥"]}
           />
           <p className="shree-ganesh__shlok-translation">
             Lord Vishnu is auspicious, the lotus-eyed Lord who bears Garuda upon His banner is auspicious; may Lord Hari bless us with auspiciousness.

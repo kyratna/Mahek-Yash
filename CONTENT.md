@@ -81,7 +81,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 
 **Godh Bharai & Sagai**
 - Date: `[ December 05, 2026 ]`
-- Time: `[ 7:00 PM onwards ]`
+- Time: `[ 7:00 PM ]`
 - One-liner Description: `[ Traditional blessings and auspicious ring ceremony with family & loved ones. ]`
 - Attire / Dress Code: `[ Glam and Glitter ]`
 - Venue / Location: `[ Grand Ballroom ]`
@@ -89,7 +89,7 @@ Event details are presented as interactive 3D flip cards in a clean 2-column, 3-
 
 **Baraat & Ghurchari**
 - Date: `[ December 06, 2026 ]`
-- Time: `[ 10:30 AM Onwards ]`
+- Time: `[ 10:30 AM ]`
 - One-liner Description: `[ The groom's royal dancing procession with festive dhol beats and celebration. ]`
 - Attire / Dress Code: `[ Traditional Festive and Elegance ]`
 - Venue / Location: `[ Resort Entrance to Mandap ]`

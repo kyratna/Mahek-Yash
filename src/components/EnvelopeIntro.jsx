@@ -196,9 +196,11 @@ export default function EnvelopeIntro({ onOpen }) {
               <div className="envelope-box__card-face envelope-box__card-face--front">
                 {cardFrame}
                 <span className="envelope-box__card-eyebrow">The Wedding Of</span>
-                <span className="envelope-box__card-names">
-                  {couple.partner1} &amp; {couple.partner2}
-                </span>
+                <div className="envelope-box__card-names">
+                  <span className="envelope-box__card-name">{couple.partner1}</span>
+                  <span className="envelope-box__card-amp">&amp;</span>
+                  <span className="envelope-box__card-name">{couple.partner2}</span>
+                </div>
                 <span className="envelope-box__card-divider" aria-hidden="true" />
                 <div className="envelope-box__card-venue">
                   <span>Winsome Resorts and Spa</span>

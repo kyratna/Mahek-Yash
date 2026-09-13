@@ -45,7 +45,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(0.25rem, 0.6vh, 0.35rem);
   width: 100%;
 }
 
@@ -55,7 +54,7 @@
   font-size: 1.25rem;
   color: var(--color-text-muted);
   line-height: 1.45;
-  margin: 0 0 clamp(0.25rem, 0.6vh, 0.4rem);
+  margin: 0 0 clamp(0.4rem, 1vh, 0.75rem);
   letter-spacing: 0.01em;
 }
 
@@ -63,7 +62,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0.15rem 0;
+  margin: 0;
 }
 
 .invitation__name {
@@ -71,37 +70,14 @@
   font-size: 4.2rem;
   font-weight: 400;
   color: var(--color-burgundy);
-  line-height: 1.12;
+  line-height: 1.15;
   letter-spacing: 0.01em;
-  margin: 0.1rem 0 0.05rem;
+  margin: 0;
   padding: 0 0.5rem;
 }
 
-.invitation__relation {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: var(--color-text-muted);
-  line-height: 1.35;
-  margin-bottom: 0.15rem;
-}
-
-.invitation__parents {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.1rem;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--color-text);
-  margin: 0;
-  line-height: 1.35;
-  letter-spacing: 0.03em;
-}
-
 .invitation__and-wrap {
-  margin: 0.3rem 0;
+  margin: clamp(0.15rem, 0.7vh, 0.35rem) 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,7 +129,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: clamp(0.75rem, 1.8vh, 1.5rem);
+  margin-top: clamp(1rem, 2.5vh, 2rem);
 }
 
 .invitation__date {

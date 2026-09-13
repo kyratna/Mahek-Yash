@@ -9,6 +9,24 @@
   overflow: hidden;
 }
 
+.scratch-reveal:not(.scratch-reveal--revealed) {
+  box-shadow: 0 6px 20px rgba(143, 35, 31, 0.22), 0 0 14px rgba(216, 178, 126, 0.25);
+  animation: scratch-card-beckon 5.2s ease-in-out infinite;
+}
+
+@keyframes scratch-card-beckon {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(143, 35, 31, 0.22), 0 0 12px rgba(216, 178, 126, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 26px rgba(143, 35, 31, 0.35), 0 0 22px rgba(216, 178, 126, 0.5);
+  }
+}
+
+.scratch-reveal:not(.scratch-reveal--revealed):hover .scratch-reveal__canvas {
+  box-shadow: 0 8px 24px rgba(46, 43, 40, 0.24), 0 0 20px rgba(255, 215, 150, 0.4);
+}
+
 .scratch-reveal--revealed {
   box-shadow: 0 6px 24px rgba(143, 51, 80, 0.12);
   background: rgba(255, 255, 255, 0.95);
@@ -28,6 +46,7 @@
   touch-action: none;
   border-radius: 0.75rem;
   box-shadow: 0 4px 16px rgba(46, 43, 40, 0.16);
+  transition: box-shadow 0.3s ease;
 }
 
 @media (max-width: 480px) {
@@ -57,6 +76,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scratch-reveal:not(.scratch-reveal--revealed) {
+    animation: none;
+  }
   .scratch-debris {
     display: none;
   }

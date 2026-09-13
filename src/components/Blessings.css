@@ -99,7 +99,7 @@
 .blessings-section {
   position: relative;
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100lvh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -1440,8 +1440,7 @@
 
 @media (max-width: 680px) {
   .blessings-section {
-    min-height: 100vh;
-    min-height: 100dvh;
+    min-height: auto;
     padding-top: var(--space-2);
     padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.85rem));
     padding-left: 0.75rem;
@@ -1460,7 +1459,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
+    height: auto;
     flex: 1;
     min-height: 0;
   }

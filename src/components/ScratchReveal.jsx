@@ -44,6 +44,7 @@ export default function ScratchReveal({
     labelSize: 17,
     textWidth: 160,
   });
+  const lastSizeRef = useRef({ w: 0, h: 0 });
 
   const isActuallyRevealed = revealed || forceRevealed;
 
@@ -272,6 +273,8 @@ export default function ScratchReveal({
       const w = Math.round(rect.width * ratio);
       const h = Math.round(rect.height * ratio);
       if (!w || !h) return;
+      if (lastSizeRef.current.w === w && lastSizeRef.current.h === h) return;
+      lastSizeRef.current = { w, h };
 
       canvas.width = w;
       canvas.height = h;
